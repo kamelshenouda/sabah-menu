@@ -66,7 +66,7 @@
       copyFailed: "Copy the text from the preview",
       clear: "Clear order",
       confirmClear: "Clear the whole order?",
-      preview: "Message preview",
+      preview: "Message preview (always sent in Arabic for the chef)",
       added: "Added ✓",
       close: "Close",
       arrow: "→",
@@ -161,40 +161,45 @@
   }
 
   // ---------- Order text ----------
-  function qtyLabel(entry, group) {
+  // `lang` defaults to the screen language; the WhatsApp message always passes "ar".
+  function qtyLabel(entry, group, lang = state.lang) {
+    const t = (obj) => obj[lang];
     if (isPacked(group)) {
-      const packs = state.lang === "en" && entry.qty !== 1 ? "packs" : tr(PACK_UNIT);
+      const packs = lang === "en" && entry.qty !== 1 ? "packs" : t(PACK_UNIT);
       return `${entry.qty} ${packs}`;
     }
     const unit = KITCHEN_UNITS.find((u) => u.id === entry.unit) || KITCHEN_UNITS[0];
-    return `${entry.qty} ${tr(unit)}`;
+    return `${entry.qty} ${t(unit)}`;
   }
 
-  function entryDetails(entry, item) {
+  function entryDetails(entry, item, lang = state.lang) {
+    const t = (obj) => obj[lang] || obj.ar;
     const parts = [];
-    if (item.sizes && item.sizes[entry.size]) parts.push(tr(item.sizes[entry.size]));
+    if (item.sizes && item.sizes[entry.size]) parts.push(t(item.sizes[entry.size]));
     (item.options || []).forEach((opt, i) => {
       const choice = opt.choices[(entry.opts || [])[i] || 0];
-      if (choice) parts.push(tr(choice));
+      if (choice) parts.push(t(choice));
     });
     return parts;
   }
 
+  // The order goes to the chef, who reads Arabic, so the message is always in Arabic
+  // whatever language the screen is showing.
   function buildMessage() {
-    const u = ui();
+    const u = UI.ar;
     const blocks = [];
     allSections.forEach(({ group, section }) => {
       const lines = state.cart
         .filter((c) => byId.get(c.id).section === section)
         .map((c) => {
           const { item } = byId.get(c.id);
-          const details = entryDetails(c, item);
-          let line = `• ${tr(item)} ${u.arrow} ${qtyLabel(c, group)}`;
+          const details = entryDetails(c, item, "ar");
+          let line = `• ${item.ar} ${u.arrow} ${qtyLabel(c, group, "ar")}`;
           if (details.length) line += ` (${details.join(" · ")})`;
           if (c.note) line += ` — ${c.note}`;
           return line;
         });
-      if (lines.length) blocks.push(`${section.emoji} *${tr(section)}*\n${lines.join("\n")}`);
+      if (lines.length) blocks.push(`${section.emoji} *${section.ar}*\n${lines.join("\n")}`);
     });
     return blocks.join("\n\n");
   }
@@ -365,7 +370,7 @@
         el("button", { type: "button", class: "ghost-btn", onclick: () => copyMessage(message) }, "📋 " + u.copy)
       ),
       el("p", { class: "field-label" }, u.preview),
-      el("div", { class: "preview", dir: state.lang === "ar" ? "rtl" : "ltr" }, message),
+      el("div", { class: "preview", dir: "rtl", lang: "ar" }, message),
       el("div", { class: "actions" },
         el("button", { type: "button", class: "text-btn", onclick: clearCart }, u.clear))
     );

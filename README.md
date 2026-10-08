@@ -9,6 +9,8 @@ One menu app that combines two earlier menus:
 
 You browse or search the menu, tap an item to add it to the order (with quantity, unit or size,
 options and a note), then send the order as a WhatsApp message or copy it.
+The WhatsApp message is always written in Arabic, even when the app is showing English,
+because the chef reads Arabic.
 The app works in Arabic and English and follows the phone's light or dark mode.
 The order is saved on the device, so it's still there if the page is closed.
 
