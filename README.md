@@ -9,6 +9,8 @@ One menu app that combines two earlier menus:
 
 You browse or search the menu, tap an item to add it to the order (with quantity, unit or size,
 options and a note), then send the order as a WhatsApp message or copy it.
+The WhatsApp message is always written in Arabic, even when the app is showing English,
+because the chef reads Arabic.
 The app works in Arabic and English and follows the phone's light or dark mode.
 The order is saved on the device, so it's still there if the page is closed.
 
@@ -65,6 +67,38 @@ A Butcherista item can also have a photo, sizes, options, a description and calo
 - Every item needs both `ar` and `en`.
 - Items in the Butcherista group are ordered in packs. Items in the Home Kitchen group are
   ordered by kilo, plate/box, or piece/bag.
+
+## Food ideas page (`#ideas`)
+
+Anyone can share a link to a dish from Instagram, Facebook or YouTube at
+`sabah.kamelnabil.com/#ideas`. A small helper on Vercel (`api/`) reads the post, keeps a copy of
+its cover photo, and uses Claude to write a card with the dish name, a short description and the
+ingredients, in Arabic and English. Each idea waits for approval at `#admin` before it appears.
+
+Instagram and Facebook often hide a post's text from outside readers. When that happens the card is
+built from the photo, so the ingredients are marked as "likely ingredients", and the person sharing
+can type the real ingredients in the note box.
+
+### Setting up the helper on Vercel (once)
+
+1. Import this repository as a Vercel project (vercel.com/new). No build settings are needed.
+2. In the project's **Storage** tab, create a **Blob** store and connect it to the project.
+   That adds `BLOB_READ_WRITE_TOKEN` by itself.
+3. In **Settings → Environment Variables**, add:
+   - `ANTHROPIC_API_KEY`: a Claude API key from console.anthropic.com
+   - `ADMIN_KEY`: any password you choose; you type it on the `#admin` page to approve ideas
+4. Redeploy, then put the project's address in `data/config.js` as `ideasApi`
+   (for example `https://sabah-menu.vercel.app`).
+
+### Files
+
+| File | What it is |
+|---|---|
+| `ideas.js` | The Ideas and approval pages |
+| `data/config.js` | Where the site finds the helper (`ideasApi`) |
+| `api/ideas.js` | Lists approved ideas and accepts new ones |
+| `api/admin.js` | Approve, reject or delete ideas (needs `ADMIN_KEY`) |
+| `api/_lib.js` | Reading the post, saving photos, writing the card with Claude, storage |
 
 ## Notes
 

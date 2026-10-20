@@ -38,6 +38,7 @@
       close: "إغلاق",
       arrow: "←",
       langBtn: "EN",
+      ideas: "أفكار أكلات",
     },
     en: {
       title: "Sabah Menu",
@@ -66,11 +67,12 @@
       copyFailed: "Copy the text from the preview",
       clear: "Clear order",
       confirmClear: "Clear the whole order?",
-      preview: "Message preview",
+      preview: "Message preview (always sent in Arabic for the chef)",
       added: "Added ✓",
       close: "Close",
       arrow: "→",
       langBtn: "ع",
+      ideas: "Food ideas",
     },
   };
 
@@ -109,9 +111,16 @@
   };
 
   // ---------- State ----------
+  // Pages with their own address: #ideas (share and browse food ideas) and #admin (approve them).
+  const HASH_VIEWS = ["ideas", "admin"];
+  const viewFromHash = () => {
+    const v = location.hash.slice(1);
+    return HASH_VIEWS.includes(v) && window.SabahIdeas ? v : "browse";
+  };
+
   const state = {
     lang: store.get("sabah-lang", "ar") === "en" ? "en" : "ar",
-    view: "browse",
+    view: viewFromHash(),
     group: "all",
     section: null,
     search: "",
@@ -161,40 +170,45 @@
   }
 
   // ---------- Order text ----------
-  function qtyLabel(entry, group) {
+  // `lang` defaults to the screen language; the WhatsApp message always passes "ar".
+  function qtyLabel(entry, group, lang = state.lang) {
+    const t = (obj) => obj[lang];
     if (isPacked(group)) {
-      const packs = state.lang === "en" && entry.qty !== 1 ? "packs" : tr(PACK_UNIT);
+      const packs = lang === "en" && entry.qty !== 1 ? "packs" : t(PACK_UNIT);
       return `${entry.qty} ${packs}`;
     }
     const unit = KITCHEN_UNITS.find((u) => u.id === entry.unit) || KITCHEN_UNITS[0];
-    return `${entry.qty} ${tr(unit)}`;
+    return `${entry.qty} ${t(unit)}`;
   }
 
-  function entryDetails(entry, item) {
+  function entryDetails(entry, item, lang = state.lang) {
+    const t = (obj) => obj[lang] || obj.ar;
     const parts = [];
-    if (item.sizes && item.sizes[entry.size]) parts.push(tr(item.sizes[entry.size]));
+    if (item.sizes && item.sizes[entry.size]) parts.push(t(item.sizes[entry.size]));
     (item.options || []).forEach((opt, i) => {
       const choice = opt.choices[(entry.opts || [])[i] || 0];
-      if (choice) parts.push(tr(choice));
+      if (choice) parts.push(t(choice));
     });
     return parts;
   }
 
+  // The order goes to the chef, who reads Arabic, so the message is always in Arabic
+  // whatever language the screen is showing.
   function buildMessage() {
-    const u = ui();
+    const u = UI.ar;
     const blocks = [];
     allSections.forEach(({ group, section }) => {
       const lines = state.cart
         .filter((c) => byId.get(c.id).section === section)
         .map((c) => {
           const { item } = byId.get(c.id);
-          const details = entryDetails(c, item);
-          let line = `• ${tr(item)} ${u.arrow} ${qtyLabel(c, group)}`;
+          const details = entryDetails(c, item, "ar");
+          let line = `• ${item.ar} ${u.arrow} ${qtyLabel(c, group, "ar")}`;
           if (details.length) line += ` (${details.join(" · ")})`;
           if (c.note) line += ` — ${c.note}`;
           return line;
         });
-      if (lines.length) blocks.push(`${section.emoji} *${tr(section)}*\n${lines.join("\n")}`);
+      if (lines.length) blocks.push(`${section.emoji} *${section.ar}*\n${lines.join("\n")}`);
     });
     return blocks.join("\n\n");
   }
@@ -209,6 +223,12 @@
       el("h1", { class: "brand-name" }, u.title),
       el("p", { class: "brand-sub" }, u.sub(byId.size))
     );
+    const ideasBtn = $("ideas-btn");
+    ideasBtn.hidden = !window.SabahIdeas;
+    ideasBtn.setAttribute("aria-label", u.ideas);
+    ideasBtn.title = u.ideas;
+    ideasBtn.classList.toggle("active", state.view === "ideas" || state.view === "admin");
+
     $("lang-btn").textContent = u.langBtn;
     $("lang-btn").setAttribute("aria-label", state.lang === "ar" ? "English" : "العربية");
 
@@ -365,7 +385,7 @@
         el("button", { type: "button", class: "ghost-btn", onclick: () => copyMessage(message) }, "📋 " + u.copy)
       ),
       el("p", { class: "field-label" }, u.preview),
-      el("div", { class: "preview", dir: state.lang === "ar" ? "rtl" : "ltr" }, message),
+      el("div", { class: "preview", dir: "rtl", lang: "ar" }, message),
       el("div", { class: "actions" },
         el("button", { type: "button", class: "text-btn", onclick: clearCart }, u.clear))
     );
@@ -504,14 +524,23 @@
   // ---------- Wiring ----------
   function showView(view) {
     state.view = view;
+    const hash = HASH_VIEWS.includes(view) ? "#" + view : "";
+    if (location.hash !== hash) history.replaceState(null, "", hash || location.pathname + location.search);
     render();
     window.scrollTo({ top: 0 });
   }
 
+  // Helpers handed to ideas.js so its pages look and behave like the rest of the app.
+  const ideasCtx = { el, store, lang: () => state.lang, rerender: () => render() };
+
   function render() {
     renderHeader();
     if (state.view === "cart") renderCart();
-    else renderBrowse();
+    else if (HASH_VIEWS.includes(state.view)) {
+      $("fab").replaceChildren();
+      const page = state.view === "admin" ? window.SabahIdeas.renderAdmin(ideasCtx) : window.SabahIdeas.render(ideasCtx);
+      $("main").replaceChildren(...page.flat().filter(Boolean));
+    } else renderBrowse();
   }
 
   $("lang-btn").addEventListener("click", () => {
@@ -520,6 +549,11 @@
     render();
   });
   $("cart-btn").addEventListener("click", () => showView(state.view === "browse" ? "cart" : "browse"));
+  $("ideas-btn").addEventListener("click", () => showView(state.view === "ideas" ? "browse" : "ideas"));
+  window.addEventListener("hashchange", () => {
+    const v = viewFromHash();
+    if (v !== state.view && (v !== "browse" || HASH_VIEWS.includes(state.view))) showView(v);
+  });
   $("search").addEventListener("input", (e) => {
     state.search = e.target.value;
     renderBrowse();
