@@ -1,0 +1,13 @@
+{
+  "name": "sabah-menu",
+  "private": true,
+  "type": "module",
+  "description": "Sabah Menu. The site is plain static files; api/ holds the Vercel functions behind the Ideas page.",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.131.0",
+    "@vercel/blob": "2.8.1"
+  }
+}

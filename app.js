@@ -38,6 +38,7 @@
       close: "إغلاق",
       arrow: "←",
       langBtn: "EN",
+      ideas: "أفكار أكلات",
     },
     en: {
       title: "Sabah Menu",
@@ -71,6 +72,7 @@
       close: "Close",
       arrow: "→",
       langBtn: "ع",
+      ideas: "Food ideas",
     },
   };
 
@@ -109,9 +111,16 @@
   };
 
   // ---------- State ----------
+  // Pages with their own address: #ideas (share and browse food ideas) and #admin (approve them).
+  const HASH_VIEWS = ["ideas", "admin"];
+  const viewFromHash = () => {
+    const v = location.hash.slice(1);
+    return HASH_VIEWS.includes(v) && window.SabahIdeas ? v : "browse";
+  };
+
   const state = {
     lang: store.get("sabah-lang", "ar") === "en" ? "en" : "ar",
-    view: "browse",
+    view: viewFromHash(),
     group: "all",
     section: null,
     search: "",
@@ -214,6 +223,12 @@
       el("h1", { class: "brand-name" }, u.title),
       el("p", { class: "brand-sub" }, u.sub(byId.size))
     );
+    const ideasBtn = $("ideas-btn");
+    ideasBtn.hidden = !window.SabahIdeas;
+    ideasBtn.setAttribute("aria-label", u.ideas);
+    ideasBtn.title = u.ideas;
+    ideasBtn.classList.toggle("active", state.view === "ideas" || state.view === "admin");
+
     $("lang-btn").textContent = u.langBtn;
     $("lang-btn").setAttribute("aria-label", state.lang === "ar" ? "English" : "العربية");
 
@@ -509,14 +524,23 @@
   // ---------- Wiring ----------
   function showView(view) {
     state.view = view;
+    const hash = HASH_VIEWS.includes(view) ? "#" + view : "";
+    if (location.hash !== hash) history.replaceState(null, "", hash || location.pathname + location.search);
     render();
     window.scrollTo({ top: 0 });
   }
 
+  // Helpers handed to ideas.js so its pages look and behave like the rest of the app.
+  const ideasCtx = { el, store, lang: () => state.lang, rerender: () => render() };
+
   function render() {
     renderHeader();
     if (state.view === "cart") renderCart();
-    else renderBrowse();
+    else if (HASH_VIEWS.includes(state.view)) {
+      $("fab").replaceChildren();
+      const page = state.view === "admin" ? window.SabahIdeas.renderAdmin(ideasCtx) : window.SabahIdeas.render(ideasCtx);
+      $("main").replaceChildren(...page.flat().filter(Boolean));
+    } else renderBrowse();
   }
 
   $("lang-btn").addEventListener("click", () => {
@@ -525,6 +549,11 @@
     render();
   });
   $("cart-btn").addEventListener("click", () => showView(state.view === "browse" ? "cart" : "browse"));
+  $("ideas-btn").addEventListener("click", () => showView(state.view === "ideas" ? "browse" : "ideas"));
+  window.addEventListener("hashchange", () => {
+    const v = viewFromHash();
+    if (v !== state.view && (v !== "browse" || HASH_VIEWS.includes(state.view))) showView(v);
+  });
   $("search").addEventListener("input", (e) => {
     state.search = e.target.value;
     renderBrowse();
