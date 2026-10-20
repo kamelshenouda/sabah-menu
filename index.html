@@ -1,6 +1,19 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
+<!-- Google Analytics: runs only on kamelnabil.com and its subdomains -->
+<script>
+if (/(^|\.)kamelnabil\.com$/.test(location.hostname)) {
+  var ga = document.createElement('script');
+  ga.async = true;
+  ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-SQX5JZP3MM';
+  document.head.appendChild(ga);
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () { dataLayer.push(arguments); };
+  gtag('js', new Date());
+  gtag('config', 'G-SQX5JZP3MM');
+}
+</script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#FAF6EF" media="(prefers-color-scheme: light)">
@@ -38,5 +51,6 @@
 
   <script src="data/menu.js"></script>
   <script src="app.js"></script>
+<script src="https://kamelnabil.com/notify.js" defer></script>
 </body>
 </html>
