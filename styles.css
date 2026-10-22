@@ -304,6 +304,7 @@ img { display: block; max-width: 100%; }
   margin-top: 20px; padding: 14px 16px; border-radius: 14px;
   background: var(--surface-2); white-space: pre-wrap; word-break: break-word;
   font-size: 13.5px; line-height: 1.8;
+  unicode-bidi: plaintext; /* each line takes its own direction, like WhatsApp does */
 }
 
 /* ---------- Item sheet ---------- */
@@ -462,5 +463,8 @@ img { display: block; max-width: 100%; }
 .idea-note { margin: 0; padding: 8px 10px; border-radius: var(--radius-sm); background: var(--surface-2); font-size: 13px; white-space: pre-line; }
 .idea-link { align-self: flex-start; font-size: 13px; font-weight: 600; color: var(--accent); text-decoration: none; }
 .idea-link:hover { text-decoration: underline; }
+.idea-order { margin-top: 4px; }
+.sheet-ref { display: inline-block; margin: 2px 0 6px; }
+.card-img-empty { display: flex; align-items: center; justify-content: center; font-size: 40px; }
 .idea-actions { display: flex; gap: 8px; margin-top: 4px; }
 .small-btn.approve { background: var(--accent); color: var(--accent-ink); }

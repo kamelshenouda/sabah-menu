@@ -1,6 +1,6 @@
 # Sabah Menu · قائمة صباح
 
-One menu app that combines two earlier menus:
+One menu app that combines two earlier menus, plus food ideas people share:
 
 - **مطبخ البيت / Home Kitchen**: 172 home-cooked dishes in 16 sections, from the earlier
   order list (قائمة الطلبات).
@@ -74,6 +74,10 @@ Anyone can share a link to a dish from Instagram, Facebook or YouTube at
 `sabah.kamelnabil.com/#ideas`. A small helper on Vercel (`api/`) reads the post, keeps a copy of
 its cover photo, and uses Claude to write a card with the dish name, a short description and the
 ingredients, in Arabic and English. Each idea waits for approval at `#admin` before it appears.
+
+Approved ideas also show up in the menu under a third tab, **أفكار / Ideas**, and anyone can
+order them like any other dish (or tap **Order it** on the idea's card). In the WhatsApp message,
+each idea is followed by the link to the original post, so the chef can open it and see how it's made.
 
 Instagram and Facebook often hide a post's text from outside readers. When that happens the card is
 built from the photo, so the ingredients are marked as "likely ingredients", and the person sharing
