@@ -30,6 +30,7 @@
       sharedBy: "شاركها",
       open: { instagram: "افتح على إنستجرام", facebook: "افتح على فيسبوك", youtube: "افتح على يوتيوب" },
       notFood: "⚠️ يبدو إنها مش أكلة",
+      order: "🛒 اطلبها",
       errors: {
         missing_name: "اكتب اسمك الأول.",
         unsupported_link: "الرابط لازم يكون من إنستجرام أو فيسبوك أو يوتيوب.",
@@ -78,6 +79,7 @@
       sharedBy: "Shared by",
       open: { instagram: "Open on Instagram", facebook: "Open on Facebook", youtube: "Open on YouTube" },
       notFood: "⚠️ Doesn't look like food",
+      order: "🛒 Order it",
       errors: {
         missing_name: "Please add your name.",
         unsupported_link: "The link must be from Instagram, Facebook or YouTube.",
@@ -147,7 +149,7 @@
   let lastSubmitted = null;
   let formStatus = null; // { kind: "working" | "sent" | "duplicate" | "error", error? }
 
-  function card(ctx, idea, actions) {
+  function card(ctx, idea, actions, orderable) {
     const { el } = ctx;
     const lang = ctx.lang();
     const s = STRINGS[lang];
@@ -174,17 +176,20 @@
         ),
         idea.note && actions ? el("p", { class: "idea-note" }, idea.note) : null,
         el("a", { class: "idea-link", href: idea.url, target: "_blank", rel: "noopener" }, (s.open[idea.platform] || idea.url) + " ↗"),
+        orderable ? el("button", { type: "button", class: "primary-btn idea-order", onclick: () => ctx.orderIdea(idea.id) }, s.order) : null,
         actions ? el("div", { class: "idea-actions" }, actions) : null
       )
     );
   }
 
+  // Also called by app.js on start-up, so approved ideas show in the menu's Ideas tab.
   function load(ctx) {
     if (loading || apiBase() === null) return;
     loading = true;
     api("/api/ideas").then((r) => {
       loading = false;
       cache = r.ok ? { ideas: r.ideas } : { error: true };
+      if (r.ok) ctx.onIdeas(r.ideas);
       refresh(ctx);
     });
   }
@@ -243,7 +248,7 @@
     else if (!cache) list = el("p", { class: "idea-empty" }, s.loading);
     else if (cache.error) list = el("p", { class: "idea-empty" }, s.loadFailed);
     else if (!cache.ideas.length) list = el("p", { class: "idea-empty" }, s.empty);
-    else list = el("div", { class: "idea-grid" }, cache.ideas.map((i) => card(ctx, i)));
+    else list = el("div", { class: "idea-grid" }, cache.ideas.map((i) => card(ctx, i, null, true)));
 
     return [
       el("section", { class: "ideas-hero" },
@@ -277,6 +282,7 @@
     if (r.ok) {
       admin = { pending: r.pending, approved: r.approved };
       adminError = null;
+      ctx.onIdeas(r.approved);
     } else {
       admin = null;
       adminError = r.error === "admin_not_configured" ? s.notConfigured : r.error === "wrong_key" ? s.wrongKey : STRINGS[ctx.lang()].errors.default;
@@ -351,5 +357,5 @@
     ];
   }
 
-  window.SabahIdeas = { render, renderAdmin, label: (lang) => (lang === "ar" ? "أفكار" : "Ideas") };
+  window.SabahIdeas = { render, renderAdmin, load, label: (lang) => (lang === "ar" ? "أفكار" : "Ideas") };
 })();

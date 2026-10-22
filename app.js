@@ -39,6 +39,9 @@
       arrow: "←",
       langBtn: "EN",
       ideas: "أفكار أكلات",
+      ideaRef: "🔗 الفكرة",
+      seeOriginal: "شوف الفكرة الأصلية",
+      ideaBy: "الفكرة من",
     },
     en: {
       title: "Sabah Menu",
@@ -73,6 +76,9 @@
       arrow: "→",
       langBtn: "ع",
       ideas: "Food ideas",
+      ideaRef: "🔗 Idea",
+      seeOriginal: "See the original idea",
+      ideaBy: "Idea from",
     },
   };
 
@@ -84,16 +90,60 @@
   ];
   const PACK_UNIT = { ar: "عبوة", en: "pack" };
 
+  // Approved food ideas (from ideas.js and the Vercel helper) become a third menu group, filled in
+  // once they load. Their item ids start with "i-".
+  const IDEAS_SECTION = { id: "ideas", ar: "أفكار أكلات", en: "Food ideas", emoji: "💡", items: [] };
+  const IDEAS_GROUP = { id: "ideas", ar: "أفكار", en: "Ideas", sections: [IDEAS_SECTION] };
+  const GROUPS = [...MENU.groups, IDEAS_GROUP];
+
   // ---------- Index ----------
   const byId = new Map();
   const allSections = [];
-  MENU.groups.forEach((group) => {
-    group.sections.forEach((section) => {
-      allSections.push({ group, section });
-      section.items.forEach((item) => byId.set(item.id, { item, section, group }));
+  function buildIndex() {
+    byId.clear();
+    allSections.length = 0;
+    GROUPS.forEach((group) => {
+      group.sections.forEach((section) => {
+        allSections.push({ group, section });
+        section.items.forEach((item) => byId.set(item.id, { item, section, group }));
+      });
     });
-  });
+  }
   const isPacked = (group) => group.id === "butcherista";
+  const shownItems = (section) => section.items.filter((i) => !i.removed);
+  const hasPhotos = (group) => group.id !== "kitchen";
+  const isIdeaId = (id) => typeof id === "string" && id.startsWith("i-");
+  const safeLink = (url) => (/^https:\/\/[^\s]+$/.test(url || "") ? url : "");
+
+  function ideaItem(idea) {
+    const title = idea.title || {};
+    return {
+      id: "i-" + idea.id,
+      ar: title.ar || title.en || "",
+      en: title.en || title.ar || "",
+      img: safeLink(idea.cover) || undefined,
+      full: safeLink(idea.cover) || undefined,
+      desc: idea.summary && (idea.summary.ar || idea.summary.en) ? idea.summary : undefined,
+      ref: safeLink(idea.url),
+      creator: idea.creator || "",
+    };
+  }
+
+  // Fills the Ideas group from the approved list. Ideas already in the order stay in it (from the
+  // copy saved with the order) even if they were since removed, so the message still has them;
+  // removed ones are no longer shown on the menu.
+  function setIdeas(ideas, cart) {
+    const items = (ideas || []).filter((i) => i && i.id && i.title).map(ideaItem);
+    const ids = new Set(items.map((i) => i.id));
+    (cart || []).forEach((c) => {
+      if (isIdeaId(c.id) && c.idea && !ids.has(c.id)) {
+        items.push({ ...c.idea, id: c.id, removed: true });
+        ids.add(c.id);
+      }
+    });
+    IDEAS_SECTION.items = items;
+    buildIndex();
+  }
 
   // ---------- Storage (best effort) ----------
   const store = {
@@ -118,13 +168,17 @@
     return HASH_VIEWS.includes(v) && window.SabahIdeas ? v : "browse";
   };
 
+  // The last approved ideas list is kept on the device so the Ideas tab shows right away.
+  const savedCart = (store.get("sabah-cart", []) || []).filter(Boolean);
+  setIdeas(store.get("sabah-ideas", []), savedCart);
+
   const state = {
     lang: store.get("sabah-lang", "ar") === "en" ? "en" : "ar",
     view: viewFromHash(),
     group: "all",
     section: null,
     search: "",
-    cart: (store.get("sabah-cart", []) || []).filter((c) => c && byId.has(c.id)),
+    cart: savedCart.filter((c) => byId.has(c.id)),
   };
 
   const ui = () => UI[state.lang];
@@ -206,6 +260,9 @@
           let line = `• ${item.ar} ${u.arrow} ${qtyLabel(c, group, "ar")}`;
           if (details.length) line += ` (${details.join(" · ")})`;
           if (c.note) line += ` — ${c.note}`;
+          // Ideas carry the link to the original post so the chef can see how it's made.
+          // The link gets a line of its own so it reads left to right in WhatsApp.
+          if (item.ref) line += `\n   ${u.ideaRef}:\n   ${item.ref}`;
           return line;
         });
       if (lines.length) blocks.push(`${section.emoji} *${section.ar}*\n${lines.join("\n")}`);
@@ -221,7 +278,7 @@
 
     $("brand").replaceChildren(
       el("h1", { class: "brand-name" }, u.title),
-      el("p", { class: "brand-sub" }, u.sub(byId.size))
+      el("p", { class: "brand-sub" }, u.sub(allSections.reduce((n, { section }) => n + shownItems(section).length, 0)))
     );
     const ideasBtn = $("ideas-btn");
     ideasBtn.hidden = !window.SabahIdeas;
@@ -247,7 +304,7 @@
     search.placeholder = "🔍 " + u.search;
     if (search.value !== state.search) search.value = state.search;
 
-    const groups = [{ id: "all", ar: UI.ar.all, en: UI.en.all }, ...MENU.groups];
+    const groups = [{ id: "all", ar: UI.ar.all, en: UI.en.all }, ...GROUPS.filter((g) => g.sections.some((s) => shownItems(s).length))];
     $("groups").replaceChildren(...groups.map((g) =>
       el("button", {
         type: "button", role: "tab",
@@ -256,8 +313,9 @@
       }, tr(g))
     ));
 
-    const visible = allSections.filter(({ group }) => state.group === "all" || group.id === state.group);
-    const total = visible.reduce((n, { section }) => n + section.items.length, 0);
+    const visible = allSections.filter(({ group, section }) =>
+      shownItems(section).length && (state.group === "all" || group.id === state.group));
+    const total = visible.reduce((n, { section }) => n + shownItems(section).length, 0);
     $("pills").replaceChildren(
       el("button", {
         type: "button", class: "pill" + (state.section ? "" : " active"),
@@ -267,7 +325,7 @@
         el("button", {
           type: "button", class: "pill" + (state.section === section.id ? " active" : ""),
           onclick: () => { state.section = state.section === section.id ? null : section.id; render(); window.scrollTo({ top: 0 }); },
-        }, `${section.emoji} ${tr(section)} (${section.items.length})`)
+        }, `${section.emoji} ${tr(section)} (${shownItems(section).length})`)
       )
     );
   }
@@ -290,13 +348,16 @@
 
   function photoCard(item) {
     const entry = inCart(item.id);
-    const sizes = (item.sizes || []).map(tr).join(" · ");
+    const meta = item.sizes ? item.sizes.map(tr).join(" · ")
+      : item.creator ? [`${ui().ideaBy}: `, el("bdi", null, item.creator)] : null;
     return el("button", { type: "button", class: "card" + (entry ? " in-cart" : ""), onclick: () => openSheet(item.id) },
-      el("img", { class: "card-img", src: item.img, alt: "", loading: "lazy", width: "300", height: "300" }),
+      item.img
+        ? el("img", { class: "card-img", src: item.img, alt: "", loading: "lazy", width: "300", height: "300" })
+        : el("span", { class: "card-img card-img-empty", "aria-hidden": "true" }, "🍽️"),
       el("span", { class: "badge", "aria-hidden": "true" }, entry ? "✓" : "+"),
       el("div", { class: "card-body" },
         el("h3", { class: "card-name" }, tr(item)),
-        sizes ? el("div", { class: "card-meta" }, sizes) : null
+        meta ? el("div", { class: "card-meta" }, meta) : null
       )
     );
   }
@@ -308,7 +369,7 @@
     allSections.forEach(({ group, section }) => {
       if (state.group !== "all" && group.id !== state.group) return;
       if (state.section && state.section !== section.id) return;
-      const items = section.items.filter(matches);
+      const items = shownItems(section).filter(matches);
       if (!items.length) return;
       if (state.group === "all" && !state.section && group !== lastGroup) {
         out.push(el("h2", { class: "group-title" }, tr(group)));
@@ -319,7 +380,7 @@
           el("h2", { class: "section-title" }, `${section.emoji} ${tr(section)}`),
           el("span", { class: "count" }, items.length)
         ),
-        isPacked(group)
+        hasPhotos(group)
           ? el("div", { class: "grid" }, items.map(photoCard))
           : el("div", { class: "list" }, items.map((item) => kitchenRow(item, group)))
       ));
@@ -421,7 +482,7 @@
     const existing = inCart(id);
     const draft = existing
       ? { ...existing, opts: [...(existing.opts || [])] }
-      : { id, qty: 1, unit: "kg", size: 0, opts: (item.options || []).map(() => 0), note: "" };
+      : { id, qty: 1, unit: group === IDEAS_GROUP ? "plate" : "kg", size: 0, opts: (item.options || []).map(() => 0), note: "" };
     const step = packed ? 1 : 0.5;
 
     const backdrop = $("sheet");
@@ -444,6 +505,7 @@
         el("h2", { class: "sheet-title" }, tr(item)),
         item.desc ? el("p", { class: "sheet-desc" }, tr(item.desc)) : null,
         item.cal ? el("span", { class: "cal-tag" }, tr(item.cal)) : null,
+        item.ref ? el("a", { class: "idea-link sheet-ref", href: item.ref, target: "_blank", rel: "noopener" }, u.seeOriginal + " ↗") : null,
 
         item.sizes && item.sizes.length ? [
           el("p", { class: "field-label" }, u.size),
@@ -488,6 +550,11 @@
       } else {
         entry.unit = draft.unit;
       }
+      // A copy of the idea goes with the order, so it can still be sent if the idea is removed later.
+      if (isIdeaId(id)) {
+        const { id: _, ...copy } = item;
+        entry.idea = copy;
+      }
       const idx = state.cart.findIndex((c) => c.id === id);
       if (idx >= 0) state.cart[idx] = entry;
       else state.cart.push(entry);
@@ -531,7 +598,22 @@
   }
 
   // Helpers handed to ideas.js so its pages look and behave like the rest of the app.
-  const ideasCtx = { el, store, lang: () => state.lang, rerender: () => render() };
+  const ideasCtx = {
+    el, store,
+    lang: () => state.lang,
+    rerender: () => render(),
+    // Called with the approved ideas whenever ideas.js loads them; they fill the Ideas tab.
+    onIdeas(ideas) {
+      store.set("sabah-ideas", ideas);
+      setIdeas(ideas, state.cart);
+    },
+    // The "Order it" button on an idea card opens it like any other dish.
+    orderIdea(ideaId) {
+      if (!byId.has("i-" + ideaId)) return;
+      showView("browse");
+      openSheet("i-" + ideaId);
+    },
+  };
 
   function render() {
     renderHeader();
@@ -560,4 +642,5 @@
   });
 
   render();
+  if (window.SabahIdeas) window.SabahIdeas.load(ideasCtx);
 })();
