@@ -42,6 +42,7 @@
       ideaRef: "🔗 الفكرة",
       seeOriginal: "شوف الفكرة الأصلية",
       ideaBy: "الفكرة من",
+      ready: { cook: "جاهز للطبخ", eat: "جاهز للأكل" },
     },
     en: {
       title: "Sabah Menu",
@@ -79,6 +80,7 @@
       ideaRef: "🔗 Idea",
       seeOriginal: "See the original idea",
       ideaBy: "Idea from",
+      ready: { cook: "Ready to cook", eat: "Ready to eat" },
     },
   };
 
@@ -111,7 +113,7 @@
   }
   const isPacked = (group) => group.id === "butcherista";
   const shownItems = (section) => section.items.filter((i) => !i.removed);
-  const hasPhotos = (group) => group.id !== "kitchen";
+  const hasPhotos = (group) => group.sections.some((s) => s.items.some((i) => i.img));
   const isIdeaId = (id) => typeof id === "string" && id.startsWith("i-");
   const safeLink = (url) => (/^https:\/\/[^\s]+$/.test(url || "") ? url : "");
 
@@ -346,6 +348,13 @@
     );
   }
 
+  // "Ready to cook" / "Ready to eat" tag for home-kitchen dishes, in the screen's language.
+  // It is only shown on screen; the WhatsApp message stays as it is.
+  function readyTag(item, extra) {
+    const label = item.ready && ui().ready[item.ready];
+    return label ? el("span", { class: "ready-tag ready-" + item.ready + (extra ? " " + extra : "") }, label) : null;
+  }
+
   function photoCard(item) {
     const entry = inCart(item.id);
     const meta = item.sizes ? item.sizes.map(tr).join(" · ")
@@ -355,6 +364,7 @@
         ? el("img", { class: "card-img", src: item.img, alt: "", loading: "lazy", width: "300", height: "300" })
         : el("span", { class: "card-img card-img-empty", "aria-hidden": "true" }, "🍽️"),
       el("span", { class: "badge", "aria-hidden": "true" }, entry ? "✓" : "+"),
+      readyTag(item, "on-card"),
       el("div", { class: "card-body" },
         el("h3", { class: "card-name" }, tr(item)),
         meta ? el("div", { class: "card-meta" }, meta) : null
@@ -503,6 +513,7 @@
           el("img", { class: "sheet-img", src: item.full, alt: tr(item) })) : null,
         el("p", { class: "eyebrow" }, `${section.emoji} ${tr(section)}`),
         el("h2", { class: "sheet-title" }, tr(item)),
+        readyTag(item),
         item.desc ? el("p", { class: "sheet-desc" }, tr(item.desc)) : null,
         item.cal ? el("span", { class: "cal-tag" }, tr(item.cal)) : null,
         item.ref ? el("a", { class: "idea-link sheet-ref", href: item.ref, target: "_blank", rel: "noopener" }, u.seeOriginal + " ↗") : null,
