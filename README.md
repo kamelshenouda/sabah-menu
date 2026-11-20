@@ -3,7 +3,8 @@
 One menu app that combines two earlier menus, plus food ideas people share:
 
 - **مطبخ البيت / Home Kitchen**: 172 home-cooked dishes in 16 sections, from the earlier
-  order list (قائمة الطلبات).
+  order list (قائمة الطلبات). Each dish has a photo and a "ready to cook" or "ready to eat"
+  tag, shown in the screen's language.
 - **بوتشريستا / Butcherista**: 76 meat, chicken and appetizer items in 9 sections, with photos,
   sizes, flavour and marinade choices, and estimated calories, from the earlier guide (دليل بوتشريستا).
 
@@ -34,6 +35,8 @@ It's plain HTML, CSS and JavaScript with no build step.
 | `data/menu.js` | **All of the menu content: sections, dishes, sizes, options and photos** |
 | `assets/butcherista/thumbs/` | Small Butcherista photos used on the cards |
 | `assets/butcherista/full/` | Larger photos shown when an item is opened |
+| `assets/kitchen/thumbs/` | Small home-kitchen photos used on the cards (300×300) |
+| `assets/kitchen/full/` | Larger home-kitchen photos shown when a dish is opened (600×600) |
 
 ## Changing the menu
 
@@ -43,9 +46,20 @@ Everything is in `data/menu.js`. A home-kitchen dish looks like this:
 {
  "id": "k31",
  "ar": "فول",
- "en": "Fava beans (ful)"
+ "en": "Fava beans (ful)",
+ "img": "assets/kitchen/thumbs/k31.webp",
+ "full": "assets/kitchen/full/k31.webp",
+ "ready": "eat"
 }
 ```
+
+`ready` is `"cook"` for dishes that come raw or marinated and still need cooking, and `"eat"`
+for dishes that come cooked. It only changes the tag on screen ("Ready to cook" / "جاهز للطبخ",
+"Ready to eat" / "جاهز للأكل"); the WhatsApp message stays the same. Leave out `img`, `full`
+or `ready` and the dish simply shows without them.
+
+The home-kitchen photos were made with AI image generation (Canva) for this menu, so they show
+what each dish looks like in general, not the exact dish that will be delivered.
 
 A Butcherista item can also have a photo, sizes, options, a description and calories:
 
