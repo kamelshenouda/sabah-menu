@@ -3932,17 +3932,117 @@ window.SABAH_MENU = {
     "ar": "غدا كل يوم في الأسبوع: فراخ ولحمة وطبيخ ورز وشوربة.",
     "en": "A lunch for every day of the week: chicken, meat, stews, rice and soup."
    },
-   "items": [
-    "k14",
-    "k91",
-    "k110",
-    "k143",
-    "k84",
-    "k38",
-    "k131",
-    "k130",
-    "k133",
-    "k147"
+   "slots": [
+    {
+     "day": 0,
+     "ar": "السبت",
+     "en": "Saturday",
+     "pool": [
+      "k14",
+      "k110",
+      "k101",
+      "k102",
+      "k103",
+      "k16",
+      "k17",
+      "k100"
+     ]
+    },
+    {
+     "day": 1,
+     "ar": "الأحد",
+     "en": "Sunday",
+     "pool": [
+      "k91",
+      "k117",
+      "k113",
+      "k114",
+      "k116",
+      "k104"
+     ]
+    },
+    {
+     "day": 2,
+     "ar": "الاتنين",
+     "en": "Monday",
+     "pool": [
+      "k84",
+      "k42",
+      "k38",
+      "k35",
+      "k41",
+      "k36",
+      "k39",
+      "k43"
+     ]
+    },
+    {
+     "day": 3,
+     "ar": "التلات",
+     "en": "Tuesday",
+     "pool": [
+      "k143",
+      "k138",
+      "k140",
+      "k15",
+      "k133",
+      "k134"
+     ]
+    },
+    {
+     "day": 4,
+     "ar": "الأربع",
+     "en": "Wednesday",
+     "pool": [
+      "k20",
+      "k22",
+      "k21",
+      "k118",
+      "k119"
+     ]
+    },
+    {
+     "day": 5,
+     "ar": "الخميس",
+     "en": "Thursday",
+     "pool": [
+      "k99",
+      "k100",
+      "k11",
+      "k12",
+      "k83",
+      "k17"
+     ]
+    },
+    {
+     "day": 6,
+     "ar": "الجمعة",
+     "en": "Friday",
+     "pool": [
+      "k146",
+      "k144",
+      "k137",
+      "k112",
+      "k111"
+     ]
+    },
+    {
+     "ar": "رز",
+     "en": "Rice",
+     "pool": [
+      "k131",
+      "k130",
+      "k132"
+     ]
+    },
+    {
+     "ar": "شوربة",
+     "en": "Soup",
+     "pool": [
+      "k147",
+      "k148"
+     ]
+    }
    ]
   },
   {
@@ -3954,17 +4054,133 @@ window.SABAH_MENU = {
     "ar": "بروتين خفيف وخضار وحبوب كاملة وسناك صحي، من غير ما تفكر.",
     "en": "Lean protein, vegetables, whole grains and healthy snacks, already planned."
    },
-   "items": [
-    "k6",
-    "k3",
-    "k20",
-    "k40",
-    "k57",
-    "k46",
-    "k148",
-    "k26",
-    "k71",
-    "k162"
+   "slots": [
+    {
+     "day": 0,
+     "ar": "السبت",
+     "en": "Saturday",
+     "pool": [
+      "k6",
+      "k3",
+      "k5",
+      "k1",
+      "k7"
+     ]
+    },
+    {
+     "day": 1,
+     "ar": "الأحد",
+     "en": "Sunday",
+     "pool": [
+      "k20",
+      "k22",
+      "k21",
+      "k23"
+     ]
+    },
+    {
+     "day": 2,
+     "ar": "الاتنين",
+     "en": "Monday",
+     "pool": [
+      "k101",
+      "k102",
+      "k103",
+      "k100"
+     ]
+    },
+    {
+     "day": 3,
+     "ar": "التلات",
+     "en": "Tuesday",
+     "pool": [
+      "k28",
+      "k30",
+      "k31",
+      "k33"
+     ]
+    },
+    {
+     "day": 4,
+     "ar": "الأربع",
+     "en": "Wednesday",
+     "pool": [
+      "k2",
+      "k4",
+      "k8",
+      "k10"
+     ]
+    },
+    {
+     "day": 5,
+     "ar": "الخميس",
+     "en": "Thursday",
+     "pool": [
+      "k118",
+      "k119",
+      "k20"
+     ]
+    },
+    {
+     "day": 6,
+     "ar": "الجمعة",
+     "en": "Friday",
+     "pool": [
+      "k148",
+      "k147"
+     ]
+    },
+    {
+     "ar": "خضار",
+     "en": "Vegetables",
+     "pool": [
+      "k40",
+      "k85",
+      "k141",
+      "k97"
+     ]
+    },
+    {
+     "ar": "حبوب كاملة",
+     "en": "Whole grains",
+     "pool": [
+      "k57",
+      "k56",
+      "k58",
+      "k60"
+     ]
+    },
+    {
+     "ar": "سلطة",
+     "en": "Salad",
+     "pool": [
+      "k46",
+      "k45",
+      "k47",
+      "k98"
+     ]
+    },
+    {
+     "ar": "سناك صحي",
+     "en": "Healthy snack",
+     "pool": [
+      "k71",
+      "k72",
+      "k73",
+      "k77",
+      "k108",
+      "k168"
+     ]
+    },
+    {
+     "ar": "مشروب",
+     "en": "Drink",
+     "pool": [
+      "k162",
+      "k163",
+      "k169"
+     ]
+    }
    ]
   },
   {
@@ -3976,14 +4192,76 @@ window.SABAH_MENU = {
     "ar": "كله متبّل ومتجهّز، تسوّيه في دقايق وهو طازة.",
     "en": "All marinated and prepped, so you cook it fresh in minutes."
    },
-   "items": [
-    "k1",
-    "k4",
-    "k8",
-    "k19",
-    "k90",
-    "k165",
-    "k44"
+   "slots": [
+    {
+     "day": 0,
+     "ar": "السبت",
+     "en": "Saturday",
+     "pool": [
+      "k1",
+      "k2",
+      "k3",
+      "k5",
+      "k6",
+      "k7"
+     ]
+    },
+    {
+     "day": 1,
+     "ar": "الأحد",
+     "en": "Sunday",
+     "pool": [
+      "k19",
+      "k115",
+      "k90",
+      "k167"
+     ]
+    },
+    {
+     "day": 2,
+     "ar": "الاتنين",
+     "en": "Monday",
+     "pool": [
+      "k8",
+      "k80",
+      "k10"
+     ]
+    },
+    {
+     "day": 3,
+     "ar": "التلات",
+     "en": "Tuesday",
+     "pool": [
+      "k4",
+      "k9",
+      "k81"
+     ]
+    },
+    {
+     "day": 4,
+     "ar": "الأربع",
+     "en": "Wednesday",
+     "pool": [
+      "k13",
+      "k18"
+     ]
+    },
+    {
+     "day": 5,
+     "ar": "الخميس",
+     "en": "Thursday",
+     "pool": [
+      "k165",
+      "k25"
+     ]
+    },
+    {
+     "ar": "خضار متبّلة",
+     "en": "Seasoned vegetables",
+     "pool": [
+      "k44"
+     ]
+    }
    ]
   },
   {
@@ -3995,13 +4273,63 @@ window.SABAH_MENU = {
     "ar": "فرخة محشية وحمام ومحاشي ورز معمّر، وأم علي في الآخر.",
     "en": "Stuffed chicken, pigeon, mahshi and baked rice, with Om Ali to finish."
    },
-   "items": [
-    "k82",
-    "k112",
-    "k143",
-    "k132",
-    "k140",
-    "k152"
+   "slots": [
+    {
+     "ar": "الطبق الرئيسي",
+     "en": "Centrepiece",
+     "pool": [
+      "k82",
+      "k111",
+      "k15"
+     ]
+    },
+    {
+     "ar": "طبق تاني",
+     "en": "Second main",
+     "pool": [
+      "k112",
+      "k111",
+      "k91"
+     ]
+    },
+    {
+     "ar": "محاشي",
+     "en": "Stuffed",
+     "pool": [
+      "k143",
+      "k138"
+     ]
+    },
+    {
+     "ar": "رز",
+     "en": "Rice",
+     "pool": [
+      "k132",
+      "k55",
+      "k56",
+      "k130"
+     ]
+    },
+    {
+     "ar": "جنب",
+     "en": "Side",
+     "pool": [
+      "k140",
+      "k141",
+      "k139"
+     ]
+    },
+    {
+     "ar": "حلو",
+     "en": "Dessert",
+     "pool": [
+      "k152",
+      "k151",
+      "k150",
+      "k149",
+      "k153"
+     ]
+    }
    ]
   },
   {
@@ -4013,13 +4341,51 @@ window.SABAH_MENU = {
     "ar": "كباب حلة وداوود باشا وفتة وممبار، ومكرونة بشاميل وكنافة.",
     "en": "Kabab halla, Dawood Basha, fatta and mombar, with pasta béchamel and kunafa."
    },
-   "items": [
-    "k91",
-    "k117",
-    "k146",
-    "k144",
-    "k133",
-    "k150"
+   "slots": [
+    {
+     "ar": "الطبق الرئيسي",
+     "en": "Centrepiece",
+     "pool": [
+      "k91",
+      "k113"
+     ]
+    },
+    {
+     "ar": "طبق تاني",
+     "en": "Second main",
+     "pool": [
+      "k117",
+      "k116",
+      "k114"
+     ]
+    },
+    {
+     "ar": "أكلة مصرية",
+     "en": "Egyptian classic",
+     "pool": [
+      "k146",
+      "k144",
+      "k145"
+     ]
+    },
+    {
+     "ar": "مكرونة",
+     "en": "Pasta",
+     "pool": [
+      "k133",
+      "k134"
+     ]
+    },
+    {
+     "ar": "حلو",
+     "en": "Dessert",
+     "pool": [
+      "k150",
+      "k149",
+      "k157",
+      "k152"
+     ]
+    }
    ]
   },
   {
@@ -4031,14 +4397,63 @@ window.SABAH_MENU = {
     "ar": "شيش طاووق وكفتة وشرايح لحمة متبّلة، مع حمص ومخللات وعيش.",
     "en": "Shish tawook, kofta and marinated beef, with hummus, pickles and bread."
    },
-   "items": [
-    "k8",
-    "k10",
-    "k19",
-    "k167",
-    "k29",
-    "k201",
-    "k59"
+   "slots": [
+    {
+     "ar": "فراخ مشوية",
+     "en": "Chicken for the grill",
+     "pool": [
+      "k8",
+      "k80",
+      "k10"
+     ]
+    },
+    {
+     "ar": "كفتة",
+     "en": "Kofta",
+     "pool": [
+      "k19",
+      "k115",
+      "k18"
+     ]
+    },
+    {
+     "ar": "لحمة",
+     "en": "Beef",
+     "pool": [
+      "k90",
+      "k167"
+     ]
+    },
+    {
+     "ar": "حمص",
+     "en": "Hummus",
+     "pool": [
+      "k29"
+     ]
+    },
+    {
+     "ar": "مخللات",
+     "en": "Pickles",
+     "pool": [
+      "k201"
+     ]
+    },
+    {
+     "ar": "عيش",
+     "en": "Bread",
+     "pool": [
+      "k59",
+      "k60"
+     ]
+    },
+    {
+     "ar": "سلطة",
+     "en": "Salad",
+     "pool": [
+      "k46",
+      "k47"
+     ]
+    }
    ]
   },
   {
@@ -4050,13 +4465,54 @@ window.SABAH_MENU = {
     "ar": "سلمون وجمبري وسبيط مع رز بشعرية وسلطة.",
     "en": "Salmon, shrimp and calamari with vermicelli rice and salad."
    },
-   "items": [
-    "k20",
-    "k118",
-    "k119",
-    "k130",
-    "k46"
+   "slots": [
+    {
+     "ar": "سمك",
+     "en": "Fish",
+     "pool": [
+      "k20",
+      "k22",
+      "k21"
+     ]
+    },
+    {
+     "ar": "جمبري",
+     "en": "Shrimp",
+     "pool": [
+      "k118"
+     ]
+    },
+    {
+     "ar": "سبيط",
+     "en": "Calamari",
+     "pool": [
+      "k119"
+     ]
+    },
+    {
+     "ar": "رز",
+     "en": "Rice",
+     "pool": [
+      "k130",
+      "k131"
+     ]
+    },
+    {
+     "ar": "سلطة",
+     "en": "Salad",
+     "pool": [
+      "k46",
+      "k475",
+      "k47"
+     ]
+    }
    ]
   }
- ]
+ ],
+ "portions": {
+  "kg": 4,
+  "plate": 3,
+  "piece": 4,
+  "feast": 0.55
+ }
 };

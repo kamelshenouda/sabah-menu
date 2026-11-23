@@ -59,6 +59,8 @@
       favAdd: "أضف للمفضلة",
       favEmpty: "لسه مفيش مفضلة. اضغط القلب على أي أكلة بتحبها.",
       bundles: "باقات جاهزة",
+      orderNote: "ملاحظة عامة للشيف",
+      orderNotePh: "مثال: العزومة يوم الجمعة الساعة ٢، أو التوصيل بعد العصر",
       bundlesSub: "اختار باقة وضيفها كلها بضغطة، وعدّل الكميات بعدين.",
       kinds: { week: "أكل الأسبوع", feast: "عزومات" },
       addAll: (n) => `ضيف ${n === 1 ? "الصنف" : n === 2 ? "الصنفين" : "الـ" + n + " أصناف"} للطلب`,
@@ -126,6 +128,8 @@
       favAdd: "Add to favourites",
       favEmpty: "No favourites yet. Tap the heart on any dish you love.",
       bundles: "Ready-made bundles",
+      orderNote: "A note for the chef about the whole order",
+      orderNotePh: "e.g. the feast is on Friday at 2 pm, or deliver after 4",
       bundlesSub: "Pick a bundle, add it all in one tap, and adjust amounts later.",
       kinds: { week: "Meals of the week", feast: "Feasts" },
       addAll: (n) => `Add ${n} item${n === 1 ? "" : "s"} to order`,
@@ -240,6 +244,9 @@
     leaf: '<path d="M5 19c0-8.3 6-14 15-14 0 9-6 15-14.5 15"/><path d="M5 19l7-7"/>',
     home: '<path d="M4 11l8-7 8 7"/><path d="M6 9.5V20h12V9.5"/>',
     up: '<path d="M12 19V5M6 11l6-6 6 6"/>',
+    lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+    unlock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.5-1.9"/>',
+    swap: '<path d="M7 4 4 7l3 3"/><path d="M4 7h13a3 3 0 0 1 3 3v1"/><path d="M17 20l3-3-3-3"/><path d="M20 17H7a3 3 0 0 1-3-3v-1"/>',
     grid: '<rect x="4" y="4" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1"/>',
   };
 
@@ -342,6 +349,8 @@
     search: "",
     cart: savedCart.filter((c) => byId.has(c.id)),
     favs: new Set((store.get("sabah-favs", []) || []).filter((id) => typeof id === "string")),
+    // A note for the whole order (for example the date and time of a feast), sent at the end.
+    cartNote: String(store.get("sabah-cart-note", "") || ""),
   };
   state.view = viewFromHash();
 
@@ -349,6 +358,12 @@
   const tr = (obj) => (obj ? obj[state.lang] || obj.ar || "" : "");
   const saveCart = () => store.set("sabah-cart", state.cart);
   const saveFavs = () => store.set("sabah-favs", [...state.favs]);
+  const saveCartNote = () => store.set("sabah-cart-note", state.cartNote);
+  function addOrderNote(text) {
+    if (state.cartNote.includes(text)) return;
+    state.cartNote = state.cartNote ? state.cartNote + "\n" + text : text;
+    saveCartNote();
+  }
   const inCart = (id) => state.cart.find((c) => c.id === id);
   const reduceMotion = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -542,12 +557,20 @@
         });
       if (lines.length) blocks.push(`${section.emoji} *${section.ar}*\n${lines.join("\n")}`);
     });
+    if (state.cartNote.trim()) blocks.push(`📝 *${u.orderNote}*\n${state.cartNote.trim()}`);
     return blocks.join("\n\n");
   }
 
   // The order is remembered when it is sent or copied, so it can be ordered again in one tap.
   function rememberOrder() {
     store.set("sabah-last-order", { at: Date.now(), cart: state.cart.map((c) => ({ ...c })) });
+    // A short history of sent orders lets bundles avoid repeating recent dishes.
+    const ids = state.cart.map((c) => c.id).sort();
+    const hist = history();
+    const prev = hist[hist.length - 1];
+    if (prev && Date.now() - prev.at < 30 * 60 * 1000) hist.pop();
+    hist.push({ at: Date.now(), ids });
+    store.set("sabah-history", hist.slice(-6));
   }
   function lastOrder() {
     const last = store.get("sabah-last-order", null);
@@ -579,6 +602,7 @@
     document.documentElement.lang = state.lang;
     document.documentElement.dir = state.lang === "ar" ? "rtl" : "ltr";
     document.body.dataset.view = state.view;
+    document.documentElement.classList.toggle("snap-page", state.view === "welcome");
 
     $("brand").replaceChildren(
       el("span", { class: "brand-mark", "aria-hidden": "true" }, "ص"),
@@ -707,7 +731,7 @@
   }
 
   function bundleCard(c) {
-    const items = c.items.filter((id) => byId.has(id));
+    const items = bundleItems(c);
     const pics = items.map((id) => byId.get(id).item).filter((i) => i.img).slice(0, 3);
     return el("button", { type: "button", class: "bundle-card", onclick: () => openBundle(c.id) },
       el("span", { class: "bundle-pics n" + pics.length }, pics.map((i) => el("img", { src: i.img, alt: "", loading: "lazy", decoding: "async" }))),
@@ -897,10 +921,23 @@
     const message = buildMessage();
     out.push(
       el("button", { type: "button", class: "btn text add-more", onclick: () => go("browse") }, icon("plus"), u.addMore),
+      el("p", { class: "field-label" }, u.orderNote),
+      el("textarea", {
+        class: "note order-note", rows: "2", placeholder: u.orderNotePh,
+        oninput: (e) => {
+          state.cartNote = e.target.value;
+          saveCartNote();
+          const msg = buildMessage();
+          const pv = document.querySelector(".preview");
+          if (pv) pv.textContent = msg;
+          const wa = document.querySelector(".send-bar .btn.whatsapp");
+          if (wa) wa.href = "https://wa.me/?text=" + encodeURIComponent(msg);
+        },
+      }, state.cartNote),
       el("details", { class: "preview-box" },
         el("summary", null, u.preview),
         el("div", { class: "preview", dir: "rtl", lang: "ar" }, message),
-        el("button", { type: "button", class: "btn outline small", onclick: () => copyMessage(message) }, icon("copy"), u.copy)),
+        el("button", { type: "button", class: "btn outline small", onclick: () => copyMessage(buildMessage()) }, icon("copy"), u.copy)),
       el("p", { class: "send-note" }, u.sendNote),
       el("div", { class: "actions" }, el("button", { type: "button", class: "btn text danger", onclick: clearCart }, u.clear))
     );
@@ -925,7 +962,9 @@
   function clearCart() {
     if (!window.confirm(ui().confirmClear)) return;
     state.cart = [];
+    state.cartNote = "";
     saveCart();
+    saveCartNote();
     render();
   }
 
@@ -933,15 +972,22 @@
   function openPanel(build, label) {
     const backdrop = $("sheet");
     const close = () => { backdrop.hidden = true; backdrop.replaceChildren(); document.body.style.overflow = ""; };
+    // The sheet element is created once; redraws only replace what is inside it, so its
+    // slide-up animation and scroll position are kept while people tap inside it.
+    const sheet = el("div", { class: "sheet", role: "dialog", "aria-modal": "true", "aria-label": label });
     const draw = () => {
-      const scroll = backdrop.firstChild ? backdrop.firstChild.scrollTop : 0;
-      const sheet = el("div", { class: "sheet", role: "dialog", "aria-modal": "true", "aria-label": label },
+      const scroll = sheet.scrollTop;
+      const focused = document.activeElement && sheet.contains(document.activeElement) && document.activeElement.tagName === "INPUT"
+        ? [...sheet.querySelectorAll("input")].indexOf(document.activeElement) : -1;
+      sheet.replaceChildren(...[
         el("div", { class: "handle" }),
         el("button", { type: "button", class: "sheet-close icon-btn small", "aria-label": ui().close, onclick: close }, icon("close")),
-        build({ close, draw }));
-      backdrop.replaceChildren(sheet);
+        el("div", { class: "sheet-body" }, build({ close, draw })),
+      ]);
       sheet.scrollTop = scroll;
+      if (focused >= 0) { const inp = sheet.querySelectorAll("input")[focused]; if (inp) inp.focus(); }
     };
+    backdrop.replaceChildren(sheet);
     backdrop.onclick = (e) => { if (e.target === backdrop) close(); };
     backdrop.hidden = false;
     document.body.style.overflow = "hidden";
@@ -1036,40 +1082,257 @@
     }, tr(item));
   }
 
+  // ---------- Smart bundles ----------
+  // A bundle is a list of slots (a day of the week, or a role such as "rice" or "dessert"), each
+  // with a pool of dishes that fit it. The app picks one dish per slot, can re-pick them all
+  // (refresh), and offers better alternatives for one slot (switch). Picks avoid dishes from
+  // recent orders, lean towards favourites and healthy dishes, and avoid dishes the person
+  // switched away from before. Everything is stored on the device only.
+  const PORTIONS = Object.assign({ kg: 4, plate: 3, piece: 4, feast: 0.55 }, MENU.portions || {});
+  const DAY_NAMES = {
+    ar: ["السبت", "الأحد", "الاتنين", "التلات", "الأربع", "الخميس", "الجمعة"],
+    en: ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+  };
+  // Quick notes for every dish in a bundle. The chef reads Arabic, so the note text is always `ar`.
+  const BUNDLE_NOTES = [
+    { ar: "قليل الملح", en: "Low salt" },
+    { ar: "من غير بصل", en: "No onions" },
+    { ar: "قليل الزيت", en: "Less oil" },
+    { ar: "سبايسي خفيف", en: "Mildly spicy" },
+  ];
+  const REASONS = {
+    fav: { ar: "من مفضلتك", en: "A favourite" },
+    fresh: { ar: "مطلبتهاش من فترة", en: "Not ordered lately" },
+    healthier: { ar: "صحي أكتر", en: "Healthier" },
+    variety: { ar: "تنويع", en: "Something different" },
+  };
+
+  const history = () => (store.get("sabah-history", []) || []).filter((h) => h && Array.isArray(h.ids));
+  function recentIds(n) {
+    const out = new Set();
+    history().slice(-n).forEach((h) => h.ids.forEach((id) => out.add(id)));
+    return out;
+  }
+  const skipped = () => new Set(store.get("sabah-skips", []) || []);
+  function addSkip(id) {
+    const list = (store.get("sabah-skips", []) || []).filter((x) => x !== id);
+    list.push(id);
+    store.set("sabah-skips", list.slice(-40));
+  }
+  const slotPool = (slot) => (slot.pool || []).filter((id) => byId.has(id) && !byId.get(id).item.removed);
+  const isHealthyBundle = (c) => /healthy/.test(c.id);
+
+  function scoreDish(id, c) {
+    const { item, section } = byId.get(id);
+    let s = 0;
+    if (state.favs.has(id)) s += 2;
+    if (history().length) {
+      if (!recentIds(3).has(id)) s += 1.5;
+      if (recentIds(1).has(id)) s -= 2;
+    }
+    if (isHealthy(item, section)) s += isHealthyBundle(c) ? 2 : 0.6;
+    if (skipped().has(id)) s -= 2.5;
+    return s;
+  }
+
+  // Why a dish is suggested instead of `current`, shown as small tags.
+  function reasonsFor(id, current) {
+    const out = [];
+    const { item, section } = byId.get(id);
+    if (state.favs.has(id)) out.push("fav");
+    if (current) {
+      const cur = byId.get(current);
+      if (isHealthy(item, section) && !isHealthy(cur.item, cur.section)) out.push("healthier");
+    }
+    if (history().length && !recentIds(3).has(id)) out.push("fresh");
+    if (!out.length) out.push("variety");
+    return out.slice(0, 2);
+  }
+
+  function pickFor(slot, c, taken, exclude, rotate) {
+    const pool = slotPool(slot);
+    const options = pool.filter((id) => !taken.has(id) && id !== exclude);
+    if (!options.length) return exclude && pool.includes(exclude) ? exclude : pool[0];
+    const scored = options.map((id, i) => ({ id, s: scoreDish(id, c) - i * 0.05 + (rotate ? Math.random() * 1.6 : 0) }));
+    scored.sort((a, b) => b.s - a.s);
+    return scored[0].id;
+  }
+
+  // The bundle's current picks: remembered on the device, or picked fresh.
+  function bundlePicks(c) {
+    const saved = (store.get("sabah-bundles", {}) || {})[c.id];
+    if (Array.isArray(saved) && saved.length === c.slots.length && saved.every((id, i) => slotPool(c.slots[i]).includes(id))) return saved;
+    const taken = new Set();
+    return c.slots.map((slot) => { const id = pickFor(slot, c, taken, null, false); taken.add(id); return id; });
+  }
+  function saveBundlePicks(c, picks) {
+    const all = store.get("sabah-bundles", {}) || {};
+    all[c.id] = picks;
+    store.set("sabah-bundles", all);
+  }
+  const bundleItems = (c) => bundlePicks(c).filter(Boolean);
+
+  function autoQty(id, c, people) {
+    const { item, section, group } = byId.get(id);
+    const unit = defaultUnit(item, section, group);
+    const units = (people * (c.kind === "feast" ? PORTIONS.feast : 1)) / (PORTIONS[unit] || 3);
+    if (unit === "kg") return Math.max(0.5, Math.ceil(units * 2 - 0.2) / 2);
+    return Math.max(1, Math.ceil(units - 0.15));
+  }
+
   function openBundle(collectionId) {
     const c = COLLECTIONS.find((x) => x.id === collectionId);
     if (!c) return;
-    const ids = c.items.filter((id) => byId.has(id));
-    const picked = new Set(ids.filter((id) => !inCart(id)));
+    const isWeek = c.kind === "week";
+    const peopleKey = isWeek ? "sabah-people" : "sabah-guests";
+    const b = {
+      picks: bundlePicks(c).slice(),
+      on: c.slots.map(() => true),
+      locks: c.slots.map(() => false),
+      mode: store.get("sabah-qty-mode", "auto") === "manual" ? "manual" : "auto",
+      people: Math.min(30, Math.max(1, Number(store.get(peopleKey, isWeek ? 4 : 8)) || (isWeek ? 4 : 8))),
+      qty: [],
+      notes: new Set(),
+      noteText: "",
+      when: "",
+      open: -1,
+      changed: new Set(),
+    };
+    const fillQty = () => { b.qty = b.picks.map((id) => (b.mode === "auto" ? autoQty(id, c, b.people) : 1)); };
+    fillQty();
+
     openPanel(({ close, draw }) => {
       const u = ui();
-      const n = picked.size;
+      const L = state.lang;
+      if (b.changed.size) setTimeout(() => { b.changed = new Set(); }, 50);
+      const T = BUNDLE_UI[L];
+      const n = b.on.filter(Boolean).length;
+      const unitOf = (id) => { const { item, section, group } = byId.get(id); return defaultUnit(item, section, group); };
+      const stepOf = (id) => (unitOf(id) === "kg" ? 0.5 : 1);
+      const unitLabel = (id) => tr(KITCHEN_UNITS.find((x) => x.id === unitOf(id)) || KITCHEN_UNITS[0]);
+
+      const refresh = () => {
+        const taken = new Set(b.picks.filter((_, i) => b.locks[i] || !b.on[i]));
+        b.picks = b.picks.map((cur, i) => {
+          if (b.locks[i] || !b.on[i]) return cur;
+          const id = pickFor(c.slots[i], c, taken, cur, true);
+          taken.add(id);
+          return id;
+        });
+        if (b.mode === "auto") fillQty();
+        b.open = -1;
+        const before = bundlePicks(c);
+        b.changed = new Set(b.picks.map((id, i) => (id !== before[i] ? i : -1)).filter((i) => i >= 0));
+        saveBundlePicks(c, b.picks);
+        buzz();
+        draw();
+      };
+      const swap = (i, id) => {
+        addSkip(b.picks[i]);
+        b.picks[i] = id;
+        if (b.mode === "auto") b.qty[i] = autoQty(id, c, b.people);
+        b.open = -1;
+        b.changed = new Set([i]);
+        saveBundlePicks(c, b.picks);
+        buzz();
+        draw();
+      };
+      const alternatives = (i) => {
+        const taken = new Set(b.picks.filter((_, k) => k !== i));
+        const cur = b.picks[i];
+        return slotPool(c.slots[i]).filter((id) => id !== cur && !taken.has(id))
+          .map((id, k) => ({ id, s: scoreDish(id, c) - k * 0.05 }))
+          .sort((x, y) => y.s - x.s).slice(0, 3).map((x) => x.id);
+      };
+
+      const rows = c.slots.map((slot, i) => {
+        const id = b.picks[i];
+        const { item, section } = byId.get(id);
+        const alts = b.open === i ? alternatives(i) : [];
+        return el("div", { class: "brow" + (b.on[i] ? "" : " off") + (b.locks[i] ? " locked" : "") },
+          el("div", { class: "brow-main" },
+            el("button", { type: "button", class: "tick-btn", "aria-pressed": String(b.on[i]), "aria-label": tr(item), onclick: () => { b.on[i] = !b.on[i]; draw(); } }, icon("check")),
+            el("img", { class: "brow-img" + (b.changed.has(i) ? " fresh" : ""), src: item.img, alt: "", loading: "lazy" }),
+            el("div", { class: "brow-text" },
+              el("span", { class: "brow-slot" }, isWeek && slot.day !== undefined ? DAY_NAMES[L][slot.day] : tr(slot)),
+              el("button", { type: "button", class: "brow-name", onclick: () => openSheet(id) }, tr(item)),
+              el("span", { class: "brow-tags" }, readyTag(item, section),
+                reasonsFor(id, null).filter((r) => r !== "variety").map((r) => el("span", { class: "why why-" + r }, tr(REASONS[r]))))),
+            el("div", { class: "brow-tools" },
+              el("button", { type: "button", class: "icon-btn small" + (b.locks[i] ? " active" : ""), "aria-pressed": String(b.locks[i]), "aria-label": T.lock, title: T.lock, onclick: () => { b.locks[i] = !b.locks[i]; draw(); } }, icon(b.locks[i] ? "lock" : "unlock")),
+              slotPool(slot).length > 1 ? el("button", { type: "button", class: "icon-btn small" + (b.open === i ? " active" : ""), "aria-expanded": String(b.open === i), "aria-label": T.switch, title: T.switch, onclick: () => { b.open = b.open === i ? -1 : i; draw(); } }, icon("swap")) : null)
+          ),
+          b.on[i] ? el("div", { class: "brow-qty" },
+            el("button", { type: "button", class: "qbtn", "aria-label": "−", onclick: () => { b.qty[i] = Math.max(stepOf(id), Math.round((b.qty[i] - stepOf(id)) * 10) / 10); draw(); } }, icon("minus")),
+            el("span", { class: "qval" }, el("b", null, fmtQty(b.qty[i])), " ", unitLabel(id)),
+            el("button", { type: "button", class: "qbtn", "aria-label": "+", onclick: () => { b.qty[i] = Math.round((b.qty[i] + stepOf(id)) * 10) / 10; draw(); } }, icon("plus"))) : null,
+          alts.length ? el("div", { class: "alts" },
+            el("p", { class: "alts-title" }, T.better),
+            alts.map((aid) => {
+              const a = byId.get(aid).item;
+              return el("button", { type: "button", class: "alt", onclick: () => swap(i, aid) },
+                el("img", { src: a.img, alt: "", loading: "lazy" }),
+                el("span", { class: "alt-name" }, tr(a)),
+                el("span", { class: "brow-tags" }, reasonsFor(aid, id).map((r) => el("span", { class: "why why-" + r }, tr(REASONS[r])))));
+            })) : null
+        );
+      });
+
       return [
         el("span", { class: "eyebrow" }, u.kinds[c.kind] || ""),
         el("h2", { class: "sheet-title" }, tr(c)),
         c.desc ? el("p", { class: "sheet-desc" }, tr(c.desc)) : null,
-        el("p", { class: "bundle-hint" }, u.bundleHint),
-        el("div", { class: "bundle-list" }, ids.map((id) => {
-          const { item, section, group } = byId.get(id);
-          const already = !!inCart(id);
-          const on = picked.has(id);
-          return el("button", {
-            type: "button", class: "bundle-item", "aria-pressed": String(on || already), disabled: already,
-            onclick: () => { if (on) picked.delete(id); else picked.add(id); draw(); },
-          },
-            el("span", { class: "tick" }, icon("check")),
-            item.img ? el("img", { src: item.img, alt: "", loading: "lazy" }) : el("span", { class: "card-img-empty" }, section.emoji),
-            el("span", { class: "bundle-item-text" },
-              el("span", { class: "bundle-item-name" }, tr(item)),
-              el("span", { class: "bundle-item-meta" }, already ? u.alreadyIn : qtyLabel(makeEntry(id), group))),
-            readyTag(item, section)
-          );
-        })),
+
+        el("div", { class: "bctl" },
+          el("button", { type: "button", class: "btn tinted small", onclick: refresh }, icon("repeat"), T.refresh),
+          el("span", { class: "bctl-hint" }, T.refreshHint)),
+
+        el("div", { class: "bqty" },
+          el("div", { class: "segmented small", role: "tablist" },
+            ["auto", "manual"].map((m) => el("button", {
+              type: "button", role: "tab", "aria-selected": String(b.mode === m),
+              onclick: () => { b.mode = m; store.set("sabah-qty-mode", m); fillQty(); draw(); },
+            }, T.modes[m]))),
+          b.mode === "auto" ? el("div", { class: "people" },
+            el("span", { class: "people-label" }, isWeek ? T.people : T.guests),
+            el("button", { type: "button", class: "qbtn", "aria-label": "−", onclick: () => { b.people = Math.max(1, b.people - 1); store.set(peopleKey, b.people); fillQty(); draw(); } }, icon("minus")),
+            el("b", { class: "people-n" }, b.people),
+            el("button", { type: "button", class: "qbtn", "aria-label": "+", onclick: () => { b.people = Math.min(30, b.people + 1); store.set(peopleKey, b.people); fillQty(); draw(); } }, icon("plus"))) : null,
+          el("p", { class: "bctl-hint" }, b.mode === "auto" ? T.autoHint(PORTIONS) : T.manualHint)),
+
+        el("div", { class: "bundle-rows" }, rows),
+
+        el("p", { class: "field-label" }, T.notesTitle),
+        el("div", { class: "choice-row" }, BUNDLE_NOTES.map((nt, k) => el("button", {
+          type: "button", class: "choice small", "aria-pressed": String(b.notes.has(k)),
+          onclick: () => { if (b.notes.has(k)) b.notes.delete(k); else b.notes.add(k); draw(); },
+        }, tr(nt)))),
+        el("input", { class: "note", type: "text", value: b.noteText, placeholder: T.notePh, oninput: (e) => { b.noteText = e.target.value; } }),
+        isWeek ? el("p", { class: "bctl-hint" }, T.dayHint) : [
+          el("p", { class: "field-label" }, T.when),
+          el("input", { class: "note", type: "text", value: b.when, placeholder: T.whenPh, oninput: (e) => { b.when = e.target.value; } }),
+        ],
+
         el("div", { class: "sheet-actions" },
           el("button", {
             type: "button", class: "btn solid wide", disabled: !n,
             onclick: () => {
-              ids.forEach((id) => { if (picked.has(id) && !inCart(id)) state.cart.push(makeEntry(id)); });
+              const extra = [...b.notes].sort().map((k) => BUNDLE_NOTES[k].ar);
+              if (b.noteText.trim()) extra.push(b.noteText.trim());
+              c.slots.forEach((slot, i) => {
+                if (!b.on[i]) return;
+                const id = b.picks[i];
+                const entry = makeEntry(id);
+                entry.qty = b.qty[i];
+                const parts = [];
+                if (isWeek && slot.day !== undefined) parts.push("يوم " + DAY_NAMES.ar[slot.day]);
+                entry.note = parts.concat(extra).join(" · ");
+                const idx = state.cart.findIndex((x) => x.id === id);
+                if (idx >= 0) state.cart[idx] = entry;
+                else state.cart.push(entry);
+              });
+              if (!isWeek && b.when.trim()) addOrderNote(`${tr2ar(c)}: ${b.when.trim()}`);
+              saveBundlePicks(c, b.picks);
               saveCart();
               buzz();
               close();
@@ -1080,6 +1343,32 @@
       ];
     }, tr(c));
   }
+  const tr2ar = (obj) => obj.ar || obj.en || "";
+
+  const BUNDLE_UI = {
+    ar: {
+      refresh: "غيّر الأصناف", refreshHint: "بيختار أصناف جديدة بدل اللي مش مقفولة، ويبعد عن اللي طلبته قريب.",
+      lock: "ثبّت الصنف ده", switch: "بدّل الصنف", better: "بدايل أحسن",
+      modes: { auto: "حسب عدد الأفراد", manual: "أنا هحدد الكميات" },
+      people: "كام فرد؟", guests: "كام ضيف؟",
+      autoHint: (p) => `الكميات تقريبية: الكيلو لـ ${p.kg} أفراد، والطبق لـ ${p.plate}. تقدر تعدّل أي صنف.`,
+      manualHint: "كل صنف بيبدأ بكمية واحدة، وانت تزوّد أو تقلّل.",
+      notesTitle: "ملاحظات للشيف على كل الأصناف", notePh: "ملاحظة تانية (اختياري)",
+      dayHint: "كل صنف بيتكتب جنبه اليوم بتاعه في رسالة الشيف.",
+      when: "ميعاد العزومة", whenPh: "مثال: الجمعة الساعة ٢ الضهر",
+    },
+    en: {
+      refresh: "Refresh dishes", refreshHint: "Picks new dishes for everything not locked, avoiding what you ordered recently.",
+      lock: "Keep this dish", switch: "Switch dish", better: "Better options",
+      modes: { auto: "By number of people", manual: "I'll set amounts" },
+      people: "How many people?", guests: "How many guests?",
+      autoHint: (p) => `Amounts are estimates: a kilo feeds ${p.kg}, a plate feeds ${p.plate}. You can change any dish.`,
+      manualHint: "Each dish starts at one; adjust as you like.",
+      notesTitle: "Notes for the chef on every dish", notePh: "Another note (optional)",
+      dayHint: "Each dish gets its day written next to it in the chef's message.",
+      when: "Date and time of the feast", whenPh: "e.g. Friday at 2 pm",
+    },
+  };
 
   // ---------- Lightbox ----------
   function openLightbox(item) {
@@ -1104,8 +1393,6 @@
   // short on purpose: each stop takes less than a screen of scrolling, and the bar at the bottom
   // lists every stop from the first screen and jumps straight to it.
   const STOPS = ["hero", "cookeat", "week", "feast", "healthy", "close"];
-  const STOP_LEN = { hero: 0.55, cookeat: 1, week: 1, feast: 1, healthy: 0.7, close: 0.6 };
-  const SCROLL_PER_UNIT = 0.72; // screens of scroll per unit above
 
   function countItems(groupId) {
     const g = GROUPS.find((x) => x.id === groupId);
@@ -1138,12 +1425,16 @@
   }
 
   let homeHandler = null;
+  let homeWheel = null;
+  let homeKeys = null;
   function stopHome() {
     if (homeHandler) {
       window.removeEventListener("scroll", homeHandler);
       window.removeEventListener("resize", homeHandler);
       homeHandler = null;
     }
+    if (homeWheel) { window.removeEventListener("wheel", homeWheel); homeWheel = null; }
+    if (homeKeys) { document.removeEventListener("keydown", homeKeys); homeKeys = null; }
   }
 
   function renderWelcome() {
@@ -1154,12 +1445,11 @@
     const bundle = (id) => COLLECTIONS.find((c) => c.id === id);
     const week = bundle(HOME_WEEK);
     const feast = bundle(HOME_FEAST);
-    const weekIds = week ? week.items.filter((id) => byId.has(id)).slice(0, 7) : [];
-    const feastIds = feast ? feast.items.filter((id) => byId.has(id)).slice(0, 6) : [];
+    const weekIds = week ? bundleItems(week).slice(0, 7) : [];
+    const feastIds = feast ? bundleItems(feast).slice(0, 6) : [];
     const nCook = countWhere((i, s) => readiness(i, s) === "cook");
     const nEat = countWhere((i, s) => readiness(i, s) === "eat");
     const nHealthy = countWhere((i, s) => isHealthy(i, s));
-    const total = STOPS.reduce((n, s) => n + STOP_LEN[s], 0);
 
     const btn = (label, cls, onclick, ico) => el("button", { type: "button", class: "btn " + cls, onclick }, label, ico ? icon(ico, "flip-rtl") : null);
     const stop = (name, visual, copy) => el("div", { class: "stop stop-" + name, "data-stop": name },
@@ -1193,7 +1483,7 @@
           btn(h.seeEat(nEat), "glass", () => startWith("eat")))]);
 
     const weekStop = stop("week",
-      el("div", { class: "weeklist" }, weekIds.map((id, i) => el("div", { class: "wd" },
+      el("div", { class: "weeklist" }, weekIds.map((id, i) => el("div", { class: "wd", style: `--i:${i}` },
         el("span", { class: "wd-day" }, h.days[i]),
         el("span", { class: "wd-ph" }, el("img", { src: photo(id), alt: "", loading: "lazy" })),
         el("span", { class: "wd-name" }, tr(byId.get(id).item))))),
@@ -1204,7 +1494,7 @@
 
     const feastStop = stop("feast",
       el("div", { class: "feast" },
-        el("div", { class: "feast-table" }, feastIds.map((id, i) => el("div", { class: "fd f" + i }, el("img", { src: photo(id), alt: "", loading: "lazy" })))),
+        el("div", { class: "feast-table" }, feastIds.map((id, i) => el("div", { class: "fd f" + i, style: `--i:${i}` }, el("img", { src: photo(id), alt: "", loading: "lazy" })))),
         el("p", { class: "feast-count" })),
       [el("h2", { class: "h2" }, h.feastTitle), el("p", { class: "lead" }, h.feastText),
         el("div", { class: "stop-ctas" },
@@ -1237,79 +1527,58 @@
       el("div", { class: "jbg" }),
       el("div", { class: "jstops" }, hero, cookeat, weekStop, feastStop, healthy, close),
       rail);
-    const journey = el("section", { class: "journey", style: `--units:${total}; --per:${SCROLL_PER_UNIT}` }, stage);
+    const journey = el("section", { class: "journey", style: `--n:${STOPS.length}` }, stage);
     $("main").replaceChildren(el("div", { class: "home" }, journey));
 
-    // Stop boundaries in progress units.
-    const bounds = {};
-    let acc = 0;
-    STOPS.forEach((s) => { bounds[s] = [acc, acc + STOP_LEN[s]]; acc += STOP_LEN[s]; });
+    // One stop per swipe: the page snaps to each stop (native scroll snapping, which is smooth on
+    // phones), and the stop's moment then plays by itself. Nothing else moves until the next swipe.
+    const snaps = STOPS.map((s, i) => el("div", { class: "snap", "aria-hidden": "true", style: `--i:${i}`, "data-snap": s }));
+    journey.append(...snaps);
+
     const stopEls = {};
     journey.querySelectorAll("[data-stop]").forEach((n) => { stopEls[n.dataset.stop] = n; });
     const railBtns = [...rail.querySelectorAll(".jr")];
     const feastCount = journey.querySelector(".feast-count");
-    const days = [...journey.querySelectorAll(".wd")];
-    const dishes = [...journey.querySelectorAll(".fd")];
-    const clamp = (v) => Math.min(1, Math.max(0, v));
-    const ease = (t) => 1 - Math.pow(1 - t, 3);
+    const bg = stage.querySelector(".jbg");
+    let active = -1;
+    let countTimers = [];
 
-    function progressUnits() {
-      const r = journey.getBoundingClientRect();
-      const scrollable = journey.offsetHeight - stage.offsetHeight;
-      const p = scrollable > 0 ? clamp(-r.top / scrollable) : 0;
-      return p * total;
+    function activate(idx) {
+      if (idx === active) return;
+      active = idx;
+      const name = STOPS[idx];
+      STOPS.forEach((s, i) => stopEls[s].classList.toggle("active", i === idx));
+      railBtns.forEach((b) => b.classList.toggle("active", b.dataset.for === name));
+      rail.classList.toggle("at-end", name === "close");
+      // The background glow drifts a little with each stop, so the scene feels like one place.
+      bg.style.transform = `translate(${idx * -2.5}%, ${idx * 2}%) scale(${1 + idx * 0.02})`;
+      // The feast counter counts up with the dishes landing on the table.
+      countTimers.forEach(clearTimeout);
+      countTimers = [];
+      const all = journey.querySelectorAll(".fd").length;
+      const say = (n) => { feastCount.textContent = HOME[state.lang].onTable(n, all); };
+      say(0);
+      if (name === "feast") {
+        const quick = reduceMotion();
+        for (let n = 1; n <= all; n++) {
+          if (quick) say(all);
+          else countTimers.push(setTimeout(() => say(n), 600 + (n - 1) * 240 + 300));
+        }
+      }
     }
 
     function tick() {
       if (state.view !== "welcome") return;
       const top = $("topbar").getBoundingClientRect().height;
       document.documentElement.style.setProperty("--topbar-h", top + "px");
-      const at = progressUnits();
-      // Each stop fades in over the first 15% of its own span and out over its last 12%, so two
-      // stops never show at once. The hero starts fully shown and the close never fades out.
-      STOPS.forEach((s, i) => {
-        const [a, b] = bounds[s];
-        const len = b - a;
-        const raw = (at - a) / len;
-        const local = clamp(raw);
-        const fadeIn = i === 0 ? 1 : clamp(raw / 0.15);
-        const fadeOut = i === STOPS.length - 1 ? 1 : clamp((1 - raw) / 0.12);
-        const vis = Math.min(fadeIn, fadeOut);
-        const node = stopEls[s];
-        node.style.opacity = vis.toFixed(3);
-        node.style.visibility = vis < 0.02 ? "hidden" : "visible";
-        node.style.setProperty("--in", ease(vis).toFixed(3));
-        node.style.setProperty("--local", local.toFixed(3));
-        node.classList.toggle("live", vis > 0.5);
-      });
-      // Peaks, driven by how far into their stop the scroll is.
-      const lp = (s) => clamp((at - bounds[s][0]) / (bounds[s][1] - bounds[s][0]));
-      stopEls.cookeat.style.setProperty("--q", clamp((lp("cookeat") - 0.15) / 0.55).toFixed(3));
-      const wn = Math.round(clamp((lp("week") - 0.1) / 0.6) * days.length);
-      days.forEach((d, i) => d.classList.toggle("on", i < wn));
-      const fnum = Math.round(clamp((lp("feast") - 0.1) / 0.6) * dishes.length);
-      dishes.forEach((d, i) => d.classList.toggle("on", i < fnum));
-      feastCount.textContent = HOME[state.lang].onTable(fnum, dishes.length);
-      // The hero drifts apart as you leave it; the whole scene zooms very slowly the whole way.
-      const hp = clamp(at / bounds.hero[1]);
-      stopEls.hero.style.setProperty("--h", hp.toFixed(3));
-      stage.style.setProperty("--cam", (at / total).toFixed(4));
-      // Rail: highlight the current stop and fill its bar.
-      railBtns.forEach((b) => {
-        const k = b.dataset.for;
-        const on = at >= bounds[k][0] - 0.05 && at < bounds[k][1] - 0.05;
-        b.classList.toggle("active", on);
-        b.style.setProperty("--fill", lp(k).toFixed(3));
-      });
-      rail.classList.toggle("at-end", at > bounds.close[0]);
+      const stageH = stage.offsetHeight || 1;
+      const into = top - journey.getBoundingClientRect().top;
+      activate(Math.min(STOPS.length - 1, Math.max(0, Math.round(into / stageH))));
     }
 
     function jumpToStop(k) {
-      const scrollable = journey.offsetHeight - stage.offsetHeight;
-      // Land where the stop's moment has finished playing.
-      const target = (bounds[k][0] + (bounds[k][1] - bounds[k][0]) * 0.78) / total;
-      const y = journey.getBoundingClientRect().top + window.scrollY + scrollable * target;
-      window.scrollTo({ top: y, behavior: reduceMotion() ? "auto" : "smooth" });
+      const target = journey.querySelector(`[data-snap="${k}"]`);
+      if (target) target.scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "start" });
     }
 
     stopHome();
@@ -1321,6 +1590,46 @@
     };
     window.addEventListener("scroll", homeHandler, { passive: true });
     window.addEventListener("resize", homeHandler, { passive: true });
+
+    // Mouse wheels and trackpads: one gesture moves exactly one stop. The trackpad's momentum
+    // after a swipe is ignored until the wheel goes quiet, so a single flick never skips ahead.
+    // (Phones use the native snapping above.)
+    const step = (dir) => {
+      const next = Math.min(STOPS.length - 1, Math.max(0, active + dir));
+      if (next !== active) jumpToStop(STOPS[next]);
+      else if (dir > 0 && next === STOPS.length - 1) jumpToStop(STOPS[next]);
+    };
+    let wheelLock = false;
+    let lastWheel = 0;
+    let accum = 0;
+    let unlockTimer = 0;
+    homeWheel = (e) => {
+      if (e.ctrlKey || $("sheet").contains(e.target) || !$("sheet").hidden) return;
+      const inJourney = journey.getBoundingClientRect().bottom > window.innerHeight - 2;
+      if (!inJourney && e.deltaY > 0) return;
+      e.preventDefault();
+      lastWheel = performance.now();
+      if (wheelLock) return;
+      accum += e.deltaY;
+      if (Math.abs(accum) < 18) return;
+      const dir = accum > 0 ? 1 : -1;
+      accum = 0;
+      wheelLock = true;
+      step(dir);
+      const jumpedAt = performance.now();
+      clearInterval(unlockTimer);
+      unlockTimer = setInterval(() => {
+        const now = performance.now();
+        if (now - jumpedAt > 750 && now - lastWheel > 200) { wheelLock = false; clearInterval(unlockTimer); }
+      }, 60);
+    };
+    window.addEventListener("wheel", homeWheel, { passive: false });
+    homeKeys = (e) => {
+      if (!$("sheet").hidden || /INPUT|TEXTAREA|SELECT|BUTTON/.test((document.activeElement || {}).tagName || "")) return;
+      if (["ArrowDown", "PageDown", " "].includes(e.key)) { e.preventDefault(); step(1); }
+      else if (["ArrowUp", "PageUp"].includes(e.key)) { e.preventDefault(); step(-1); }
+    };
+    document.addEventListener("keydown", homeKeys);
     tick();
   }
 
