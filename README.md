@@ -10,9 +10,11 @@ One menu app that combines two earlier menus, plus food ideas people share:
 
 A first-time visitor sees a landing page that explains the five ways to order: ready to cook,
 ready to eat, meals of the week, عزومات (feasts) and healthy food. It is one dark scene that stays
-pinned while the scroll moves it through those stops (about four screens on a phone): raw chicken
-turning into the cooked dish, a week filling up day by day, a feast table filling dish by dish, then
-healthy food and the start button. A bar at the bottom lists every stop from the first screen and
+pinned while you move through those stops, one stop per swipe (or per mouse-wheel or trackpad
+gesture, or arrow key): the page snaps to the next stop and can't skip one, and that stop's moment
+then plays by itself (raw chicken turning into the cooked dish, a week filling up day by day, a
+feast table filling dish by dish), then healthy food and the start button. Nothing else moves until
+the next swipe. A bar at the bottom lists every stop from the first screen and
 jumps straight to it, and each stop has buttons that open the matching bundle or filtered menu. Returning visitors, or anyone
 with something already in their order, go straight to the menu; the logo opens the landing page again.
 

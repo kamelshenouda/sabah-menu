@@ -602,6 +602,7 @@
     document.documentElement.lang = state.lang;
     document.documentElement.dir = state.lang === "ar" ? "rtl" : "ltr";
     document.body.dataset.view = state.view;
+    document.documentElement.classList.toggle("snap-page", state.view === "welcome");
 
     $("brand").replaceChildren(
       el("span", { class: "brand-mark", "aria-hidden": "true" }, "ص"),
@@ -1392,8 +1393,6 @@
   // short on purpose: each stop takes less than a screen of scrolling, and the bar at the bottom
   // lists every stop from the first screen and jumps straight to it.
   const STOPS = ["hero", "cookeat", "week", "feast", "healthy", "close"];
-  const STOP_LEN = { hero: 0.55, cookeat: 1, week: 1, feast: 1, healthy: 0.7, close: 0.6 };
-  const SCROLL_PER_UNIT = 0.72; // screens of scroll per unit above
 
   function countItems(groupId) {
     const g = GROUPS.find((x) => x.id === groupId);
@@ -1426,12 +1425,16 @@
   }
 
   let homeHandler = null;
+  let homeWheel = null;
+  let homeKeys = null;
   function stopHome() {
     if (homeHandler) {
       window.removeEventListener("scroll", homeHandler);
       window.removeEventListener("resize", homeHandler);
       homeHandler = null;
     }
+    if (homeWheel) { window.removeEventListener("wheel", homeWheel); homeWheel = null; }
+    if (homeKeys) { document.removeEventListener("keydown", homeKeys); homeKeys = null; }
   }
 
   function renderWelcome() {
@@ -1447,7 +1450,6 @@
     const nCook = countWhere((i, s) => readiness(i, s) === "cook");
     const nEat = countWhere((i, s) => readiness(i, s) === "eat");
     const nHealthy = countWhere((i, s) => isHealthy(i, s));
-    const total = STOPS.reduce((n, s) => n + STOP_LEN[s], 0);
 
     const btn = (label, cls, onclick, ico) => el("button", { type: "button", class: "btn " + cls, onclick }, label, ico ? icon(ico, "flip-rtl") : null);
     const stop = (name, visual, copy) => el("div", { class: "stop stop-" + name, "data-stop": name },
@@ -1481,7 +1483,7 @@
           btn(h.seeEat(nEat), "glass", () => startWith("eat")))]);
 
     const weekStop = stop("week",
-      el("div", { class: "weeklist" }, weekIds.map((id, i) => el("div", { class: "wd" },
+      el("div", { class: "weeklist" }, weekIds.map((id, i) => el("div", { class: "wd", style: `--i:${i}` },
         el("span", { class: "wd-day" }, h.days[i]),
         el("span", { class: "wd-ph" }, el("img", { src: photo(id), alt: "", loading: "lazy" })),
         el("span", { class: "wd-name" }, tr(byId.get(id).item))))),
@@ -1492,7 +1494,7 @@
 
     const feastStop = stop("feast",
       el("div", { class: "feast" },
-        el("div", { class: "feast-table" }, feastIds.map((id, i) => el("div", { class: "fd f" + i }, el("img", { src: photo(id), alt: "", loading: "lazy" })))),
+        el("div", { class: "feast-table" }, feastIds.map((id, i) => el("div", { class: "fd f" + i, style: `--i:${i}` }, el("img", { src: photo(id), alt: "", loading: "lazy" })))),
         el("p", { class: "feast-count" })),
       [el("h2", { class: "h2" }, h.feastTitle), el("p", { class: "lead" }, h.feastText),
         el("div", { class: "stop-ctas" },
@@ -1525,79 +1527,58 @@
       el("div", { class: "jbg" }),
       el("div", { class: "jstops" }, hero, cookeat, weekStop, feastStop, healthy, close),
       rail);
-    const journey = el("section", { class: "journey", style: `--units:${total}; --per:${SCROLL_PER_UNIT}` }, stage);
+    const journey = el("section", { class: "journey", style: `--n:${STOPS.length}` }, stage);
     $("main").replaceChildren(el("div", { class: "home" }, journey));
 
-    // Stop boundaries in progress units.
-    const bounds = {};
-    let acc = 0;
-    STOPS.forEach((s) => { bounds[s] = [acc, acc + STOP_LEN[s]]; acc += STOP_LEN[s]; });
+    // One stop per swipe: the page snaps to each stop (native scroll snapping, which is smooth on
+    // phones), and the stop's moment then plays by itself. Nothing else moves until the next swipe.
+    const snaps = STOPS.map((s, i) => el("div", { class: "snap", "aria-hidden": "true", style: `--i:${i}`, "data-snap": s }));
+    journey.append(...snaps);
+
     const stopEls = {};
     journey.querySelectorAll("[data-stop]").forEach((n) => { stopEls[n.dataset.stop] = n; });
     const railBtns = [...rail.querySelectorAll(".jr")];
     const feastCount = journey.querySelector(".feast-count");
-    const days = [...journey.querySelectorAll(".wd")];
-    const dishes = [...journey.querySelectorAll(".fd")];
-    const clamp = (v) => Math.min(1, Math.max(0, v));
-    const ease = (t) => 1 - Math.pow(1 - t, 3);
+    const bg = stage.querySelector(".jbg");
+    let active = -1;
+    let countTimers = [];
 
-    function progressUnits() {
-      const r = journey.getBoundingClientRect();
-      const scrollable = journey.offsetHeight - stage.offsetHeight;
-      const p = scrollable > 0 ? clamp(-r.top / scrollable) : 0;
-      return p * total;
+    function activate(idx) {
+      if (idx === active) return;
+      active = idx;
+      const name = STOPS[idx];
+      STOPS.forEach((s, i) => stopEls[s].classList.toggle("active", i === idx));
+      railBtns.forEach((b) => b.classList.toggle("active", b.dataset.for === name));
+      rail.classList.toggle("at-end", name === "close");
+      // The background glow drifts a little with each stop, so the scene feels like one place.
+      bg.style.transform = `translate(${idx * -2.5}%, ${idx * 2}%) scale(${1 + idx * 0.02})`;
+      // The feast counter counts up with the dishes landing on the table.
+      countTimers.forEach(clearTimeout);
+      countTimers = [];
+      const all = journey.querySelectorAll(".fd").length;
+      const say = (n) => { feastCount.textContent = HOME[state.lang].onTable(n, all); };
+      say(0);
+      if (name === "feast") {
+        const quick = reduceMotion();
+        for (let n = 1; n <= all; n++) {
+          if (quick) say(all);
+          else countTimers.push(setTimeout(() => say(n), 600 + (n - 1) * 240 + 300));
+        }
+      }
     }
 
     function tick() {
       if (state.view !== "welcome") return;
       const top = $("topbar").getBoundingClientRect().height;
       document.documentElement.style.setProperty("--topbar-h", top + "px");
-      const at = progressUnits();
-      // Each stop fades in over the first 15% of its own span and out over its last 12%, so two
-      // stops never show at once. The hero starts fully shown and the close never fades out.
-      STOPS.forEach((s, i) => {
-        const [a, b] = bounds[s];
-        const len = b - a;
-        const raw = (at - a) / len;
-        const local = clamp(raw);
-        const fadeIn = i === 0 ? 1 : clamp(raw / 0.15);
-        const fadeOut = i === STOPS.length - 1 ? 1 : clamp((1 - raw) / 0.12);
-        const vis = Math.min(fadeIn, fadeOut);
-        const node = stopEls[s];
-        node.style.opacity = vis.toFixed(3);
-        node.style.visibility = vis < 0.02 ? "hidden" : "visible";
-        node.style.setProperty("--in", ease(vis).toFixed(3));
-        node.style.setProperty("--local", local.toFixed(3));
-        node.classList.toggle("live", vis > 0.5);
-      });
-      // Peaks, driven by how far into their stop the scroll is.
-      const lp = (s) => clamp((at - bounds[s][0]) / (bounds[s][1] - bounds[s][0]));
-      stopEls.cookeat.style.setProperty("--q", clamp((lp("cookeat") - 0.15) / 0.55).toFixed(3));
-      const wn = Math.round(clamp((lp("week") - 0.1) / 0.6) * days.length);
-      days.forEach((d, i) => d.classList.toggle("on", i < wn));
-      const fnum = Math.round(clamp((lp("feast") - 0.1) / 0.6) * dishes.length);
-      dishes.forEach((d, i) => d.classList.toggle("on", i < fnum));
-      feastCount.textContent = HOME[state.lang].onTable(fnum, dishes.length);
-      // The hero drifts apart as you leave it; the whole scene zooms very slowly the whole way.
-      const hp = clamp(at / bounds.hero[1]);
-      stopEls.hero.style.setProperty("--h", hp.toFixed(3));
-      stage.style.setProperty("--cam", (at / total).toFixed(4));
-      // Rail: highlight the current stop and fill its bar.
-      railBtns.forEach((b) => {
-        const k = b.dataset.for;
-        const on = at >= bounds[k][0] - 0.05 && at < bounds[k][1] - 0.05;
-        b.classList.toggle("active", on);
-        b.style.setProperty("--fill", lp(k).toFixed(3));
-      });
-      rail.classList.toggle("at-end", at > bounds.close[0]);
+      const stageH = stage.offsetHeight || 1;
+      const into = top - journey.getBoundingClientRect().top;
+      activate(Math.min(STOPS.length - 1, Math.max(0, Math.round(into / stageH))));
     }
 
     function jumpToStop(k) {
-      const scrollable = journey.offsetHeight - stage.offsetHeight;
-      // Land where the stop's moment has finished playing.
-      const target = (bounds[k][0] + (bounds[k][1] - bounds[k][0]) * 0.78) / total;
-      const y = journey.getBoundingClientRect().top + window.scrollY + scrollable * target;
-      window.scrollTo({ top: y, behavior: reduceMotion() ? "auto" : "smooth" });
+      const target = journey.querySelector(`[data-snap="${k}"]`);
+      if (target) target.scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "start" });
     }
 
     stopHome();
@@ -1609,6 +1590,46 @@
     };
     window.addEventListener("scroll", homeHandler, { passive: true });
     window.addEventListener("resize", homeHandler, { passive: true });
+
+    // Mouse wheels and trackpads: one gesture moves exactly one stop. The trackpad's momentum
+    // after a swipe is ignored until the wheel goes quiet, so a single flick never skips ahead.
+    // (Phones use the native snapping above.)
+    const step = (dir) => {
+      const next = Math.min(STOPS.length - 1, Math.max(0, active + dir));
+      if (next !== active) jumpToStop(STOPS[next]);
+      else if (dir > 0 && next === STOPS.length - 1) jumpToStop(STOPS[next]);
+    };
+    let wheelLock = false;
+    let lastWheel = 0;
+    let accum = 0;
+    let unlockTimer = 0;
+    homeWheel = (e) => {
+      if (e.ctrlKey || $("sheet").contains(e.target) || !$("sheet").hidden) return;
+      const inJourney = journey.getBoundingClientRect().bottom > window.innerHeight - 2;
+      if (!inJourney && e.deltaY > 0) return;
+      e.preventDefault();
+      lastWheel = performance.now();
+      if (wheelLock) return;
+      accum += e.deltaY;
+      if (Math.abs(accum) < 18) return;
+      const dir = accum > 0 ? 1 : -1;
+      accum = 0;
+      wheelLock = true;
+      step(dir);
+      const jumpedAt = performance.now();
+      clearInterval(unlockTimer);
+      unlockTimer = setInterval(() => {
+        const now = performance.now();
+        if (now - jumpedAt > 750 && now - lastWheel > 200) { wheelLock = false; clearInterval(unlockTimer); }
+      }, 60);
+    };
+    window.addEventListener("wheel", homeWheel, { passive: false });
+    homeKeys = (e) => {
+      if (!$("sheet").hidden || /INPUT|TEXTAREA|SELECT|BUTTON/.test((document.activeElement || {}).tagName || "")) return;
+      if (["ArrowDown", "PageDown", " "].includes(e.key)) { e.preventDefault(); step(1); }
+      else if (["ArrowUp", "PageUp"].includes(e.key)) { e.preventDefault(); step(-1); }
+    };
+    document.addEventListener("keydown", homeKeys);
     tick();
   }
 
