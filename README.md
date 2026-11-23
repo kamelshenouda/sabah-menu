@@ -9,7 +9,11 @@ One menu app that combines two earlier menus, plus food ideas people share:
   sizes, flavour and marinade choices, and estimated calories, from the earlier guide (دليل بوتشريستا).
 
 A first-time visitor sees a landing page that explains the five ways to order: ready to cook,
-ready to eat, meals of the week, عزومات (feasts) and healthy food. Returning visitors, or anyone
+ready to eat, meals of the week, عزومات (feasts) and healthy food. It is one dark scene that stays
+pinned while the scroll moves it through those stops (about four screens on a phone): raw chicken
+turning into the cooked dish, a week filling up day by day, a feast table filling dish by dish, then
+healthy food and the start button. A bar at the bottom lists every stop from the first screen and
+jumps straight to it, and each stop has buttons that open the matching bundle or filtered menu. Returning visitors, or anyone
 with something already in their order, go straight to the menu; the logo opens the landing page again.
 
 On the menu you can:

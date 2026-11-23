@@ -142,70 +142,65 @@
     },
   };
 
-  // Landing page copy.
+  // Landing page copy. The landing page is one dark scene that stays pinned while the scroll moves
+  // it through five stops: the hero, cook or eat, meals of the week, feasts, and healthy.
   const HOME = {
     ar: {
       eyebrow: "مطبخ صباح البيتي",
       h1: "أكل البيت… من غير تعب البيت",
-      lead: "متبّل ومتجهّز تسوّيه في دقايق، أو مطبوخ وجاهز تسخّنه وتاكل. أكل الأسبوع كله، عزومتك الجاية، وأكل صحي يشبعك — وطلبك يوصل للشيف على واتساب في دقيقة.",
+      lead: "متبّل تسوّيه في دقايق، أو مطبوخ تسخّنه وتاكل. للأسبوع كله أو لعزومتك الجاية، وطلبك يوصل للشيف على واتساب في دقيقة.",
       start: "ابدأ طلبك",
-      seeBundles: "شوف الباقات الجاهزة",
-      stats: [["أكلة بيتي", "kitchen"], ["صنف من بوتشريستا", "butcherista"], ["باقة جاهزة", "bundles"]],
-      waysEyebrow: "اطلب على مزاجك",
-      waysTitle: "خمس طرق تريّحك من المطبخ",
-      ways: {
-        cook: ["جاهز للطبخ", "متبّل ومتقطّع ومتجهّز. عليك التسوية بس، والأكل يطلع طازة من فرنك."],
-        eat: ["جاهز للأكل", "مطبوخ في البيت بنفس الطعم اللي بتحبه. سخّن وحط على السفرة."],
-        week: ["أكل الأسبوع", "خطّط غدا الأسبوع كله في طلب واحد، وارتاح من سؤال «هناكل إيه النهارده؟»."],
-        feast: ["عزومات", "عزومة تشرّف قدام الضيوف، من غير ما تقف في المطبخ من الصبح."],
-        healthy: ["أكل صحي", "بروتين خفيف وخضار وحبوب كاملة وحلويات من غير سكر أبيض."],
-      },
-      stepsEyebrow: "سهلة جدًا",
-      stepsTitle: "طلبك في ٣ خطوات",
-      steps: [
-        ["اختار أكلك", "تصفّح بالصور، أو ابدأ بباقة جاهزة للأسبوع أو للعزومة."],
-        ["حدّد الكمية", "بالكيلو أو بالطبق أو بالقطعة، وزوّد ملاحظتك للشيف."],
-        ["ابعت على واتساب", "الطلب بيتكتب لوحده بالعربي، وانت بس تضغط إرسال."],
-      ],
-      bundlesEyebrow: "جاهزة بضغطة",
-      bundlesTitle: "باقات تختصر عليك التفكير",
-      ctaTitle: "جعان؟ القائمة مستنياك.",
-      ctaText: "أكتر من ٢٠٠ صنف بالصور، وطلبك جاهز في دقيقة.",
+      rail: { cookeat: "جاهز للطبخ أو للأكل", week: "أكل الأسبوع", feast: "عزومات", healthy: "صحي" },
+      raw: "جاهز للطبخ", cooked: "جاهز للأكل",
+      cookeatTitle: "نفس الأكلة. اختار تطلبها إزاي.",
+      cookeatText: "متبّلة ومتجهّزة تسوّيها انت في دقايق وتطلع طازة، أو مطبوخة في البيت وجاهزة تسخّنها وتاكل.",
+      seeCook: (n) => `الجاهز للطبخ (${n})`, seeEat: (n) => `الجاهز للأكل (${n})`,
+      weekTitle: "أسبوعك كله في طلب واحد",
+      weekText: "غدا لكل يوم، متنوّع ومتوازن. ضيفه كله بضغطة، وشيل أو بدّل اللي مش عايزه.",
+      weekBtn: "ضيف أسبوع العيلة", weekMore: "باقات أسبوع تانية",
+      days: ["السبت", "الأحد", "الاتنين", "التلات", "الأربع", "الخميس", "الجمعة"],
+      feastTitle: "عزومة تشرّف… من غير وقفة مطبخ",
+      feastText: "الأصناف بتنزل على السفرة واحدة ورا التانية. اطلب العزومة كلها، أو اختار منها اللي يناسب ضيوفك.",
+      feastBtn: "اطلب العزومة الكبيرة", feastMore: "عزومات تانية",
+      onTable: (n, all) => `${n}/${all} على السفرة`,
+      healthyTitle: "صحي… وبيشبع",
+      healthyText: "بروتين خفيف، خضار، حبوب كاملة، وحلويات من غير سكر أبيض.",
+      healthyBtn: (n) => `شوف الأكل الصحي (${n})`,
+      closeTitle: "جعان؟ القائمة مستنياك.",
+      closeSteps: ["اختار أكلك", "حدّد الكمية", "ابعت على واتساب"],
+      closeText: "الطلب بيتكتب لوحده بالعربي للشيف، وانت بس تضغط إرسال.",
       footer: "الصور توضيحية لشكل الأكلة، مش لنفس الطبق اللي هيوصلك.",
     },
     en: {
       eyebrow: "SABAH HOME KITCHEN",
       h1: "Home food, without the home chores",
-      lead: "Marinated and prepped to cook in minutes, or fully cooked to heat and eat. Your whole week of meals, your next family feast, healthy food that fills you up — and your order reaches the chef on WhatsApp in a minute.",
+      lead: "Marinated to cook in minutes, or cooked to heat and eat. For the whole week or your next feast, and your order reaches the chef on WhatsApp in a minute.",
       start: "Start your order",
-      seeBundles: "See ready-made bundles",
-      stats: [["home-cooked dishes", "kitchen"], ["Butcherista items", "butcherista"], ["ready-made bundles", "bundles"]],
-      waysEyebrow: "ORDER YOUR WAY",
-      waysTitle: "Five ways to skip the kitchen",
-      ways: {
-        cook: ["Ready to cook", "Marinated, cut and prepped. You just cook it, so it comes out fresh from your own oven."],
-        eat: ["Ready to eat", "Cooked at home with the taste you love. Heat it and serve."],
-        week: ["Meals of the week", "Plan the whole week's lunches in one order, and stop asking “what's for lunch?”"],
-        feast: ["Feasts (عزومات)", "A spread that impresses your guests, without standing in the kitchen all day."],
-        healthy: ["Healthy food", "Lean protein, vegetables, whole grains and sweets without white sugar."],
-      },
-      stepsEyebrow: "REALLY SIMPLE",
-      stepsTitle: "Your order in 3 steps",
-      steps: [
-        ["Pick your food", "Browse with photos, or start with a ready-made bundle for the week or a feast."],
-        ["Choose amounts", "By the kilo, plate or piece, with a note for the chef."],
-        ["Send on WhatsApp", "The order writes itself in Arabic; you just tap send."],
-      ],
-      bundlesEyebrow: "ONE TAP AWAY",
-      bundlesTitle: "Bundles that do the thinking for you",
-      ctaTitle: "Hungry? The menu is waiting.",
-      ctaText: "Over 200 dishes with photos, and your order is ready in a minute.",
+      rail: { cookeat: "Cook or eat", week: "Meals of the week", feast: "Feasts", healthy: "Healthy" },
+      raw: "Ready to cook", cooked: "Ready to eat",
+      cookeatTitle: "Same dish. Your choice how.",
+      cookeatText: "Marinated and prepped for you to cook fresh in minutes, or cooked at home and ready to heat and eat.",
+      seeCook: (n) => `Ready to cook (${n})`, seeEat: (n) => `Ready to eat (${n})`,
+      weekTitle: "Your whole week in one order",
+      weekText: "A lunch for every day, varied and balanced. Add it all in one tap, then drop or swap what you don't want.",
+      weekBtn: "Add the family week", weekMore: "Other week bundles",
+      days: ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"],
+      feastTitle: "A feast to impress, without the kitchen",
+      feastText: "Dishes land on the table one after another. Order the whole feast, or pick what suits your guests.",
+      feastBtn: "Order the big feast", feastMore: "Other feasts",
+      onTable: (n, all) => `${n}/${all} on the table`,
+      healthyTitle: "Healthy, and filling",
+      healthyText: "Lean protein, vegetables, whole grains, and sweets without white sugar.",
+      healthyBtn: (n) => `See healthy food (${n})`,
+      closeTitle: "Hungry? The menu is waiting.",
+      closeSteps: ["Pick your food", "Choose amounts", "Send on WhatsApp"],
+      closeText: "The order writes itself in Arabic for the chef; you just tap send.",
       footer: "Photos show what each dish looks like in general, not the exact plate you'll receive.",
     },
   };
-  // A photo for each of the five ways to order on the landing page.
-  const WAY_PHOTOS = { cook: "k8", eat: "k14", week: "k143", feast: "k82", healthy: "k46" };
-  const HERO_PHOTOS = ["k82", "k20", "k150", "k1"];
+  const HOME_WEEK = "week-family";
+  const HOME_FEAST = "feast-classic";
+  const HOME_HEALTHY = ["k46", "k20", "k71"];
 
   // Units for home-kitchen dishes; Butcherista items are ordered in packs of the chosen size.
   const KITCHEN_UNITS = [
@@ -247,7 +242,6 @@
     up: '<path d="M12 19V5M6 11l6-6 6 6"/>',
     grid: '<rect x="4" y="4" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1"/>',
   };
-  const WAY_ICONS = { cook: "flame", eat: "plate", week: "calendar", feast: "table", healthy: "leaf" };
 
   function icon(name, cls) {
     const span = document.createElement("span");
@@ -1106,9 +1100,24 @@
   });
 
   // ---------- Landing page ----------
+  // One pinned dark scene (the "night kitchen") that the scroll moves through five stops. It is
+  // short on purpose: each stop takes less than a screen of scrolling, and the bar at the bottom
+  // lists every stop from the first screen and jumps straight to it.
+  const STOPS = ["hero", "cookeat", "week", "feast", "healthy", "close"];
+  const STOP_LEN = { hero: 0.55, cookeat: 1, week: 1, feast: 1, healthy: 0.7, close: 0.6 };
+  const SCROLL_PER_UNIT = 0.72; // screens of scroll per unit above
+
   function countItems(groupId) {
     const g = GROUPS.find((x) => x.id === groupId);
     return g ? g.sections.reduce((n, s) => n + shownItems(s).length, 0) : 0;
+  }
+  function countWhere(pred) {
+    let n = 0;
+    allSections.forEach(({ group, section }) => {
+      if (group === IDEAS_GROUP) return;
+      shownItems(section).forEach((i) => { if (pred(i, section)) n++; });
+    });
+    return n;
   }
   const photo = (id, full) => {
     const hit = byId.get(id);
@@ -1128,86 +1137,191 @@
     }
   }
 
+  let homeHandler = null;
+  function stopHome() {
+    if (homeHandler) {
+      window.removeEventListener("scroll", homeHandler);
+      window.removeEventListener("resize", homeHandler);
+      homeHandler = null;
+    }
+  }
+
   function renderWelcome() {
     const h = HOME[state.lang];
     const u = ui();
     store.set("sabah-welcomed", true);
     $("fab").replaceChildren();
-    const statValue = { kitchen: countItems("kitchen"), butcherista: countItems("butcherista"), bundles: COLLECTIONS.length };
-    const ways = ["cook", "eat", "week", "feast", "healthy"];
+    const bundle = (id) => COLLECTIONS.find((c) => c.id === id);
+    const week = bundle(HOME_WEEK);
+    const feast = bundle(HOME_FEAST);
+    const weekIds = week ? week.items.filter((id) => byId.has(id)).slice(0, 7) : [];
+    const feastIds = feast ? feast.items.filter((id) => byId.has(id)).slice(0, 6) : [];
+    const nCook = countWhere((i, s) => readiness(i, s) === "cook");
+    const nEat = countWhere((i, s) => readiness(i, s) === "eat");
+    const nHealthy = countWhere((i, s) => isHealthy(i, s));
+    const total = STOPS.reduce((n, s) => n + STOP_LEN[s], 0);
 
-    const page = el("div", { class: "home" },
-      el("section", { class: "hero" },
-        el("div", { class: "wrap hero-inner" },
-          el("div", { class: "hero-copy" },
-            el("p", { class: "label reveal" }, h.eyebrow),
-            el("h1", { class: "display reveal" }, h.h1),
-            el("p", { class: "lead reveal" }, h.lead),
-            el("div", { class: "hero-ctas reveal" },
-              el("button", { type: "button", class: "btn solid big", onclick: () => startWith(null) }, h.start, icon("chevron", "flip-rtl")),
-              el("button", { type: "button", class: "btn outline big", onclick: () => startWith("week") }, h.seeBundles)),
-            el("div", { class: "stats reveal" }, h.stats.map(([label, key]) =>
-              el("div", { class: "stat" }, el("span", { class: "num", "data-count": statValue[key] }, statValue[key]), el("span", { class: "stat-label" }, label))))
-          ),
-          el("div", { class: "hero-art reveal", "aria-hidden": "true" },
-            HERO_PHOTOS.map((id, i) => el("div", { class: "hero-ph p" + i }, el("img", { src: photo(id, i === 0), alt: "", decoding: "async" }))))
-        )
-      ),
+    const btn = (label, cls, onclick, ico) => el("button", { type: "button", class: "btn " + cls, onclick }, label, ico ? icon(ico, "flip-rtl") : null);
+    const stop = (name, visual, copy) => el("div", { class: "stop stop-" + name, "data-stop": name },
+      el("div", { class: "stop-visual" }, visual), el("div", { class: "stop-copy" }, copy));
 
-      el("section", { class: "home-block wrap" },
-        el("p", { class: "label" }, h.waysEyebrow),
-        el("h2", { class: "h2" }, h.waysTitle),
-        el("div", { class: "ways" }, ways.map((w, i) =>
-          el("button", { type: "button", class: "way" + (i === 0 ? " wide" : ""), onclick: () => startWith(w) },
-            el("img", { class: "way-img", src: photo(WAY_PHOTOS[w], true), alt: "", decoding: "async" }),
-            el("span", { class: "way-shade" }),
-            el("span", { class: "way-text" },
-              el("span", { class: "way-ico" }, icon(WAY_ICONS[w])),
-              el("span", { class: "way-title" }, h.ways[w][0]),
-              el("span", { class: "way-desc" }, h.ways[w][1]),
-              el("span", { class: "way-go" }, u.menu, icon("chevron", "flip-rtl")))
-          )))
-      ),
+    const hero = stop("hero",
+      [el("div", { class: "hv-glow" }),
+        el("div", { class: "hv-side a" }, el("img", { src: photo("k20"), alt: "" })),
+        el("div", { class: "hv-plate" }, el("img", { src: photo("k82", true), alt: "", decoding: "async" })),
+        el("div", { class: "hv-side b" }, el("img", { src: photo("k150"), alt: "" }))],
+      [el("p", { class: "label" }, h.eyebrow),
+        el("h1", { class: "display" }, h.h1),
+        el("p", { class: "lead" }, h.lead),
+        el("div", { class: "stop-ctas" }, btn(h.start, "solid big", () => startWith(null), "chevron")),
+        el("div", { class: "stats" },
+          [[countItems("kitchen"), state.lang === "ar" ? "أكلة بيتي" : "home dishes"],
+            [countItems("butcherista"), state.lang === "ar" ? "من بوتشريستا" : "Butcherista items"],
+            [COLLECTIONS.length, state.lang === "ar" ? "باقة جاهزة" : "bundles"]].map(([n, l]) =>
+            el("div", { class: "stat" }, el("span", { class: "num" }, n), el("span", { class: "stat-label" }, l))))]);
 
-      el("section", { class: "home-block wrap" },
-        el("p", { class: "label" }, h.stepsEyebrow),
-        el("h2", { class: "h2" }, h.stepsTitle),
-        el("ol", { class: "steps" }, h.steps.map(([t, d], i) =>
-          el("li", { class: "step" }, el("span", { class: "step-num" }, i + 1), el("span", { class: "step-title" }, t), el("span", { class: "step-desc" }, d))))
-      ),
+    const cookeat = stop("cookeat",
+      el("div", { class: "wipe" },
+        el("div", { class: "wipe-states" }, el("span", { class: "ws raw" }, h.raw), el("span", { class: "ws cooked" }, h.cooked)),
+        el("div", { class: "wipe-pic" },
+          el("img", { src: photo("k6", true), alt: "", loading: "lazy" }),
+          el("img", { class: "wipe-top", src: photo("k102", true), alt: "", loading: "lazy" }),
+          el("span", { class: "wipe-seam" }))),
+      [el("h2", { class: "h2" }, h.cookeatTitle), el("p", { class: "lead" }, h.cookeatText),
+        el("div", { class: "stop-ctas" },
+          btn(h.seeCook(nCook), "solid", () => startWith("cook")),
+          btn(h.seeEat(nEat), "glass", () => startWith("eat")))]);
 
-      COLLECTIONS.length ? el("section", { class: "home-block wrap" },
-        el("p", { class: "label" }, h.bundlesEyebrow),
-        el("h2", { class: "h2" }, h.bundlesTitle),
-        el("div", { class: "bundle-row wrapgrid" }, COLLECTIONS.map(bundleCard))
-      ) : null,
+    const weekStop = stop("week",
+      el("div", { class: "weeklist" }, weekIds.map((id, i) => el("div", { class: "wd" },
+        el("span", { class: "wd-day" }, h.days[i]),
+        el("span", { class: "wd-ph" }, el("img", { src: photo(id), alt: "", loading: "lazy" })),
+        el("span", { class: "wd-name" }, tr(byId.get(id).item))))),
+      [el("h2", { class: "h2" }, h.weekTitle), el("p", { class: "lead" }, h.weekText),
+        el("div", { class: "stop-ctas" },
+          week ? btn(h.weekBtn, "solid", () => openBundle(HOME_WEEK), "plus") : null,
+          btn(h.weekMore, "glass", () => startWith("week")))]);
 
-      el("section", { class: "home-cta wrap" },
-        el("h2", { class: "h2" }, h.ctaTitle),
-        el("p", { class: "lead" }, h.ctaText),
-        el("button", { type: "button", class: "btn solid big", onclick: () => startWith(null) }, h.start, icon("chevron", "flip-rtl")),
-        el("p", { class: "fine" }, h.footer))
-    );
-    $("main").replaceChildren(page);
-    animateHome(page);
-  }
+    const feastStop = stop("feast",
+      el("div", { class: "feast" },
+        el("div", { class: "feast-table" }, feastIds.map((id, i) => el("div", { class: "fd f" + i }, el("img", { src: photo(id), alt: "", loading: "lazy" })))),
+        el("p", { class: "feast-count" })),
+      [el("h2", { class: "h2" }, h.feastTitle), el("p", { class: "lead" }, h.feastText),
+        el("div", { class: "stop-ctas" },
+          feast ? btn(h.feastBtn, "solid", () => openBundle(HOME_FEAST), "plus") : null,
+          btn(h.feastMore, "glass", () => startWith("feast")))]);
 
-  function animateHome(page) {
-    const items = page.querySelectorAll(".reveal");
-    const nums = page.querySelectorAll(".num[data-count]");
-    if (reduceMotion()) return;
-    items.forEach((n, i) => { n.style.animationDelay = `${i * 90}ms`; n.classList.add("in"); });
-    nums.forEach((n) => {
-      const end = Number(n.dataset.count) || 0;
-      const t0 = performance.now();
-      const tick = (t) => {
-        const p = Math.min(1, (t - t0) / 1100);
-        n.textContent = String(Math.round(end * (1 - Math.pow(1 - p, 3))));
-        if (p < 1) requestAnimationFrame(tick);
-      };
-      n.textContent = "0";
-      requestAnimationFrame(tick);
-    });
+    const healthy = stop("healthy",
+      el("div", { class: "calm" },
+        el("div", { class: "calm-main" }, el("img", { src: photo(HOME_HEALTHY[0], true), alt: "", loading: "lazy" })),
+        HOME_HEALTHY.slice(1).map((id, i) => el("div", { class: "calm-side s" + i }, el("img", { src: photo(id), alt: "", loading: "lazy" })))),
+      [el("h2", { class: "h2" }, h.healthyTitle), el("p", { class: "lead" }, h.healthyText),
+        el("div", { class: "stop-ctas" }, btn(h.healthyBtn(nHealthy), "solid", () => startWith("healthy")))]);
+
+    const close = stop("close",
+      el("div", { class: "fan" }, ["k8", "k133", "k152"].map((id, i) => el("div", { class: "fan-card c" + i }, el("img", { src: photo(id), alt: "", loading: "lazy" })))),
+      [el("h2", { class: "h2" }, h.closeTitle),
+        el("ol", { class: "mini-steps" }, h.closeSteps.map((s, i) => el("li", null, el("b", null, i + 1), s))),
+        el("p", { class: "lead" }, h.closeText),
+        el("div", { class: "stop-ctas" }, btn(h.start, "solid big", () => startWith(null), "chevron")),
+        el("p", { class: "fine" }, h.footer)]);
+
+    const railKeys = ["cookeat", "week", "feast", "healthy"];
+    const rail = el("nav", { class: "jrail", "aria-label": u.menu },
+      railKeys.map((k) => el("button", { type: "button", class: "jr", "data-for": k, onclick: () => jumpToStop(k) },
+        el("span", { class: "jr-ico" }, icon({ cookeat: "flame", week: "calendar", feast: "table", healthy: "leaf" }[k])),
+        el("span", { class: "jr-label" }, h.rail[k]),
+        el("span", { class: "jr-bar" }, el("i")))));
+
+    const stage = el("div", { class: "jstage" },
+      el("div", { class: "jbg" }),
+      el("div", { class: "jstops" }, hero, cookeat, weekStop, feastStop, healthy, close),
+      rail);
+    const journey = el("section", { class: "journey", style: `--units:${total}; --per:${SCROLL_PER_UNIT}` }, stage);
+    $("main").replaceChildren(el("div", { class: "home" }, journey));
+
+    // Stop boundaries in progress units.
+    const bounds = {};
+    let acc = 0;
+    STOPS.forEach((s) => { bounds[s] = [acc, acc + STOP_LEN[s]]; acc += STOP_LEN[s]; });
+    const stopEls = {};
+    journey.querySelectorAll("[data-stop]").forEach((n) => { stopEls[n.dataset.stop] = n; });
+    const railBtns = [...rail.querySelectorAll(".jr")];
+    const feastCount = journey.querySelector(".feast-count");
+    const days = [...journey.querySelectorAll(".wd")];
+    const dishes = [...journey.querySelectorAll(".fd")];
+    const clamp = (v) => Math.min(1, Math.max(0, v));
+    const ease = (t) => 1 - Math.pow(1 - t, 3);
+
+    function progressUnits() {
+      const r = journey.getBoundingClientRect();
+      const scrollable = journey.offsetHeight - stage.offsetHeight;
+      const p = scrollable > 0 ? clamp(-r.top / scrollable) : 0;
+      return p * total;
+    }
+
+    function tick() {
+      if (state.view !== "welcome") return;
+      const top = $("topbar").getBoundingClientRect().height;
+      document.documentElement.style.setProperty("--topbar-h", top + "px");
+      const at = progressUnits();
+      // Each stop fades in over the first 15% of its own span and out over its last 12%, so two
+      // stops never show at once. The hero starts fully shown and the close never fades out.
+      STOPS.forEach((s, i) => {
+        const [a, b] = bounds[s];
+        const len = b - a;
+        const raw = (at - a) / len;
+        const local = clamp(raw);
+        const fadeIn = i === 0 ? 1 : clamp(raw / 0.15);
+        const fadeOut = i === STOPS.length - 1 ? 1 : clamp((1 - raw) / 0.12);
+        const vis = Math.min(fadeIn, fadeOut);
+        const node = stopEls[s];
+        node.style.opacity = vis.toFixed(3);
+        node.style.visibility = vis < 0.02 ? "hidden" : "visible";
+        node.style.setProperty("--in", ease(vis).toFixed(3));
+        node.style.setProperty("--local", local.toFixed(3));
+        node.classList.toggle("live", vis > 0.5);
+      });
+      // Peaks, driven by how far into their stop the scroll is.
+      const lp = (s) => clamp((at - bounds[s][0]) / (bounds[s][1] - bounds[s][0]));
+      stopEls.cookeat.style.setProperty("--q", clamp((lp("cookeat") - 0.15) / 0.55).toFixed(3));
+      const wn = Math.round(clamp((lp("week") - 0.1) / 0.6) * days.length);
+      days.forEach((d, i) => d.classList.toggle("on", i < wn));
+      const fnum = Math.round(clamp((lp("feast") - 0.1) / 0.6) * dishes.length);
+      dishes.forEach((d, i) => d.classList.toggle("on", i < fnum));
+      feastCount.textContent = HOME[state.lang].onTable(fnum, dishes.length);
+      // The hero drifts apart as you leave it; the whole scene zooms very slowly the whole way.
+      const hp = clamp(at / bounds.hero[1]);
+      stopEls.hero.style.setProperty("--h", hp.toFixed(3));
+      stage.style.setProperty("--cam", (at / total).toFixed(4));
+      // Rail: highlight the current stop and fill its bar.
+      railBtns.forEach((b) => {
+        const k = b.dataset.for;
+        const on = at >= bounds[k][0] - 0.05 && at < bounds[k][1] - 0.05;
+        b.classList.toggle("active", on);
+        b.style.setProperty("--fill", lp(k).toFixed(3));
+      });
+      rail.classList.toggle("at-end", at > bounds.close[0]);
+    }
+
+    function jumpToStop(k) {
+      const scrollable = journey.offsetHeight - stage.offsetHeight;
+      // Land where the stop's moment has finished playing.
+      const target = (bounds[k][0] + (bounds[k][1] - bounds[k][0]) * 0.78) / total;
+      const y = journey.getBoundingClientRect().top + window.scrollY + scrollable * target;
+      window.scrollTo({ top: y, behavior: reduceMotion() ? "auto" : "smooth" });
+    }
+
+    stopHome();
+    let ticking = false;
+    homeHandler = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => { ticking = false; tick(); });
+    };
+    window.addEventListener("scroll", homeHandler, { passive: true });
+    window.addEventListener("resize", homeHandler, { passive: true });
+    tick();
   }
 
   // ---------- Wiring ----------
@@ -1247,6 +1361,7 @@
   };
 
   function render() {
+    if (state.view !== "welcome") stopHome();
     renderHeader();
     if (state.view === "cart") renderCart();
     else if (state.view === "welcome") renderWelcome();
