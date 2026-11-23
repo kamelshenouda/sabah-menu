@@ -1,4 +1,4 @@
-// Sabah Menu data — every dish, section and photo lives here. See README.md.
+// Sabah Menu data — every dish, section, photo and ready-made bundle lives here. See README.md.
 window.SABAH_MENU = {
  "groups": [
   {
@@ -18,7 +18,8 @@ window.SABAH_MENU = {
        "en": "Marinated chicken breast – Asian honey",
        "img": "assets/kitchen/thumbs/k1.webp",
        "full": "assets/kitchen/full/k1.webp",
-       "ready": "cook"
+       "ready": "cook",
+       "healthy": true
       },
       {
        "id": "k2",
@@ -26,7 +27,8 @@ window.SABAH_MENU = {
        "en": "Marinated chicken breast – jalapeño & garlic",
        "img": "assets/kitchen/thumbs/k2.webp",
        "full": "assets/kitchen/full/k2.webp",
-       "ready": "cook"
+       "ready": "cook",
+       "healthy": true
       },
       {
        "id": "k3",
@@ -34,7 +36,8 @@ window.SABAH_MENU = {
        "en": "Marinated chicken breast – Italian",
        "img": "assets/kitchen/thumbs/k3.webp",
        "full": "assets/kitchen/full/k3.webp",
-       "ready": "cook"
+       "ready": "cook",
+       "healthy": true
       },
       {
        "id": "k4",
@@ -42,7 +45,8 @@ window.SABAH_MENU = {
        "en": "Marinated chicken breast – fajita",
        "img": "assets/kitchen/thumbs/k4.webp",
        "full": "assets/kitchen/full/k4.webp",
-       "ready": "cook"
+       "ready": "cook",
+       "healthy": true
       },
       {
        "id": "k5",
@@ -50,7 +54,8 @@ window.SABAH_MENU = {
        "en": "Marinated chicken breast – honey mustard",
        "img": "assets/kitchen/thumbs/k5.webp",
        "full": "assets/kitchen/full/k5.webp",
-       "ready": "cook"
+       "ready": "cook",
+       "healthy": true
       },
       {
        "id": "k6",
@@ -58,7 +63,8 @@ window.SABAH_MENU = {
        "en": "Marinated chicken breast – coriander & lemon",
        "img": "assets/kitchen/thumbs/k6.webp",
        "full": "assets/kitchen/full/k6.webp",
-       "ready": "cook"
+       "ready": "cook",
+       "healthy": true
       },
       {
        "id": "k7",
@@ -66,7 +72,8 @@ window.SABAH_MENU = {
        "en": "Marinated chicken breast – salt, pepper, onion & smoky BBQ",
        "img": "assets/kitchen/thumbs/k7.webp",
        "full": "assets/kitchen/full/k7.webp",
-       "ready": "cook"
+       "ready": "cook",
+       "healthy": true
       },
       {
        "id": "k8",
@@ -74,7 +81,8 @@ window.SABAH_MENU = {
        "en": "Marinated shish tawook breast with vegetables",
        "img": "assets/kitchen/thumbs/k8.webp",
        "full": "assets/kitchen/full/k8.webp",
-       "ready": "cook"
+       "ready": "cook",
+       "healthy": true
       },
       {
        "id": "k9",
@@ -90,7 +98,8 @@ window.SABAH_MENU = {
        "en": "Marinated shish tawook thighs with vegetables",
        "img": "assets/kitchen/thumbs/k10.webp",
        "full": "assets/kitchen/full/k10.webp",
-       "ready": "cook"
+       "ready": "cook",
+       "healthy": true
       },
       {
        "id": "k11",
@@ -178,7 +187,8 @@ window.SABAH_MENU = {
        "en": "Whole chicken stuffed with freekeh & liver",
        "img": "assets/kitchen/thumbs/k82.webp",
        "full": "assets/kitchen/full/k82.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "unit": "piece"
       },
       {
        "id": "k83",
@@ -202,7 +212,8 @@ window.SABAH_MENU = {
        "en": "Tandoori chicken slices with vegetables & onion",
        "img": "assets/kitchen/thumbs/k100.webp",
        "full": "assets/kitchen/full/k100.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "healthy": true
       },
       {
        "id": "k101",
@@ -210,7 +221,8 @@ window.SABAH_MENU = {
        "en": "Rosemary & garlic chicken",
        "img": "assets/kitchen/thumbs/k101.webp",
        "full": "assets/kitchen/full/k101.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "healthy": true
       },
       {
        "id": "k102",
@@ -218,7 +230,8 @@ window.SABAH_MENU = {
        "en": "Lemon & spice chicken with vegetables & onion",
        "img": "assets/kitchen/thumbs/k102.webp",
        "full": "assets/kitchen/full/k102.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "healthy": true
       },
       {
        "id": "k103",
@@ -226,7 +239,8 @@ window.SABAH_MENU = {
        "en": "Yoghurt & spice chicken with vegetables & onion",
        "img": "assets/kitchen/thumbs/k103.webp",
        "full": "assets/kitchen/full/k103.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "healthy": true
       },
       {
        "id": "k110",
@@ -242,7 +256,8 @@ window.SABAH_MENU = {
        "en": "Duck stuffed with freekeh",
        "img": "assets/kitchen/thumbs/k111.webp",
        "full": "assets/kitchen/full/k111.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "unit": "piece"
       },
       {
        "id": "k112",
@@ -250,9 +265,11 @@ window.SABAH_MENU = {
        "en": "Pigeon stuffed with freekeh",
        "img": "assets/kitchen/thumbs/k112.webp",
        "full": "assets/kitchen/full/k112.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "unit": "piece"
       }
-     ]
+     ],
+     "unit": "kg"
     },
     {
      "id": "beef",
@@ -340,7 +357,8 @@ window.SABAH_MENU = {
        "full": "assets/kitchen/full/k167.webp",
        "ready": "cook"
       }
-     ]
+     ],
+     "unit": "kg"
     },
     {
      "id": "fish",
@@ -396,7 +414,9 @@ window.SABAH_MENU = {
        "full": "assets/kitchen/full/k119.webp",
        "ready": "eat"
       }
-     ]
+     ],
+     "unit": "kg",
+     "healthy": true
     },
     {
      "id": "eggs-dairy",
@@ -468,7 +488,9 @@ window.SABAH_MENU = {
        "full": "assets/kitchen/full/k166.webp",
        "ready": "eat"
       }
-     ]
+     ],
+     "unit": "plate",
+     "healthy": true
     },
     {
      "id": "legumes",
@@ -532,7 +554,9 @@ window.SABAH_MENU = {
        "full": "assets/kitchen/full/k34.webp",
        "ready": "eat"
       }
-     ]
+     ],
+     "unit": "plate",
+     "healthy": true
     },
     {
      "id": "vegetables",
@@ -586,7 +610,8 @@ window.SABAH_MENU = {
        "en": "Broccoli",
        "img": "assets/kitchen/thumbs/k40.webp",
        "full": "assets/kitchen/full/k40.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "healthy": true
       },
       {
        "id": "k41",
@@ -618,7 +643,8 @@ window.SABAH_MENU = {
        "en": "Lightly seasoned sweet zucchini",
        "img": "assets/kitchen/thumbs/k44.webp",
        "full": "assets/kitchen/full/k44.webp",
-       "ready": "cook"
+       "ready": "cook",
+       "healthy": true
       },
       {
        "id": "k84",
@@ -634,7 +660,8 @@ window.SABAH_MENU = {
        "en": "Kabocha squash",
        "img": "assets/kitchen/thumbs/k85.webp",
        "full": "assets/kitchen/full/k85.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "healthy": true
       },
       {
        "id": "k97",
@@ -642,7 +669,8 @@ window.SABAH_MENU = {
        "en": "Sweet corn",
        "img": "assets/kitchen/thumbs/k97.webp",
        "full": "assets/kitchen/full/k97.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "healthy": true
       },
       {
        "id": "k138",
@@ -674,7 +702,8 @@ window.SABAH_MENU = {
        "en": "Mixed vegetables",
        "img": "assets/kitchen/thumbs/k141.webp",
        "full": "assets/kitchen/full/k141.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "healthy": true
       },
       {
        "id": "k142",
@@ -700,7 +729,8 @@ window.SABAH_MENU = {
        "full": "assets/kitchen/full/k164.webp",
        "ready": "eat"
       }
-     ]
+     ],
+     "unit": "plate"
     },
     {
      "id": "salads",
@@ -804,7 +834,9 @@ window.SABAH_MENU = {
        "full": "assets/kitchen/full/k54.webp",
        "ready": "eat"
       }
-     ]
+     ],
+     "unit": "plate",
+     "healthy": true
     },
     {
      "id": "whole-grains",
@@ -850,7 +882,8 @@ window.SABAH_MENU = {
        "en": "Baladi bread",
        "img": "assets/kitchen/thumbs/k59.webp",
        "full": "assets/kitchen/full/k59.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "unit": "piece"
       },
       {
        "id": "k60",
@@ -858,7 +891,8 @@ window.SABAH_MENU = {
        "en": "Whole-wheat bread",
        "img": "assets/kitchen/thumbs/k60.webp",
        "full": "assets/kitchen/full/k60.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "unit": "piece"
       },
       {
        "id": "k87",
@@ -866,7 +900,8 @@ window.SABAH_MENU = {
        "en": "Nigella-seed crispbread (eish qorsh)",
        "img": "assets/kitchen/thumbs/k87.webp",
        "full": "assets/kitchen/full/k87.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "unit": "piece"
       },
       {
        "id": "k88",
@@ -874,7 +909,8 @@ window.SABAH_MENU = {
        "en": "Toasted brown bread cubes",
        "img": "assets/kitchen/thumbs/k88.webp",
        "full": "assets/kitchen/full/k88.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "unit": "piece"
       },
       {
        "id": "k105",
@@ -882,7 +918,8 @@ window.SABAH_MENU = {
        "en": "Brown toast with garlic & olive oil",
        "img": "assets/kitchen/thumbs/k105.webp",
        "full": "assets/kitchen/full/k105.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "unit": "piece"
       },
       {
        "id": "k106",
@@ -890,7 +927,8 @@ window.SABAH_MENU = {
        "en": "Brown toast with za'atar & olives",
        "img": "assets/kitchen/thumbs/k106.webp",
        "full": "assets/kitchen/full/k106.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "unit": "piece"
       },
       {
        "id": "k107",
@@ -898,9 +936,12 @@ window.SABAH_MENU = {
        "en": "Anise & cinnamon crackers",
        "img": "assets/kitchen/thumbs/k107.webp",
        "full": "assets/kitchen/full/k107.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "unit": "piece"
       }
-     ]
+     ],
+     "unit": "plate",
+     "healthy": true
     },
     {
      "id": "fruit",
@@ -1020,7 +1061,9 @@ window.SABAH_MENU = {
        "full": "assets/kitchen/full/k161.webp",
        "ready": "eat"
       }
-     ]
+     ],
+     "unit": "kg",
+     "healthy": true
     },
     {
      "id": "healthy-sweets",
@@ -1132,7 +1175,9 @@ window.SABAH_MENU = {
        "full": "assets/kitchen/full/k168.webp",
        "ready": "eat"
       }
-     ]
+     ],
+     "unit": "piece",
+     "healthy": true
     },
     {
      "id": "pastries",
@@ -1220,7 +1265,8 @@ window.SABAH_MENU = {
        "full": "assets/kitchen/full/k129.webp",
        "ready": "eat"
       }
-     ]
+     ],
+     "unit": "piece"
     },
     {
      "id": "rice-pasta",
@@ -1292,7 +1338,8 @@ window.SABAH_MENU = {
        "full": "assets/kitchen/full/k137.webp",
        "ready": "eat"
       }
-     ]
+     ],
+     "unit": "plate"
     },
     {
      "id": "egyptian",
@@ -1324,7 +1371,8 @@ window.SABAH_MENU = {
        "full": "assets/kitchen/full/k146.webp",
        "ready": "eat"
       }
-     ]
+     ],
+     "unit": "plate"
     },
     {
      "id": "soup",
@@ -1348,7 +1396,9 @@ window.SABAH_MENU = {
        "full": "assets/kitchen/full/k148.webp",
        "ready": "eat"
       }
-     ]
+     ],
+     "unit": "plate",
+     "healthy": true
     },
     {
      "id": "desserts",
@@ -1452,7 +1502,8 @@ window.SABAH_MENU = {
        "full": "assets/kitchen/full/k160.webp",
        "ready": "eat"
       }
-     ]
+     ],
+     "unit": "plate"
     },
     {
      "id": "other",
@@ -1466,7 +1517,8 @@ window.SABAH_MENU = {
        "en": "Red (tomato) sauce",
        "img": "assets/kitchen/thumbs/k89.webp",
        "full": "assets/kitchen/full/k89.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "unit": "plate"
       },
       {
        "id": "k200",
@@ -1474,7 +1526,8 @@ window.SABAH_MENU = {
        "en": "White sauce",
        "img": "assets/kitchen/thumbs/k200.webp",
        "full": "assets/kitchen/full/k200.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "unit": "plate"
       },
       {
        "id": "k201",
@@ -1482,7 +1535,8 @@ window.SABAH_MENU = {
        "en": "Assorted pickles",
        "img": "assets/kitchen/thumbs/k201.webp",
        "full": "assets/kitchen/full/k201.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "unit": "plate"
       },
       {
        "id": "k162",
@@ -1490,7 +1544,8 @@ window.SABAH_MENU = {
        "en": "Bottle of lemon-mint, no sugar",
        "img": "assets/kitchen/thumbs/k162.webp",
        "full": "assets/kitchen/full/k162.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "healthy": true
       },
       {
        "id": "k163",
@@ -1498,7 +1553,8 @@ window.SABAH_MENU = {
        "en": "Bottle of hibiscus-mint, no sugar",
        "img": "assets/kitchen/thumbs/k163.webp",
        "full": "assets/kitchen/full/k163.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "healthy": true
       },
       {
        "id": "k169",
@@ -1506,9 +1562,11 @@ window.SABAH_MENU = {
        "en": "Bottle of hibiscus, no sugar",
        "img": "assets/kitchen/thumbs/k169.webp",
        "full": "assets/kitchen/full/k169.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "healthy": true
       }
-     ]
+     ],
+     "unit": "piece"
     }
    ]
   },
@@ -1770,7 +1828,9 @@ window.SABAH_MENU = {
         "en": "Our all-spicy healthy box for heat lovers — four picks in a clean, gluten-free coating.\n4 plates x 400g: Chicken Strips Spicy, Chicken Panne Spicy, Beef Scallop Spicy, Chicken Pops Spicy."
        }
       }
-     ]
+     ],
+     "healthy": true,
+     "ready": "cook"
     },
     {
      "id": "turkish",
@@ -2024,7 +2084,8 @@ window.SABAH_MENU = {
         "en": "Two thick layers of seasoned minced beef stuffed with melting cheese and mushrooms, grilled until golden and bubbling. 500g."
        }
       }
-     ]
+     ],
+     "ready": "cook"
     },
     {
      "id": "steaks",
@@ -2159,7 +2220,8 @@ window.SABAH_MENU = {
         }
        ]
       }
-     ]
+     ],
+     "ready": "cook"
     },
     {
      "id": "beef-cuts",
@@ -2468,7 +2530,8 @@ window.SABAH_MENU = {
         "en": "Premium Beef Roast with a tender texture, firm bite, and rich flavor. Ideal for roasting and serving as refined cold cuts. Sold as a whole piece, with an average weight of 2.5–3.5 kg. (Priced per kg)"
        }
       }
-     ]
+     ],
+     "ready": "cook"
     },
     {
      "id": "marinated-beef",
@@ -2893,7 +2956,8 @@ window.SABAH_MENU = {
         "en": "The famous Dawood Basha Kofta, made with Butcherista's signature blend. No preservatives, no soy. Available in 400g and 1200g."
        }
       }
-     ]
+     ],
+     "ready": "cook"
     },
     {
      "id": "marinated-chicken",
@@ -3164,7 +3228,8 @@ window.SABAH_MENU = {
         "en": "Chicken nuggets made from fresh breast meat with no preservatives. Available in 500g and 1000g."
        }
       }
-     ]
+     ],
+     "ready": "cook"
     },
     {
      "id": "diet-plates",
@@ -3488,7 +3553,9 @@ window.SABAH_MENU = {
         "en": "Diet beef burger from clean, low-fat beef in a light, healthy marinade. Available in 500g 4 pieces and 1000g 8 pieces."
        }
       }
-     ]
+     ],
+     "healthy": true,
+     "ready": "cook"
     },
     {
      "id": "appetizers",
@@ -3628,7 +3695,8 @@ window.SABAH_MENU = {
         "en": "Chicken pops from clean breast meat, stuffed with melted cheddar and Dutch cheese — golden outside, juicy inside, no preservatives. Available in 500g (16 pieces) or 1kg (32 pieces)."
        }
       }
-     ]
+     ],
+     "ready": "cook"
     },
     {
      "id": "add-ons",
@@ -3851,6 +3919,143 @@ window.SABAH_MENU = {
       }
      ]
     }
+   ]
+  }
+ ],
+ "collections": [
+  {
+   "id": "week-family",
+   "kind": "week",
+   "ar": "أسبوع العيلة",
+   "en": "Family week",
+   "desc": {
+    "ar": "غدا كل يوم في الأسبوع: فراخ ولحمة وطبيخ ورز وشوربة.",
+    "en": "A lunch for every day of the week: chicken, meat, stews, rice and soup."
+   },
+   "items": [
+    "k14",
+    "k91",
+    "k110",
+    "k143",
+    "k84",
+    "k38",
+    "k131",
+    "k130",
+    "k133",
+    "k147"
+   ]
+  },
+  {
+   "id": "week-healthy",
+   "kind": "week",
+   "ar": "أسبوع صحي",
+   "en": "Healthy week",
+   "desc": {
+    "ar": "بروتين خفيف وخضار وحبوب كاملة وسناك صحي، من غير ما تفكر.",
+    "en": "Lean protein, vegetables, whole grains and healthy snacks, already planned."
+   },
+   "items": [
+    "k6",
+    "k3",
+    "k20",
+    "k40",
+    "k57",
+    "k46",
+    "k148",
+    "k26",
+    "k71",
+    "k162"
+   ]
+  },
+  {
+   "id": "week-prep",
+   "kind": "week",
+   "ar": "أسبوع جاهز للطبخ",
+   "en": "Ready-to-cook week",
+   "desc": {
+    "ar": "كله متبّل ومتجهّز، تسوّيه في دقايق وهو طازة.",
+    "en": "All marinated and prepped, so you cook it fresh in minutes."
+   },
+   "items": [
+    "k1",
+    "k4",
+    "k8",
+    "k19",
+    "k90",
+    "k165",
+    "k44"
+   ]
+  },
+  {
+   "id": "feast-classic",
+   "kind": "feast",
+   "ar": "عزومة البيت الكبيرة",
+   "en": "The big family feast",
+   "desc": {
+    "ar": "فرخة محشية وحمام ومحاشي ورز معمّر، وأم علي في الآخر.",
+    "en": "Stuffed chicken, pigeon, mahshi and baked rice, with Om Ali to finish."
+   },
+   "items": [
+    "k82",
+    "k112",
+    "k143",
+    "k132",
+    "k140",
+    "k152"
+   ]
+  },
+  {
+   "id": "feast-meat",
+   "kind": "feast",
+   "ar": "عزومة اللحمة",
+   "en": "Meat lovers feast",
+   "desc": {
+    "ar": "كباب حلة وداوود باشا وفتة وممبار، ومكرونة بشاميل وكنافة.",
+    "en": "Kabab halla, Dawood Basha, fatta and mombar, with pasta béchamel and kunafa."
+   },
+   "items": [
+    "k91",
+    "k117",
+    "k146",
+    "k144",
+    "k133",
+    "k150"
+   ]
+  },
+  {
+   "id": "feast-grill",
+   "kind": "feast",
+   "ar": "ليلة المشويات",
+   "en": "Grill night",
+   "desc": {
+    "ar": "شيش طاووق وكفتة وشرايح لحمة متبّلة، مع حمص ومخللات وعيش.",
+    "en": "Shish tawook, kofta and marinated beef, with hummus, pickles and bread."
+   },
+   "items": [
+    "k8",
+    "k10",
+    "k19",
+    "k167",
+    "k29",
+    "k201",
+    "k59"
+   ]
+  },
+  {
+   "id": "feast-sea",
+   "kind": "feast",
+   "ar": "عزومة السمك",
+   "en": "Seafood table",
+   "desc": {
+    "ar": "سلمون وجمبري وسبيط مع رز بشعرية وسلطة.",
+    "en": "Salmon, shrimp and calamari with vermicelli rice and salad."
+   },
+   "items": [
+    "k20",
+    "k118",
+    "k119",
+    "k130",
+    "k46"
    ]
   }
  ]

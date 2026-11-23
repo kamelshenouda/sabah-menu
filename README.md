@@ -8,12 +8,32 @@ One menu app that combines two earlier menus, plus food ideas people share:
 - **بوتشريستا / Butcherista**: 76 meat, chicken and appetizer items in 9 sections, with photos,
   sizes, flavour and marinade choices, and estimated calories, from the earlier guide (دليل بوتشريستا).
 
-You browse or search the menu, tap an item to add it to the order (with quantity, unit or size,
-options and a note), then send the order as a WhatsApp message or copy it.
+A first-time visitor sees a landing page that explains the five ways to order: ready to cook,
+ready to eat, meals of the week, عزومات (feasts) and healthy food. It is one dark scene that stays
+pinned while the scroll moves it through those stops (about four screens on a phone): raw chicken
+turning into the cooked dish, a week filling up day by day, a feast table filling dish by dish, then
+healthy food and the start button. A bar at the bottom lists every stop from the first screen and
+jumps straight to it, and each stop has buttons that open the matching bundle or filtered menu. Returning visitors, or anyone
+with something already in their order, go straight to the menu; the logo opens the landing page again.
+
+On the menu you can:
+
+- tap **+ Add** on any dish to add it straight away, then use − / + on the card to change the amount;
+- tap the photo or name for the full details (unit, size, options, a note for the chef);
+- jump between sections from the bar at the top, which follows you as you scroll;
+- filter by ready to cook, ready to eat, healthy, or your favourites (the heart on each dish);
+- add a whole ready-made bundle (a week of meals or a feast) in one tap, unticking anything you
+  don't want;
+- re-add your last sent order with **Order again**.
+
+Then you review the order and send it as a WhatsApp message, or copy it.
 The WhatsApp message is always written in Arabic, even when the app is showing English,
 because the chef reads Arabic.
-The app works in Arabic and English and follows the phone's light or dark mode.
-The order is saved on the device, so it's still there if the page is closed.
+The app works in Arabic and English and follows the phone's light or dark mode. Its look follows
+the Cool Teal mode of Kamel's design system (Cairo for Arabic; Sora, Outfit and Montserrat for English).
+The order, favourites and last order are saved on the device, so they are still there if the page is closed.
+
+Page addresses: `#welcome` (landing page), `#menu`, `#order`, `#ideas`, `#admin`.
 
 ## How to open it
 
@@ -81,6 +101,32 @@ A Butcherista item can also have a photo, sizes, options, a description and calo
 - Every item needs both `ar` and `en`.
 - Items in the Butcherista group are ordered in packs. Items in the Home Kitchen group are
   ordered by kilo, plate/box, or piece/bag.
+
+Extra fields that shape the menu:
+
+| Field | Where | What it does |
+|---|---|---|
+| `unit` | section or dish | The unit a dish starts with when added: `"kg"`, `"plate"` or `"piece"`. A dish's own `unit` wins over its section's. Amounts go up by 0.5 for kilos and by 1 otherwise. |
+| `ready` | section or dish | `"cook"` or `"eat"`. Shows the "ready to cook" / "ready to eat" tag and feeds those filters. A dish's own value wins. Butcherista sections with raw or frozen products are marked `"cook"`. |
+| `healthy` | section or dish | `true` puts the dish under the Healthy filter. |
+
+### Ready-made bundles
+
+`collections` at the end of `data/menu.js` lists the bundles shown on the landing page and above
+the menu:
+
+```js
+{
+ "id": "week-family",
+ "kind": "week",            // "week" (meals of the week) or "feast" (عزومات)
+ "ar": "أسبوع العيلة", "en": "Family week",
+ "desc": { "ar": "…", "en": "…" },
+ "items": ["k14", "k91", "k110"]
+}
+```
+
+Each item id must be a dish on the menu. Adding a bundle adds each dish once with its starting unit
+and an amount of 1; people change amounts on the order page.
 
 ## Food ideas page (`#ideas`)
 
