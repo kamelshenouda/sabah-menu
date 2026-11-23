@@ -213,7 +213,7 @@ img { display: block; max-width: 100%; }
 }
 .in-cart .badge { background: var(--accent); color: var(--accent-ink); }
 
-/* Butcherista photo cards */
+/* Photo cards (home kitchen and Butcherista) */
 .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 @media (min-width: 640px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
 .card {
@@ -233,6 +233,25 @@ img { display: block; max-width: 100%; }
 .card .badge { position: absolute; top: 8px; inset-inline-end: 8px; box-shadow: var(--shadow-sm); background: var(--surface); }
 .card.in-cart .badge { background: var(--accent); }
 @media (hover: none) { .card:hover { transform: none; box-shadow: var(--shadow-sm); } }
+
+/* "Ready to cook" / "Ready to eat" tag on home-kitchen dishes */
+.ready-tag {
+  display: inline-flex; align-items: center; gap: 6px; align-self: flex-start;
+  margin-bottom: 4px; padding: 3px 10px; border-radius: 999px;
+  font-size: 12px; font-weight: 600; line-height: 1.4;
+  background: var(--surface-2); color: var(--fg);
+}
+.ready-tag::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex: none; }
+.ready-cook::before { background: #E0A030; }
+.ready-eat::before { background: #4CAF6A; }
+/* On a card it sits over the bottom corner of the square photo (the photos are dark).
+   A percentage margin is measured from the card's width, which is also the photo's height. */
+.ready-tag.on-card {
+  position: absolute; top: 0; inset-inline-start: 8px; margin: calc(100% - 32px) 0 0;
+  padding: 2px 9px; font-size: 11px;
+  background: rgba(20, 16, 12, 0.72); color: #FFF;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
 
 .empty { text-align: center; padding: 64px 0; color: var(--fg-2); }
 .empty-icon { font-size: 40px; margin-bottom: 12px; }

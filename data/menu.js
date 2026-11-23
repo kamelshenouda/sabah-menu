@@ -15,152 +15,242 @@ window.SABAH_MENU = {
       {
        "id": "k1",
        "ar": "صدور فراخ متبلة - تتبيلة العسل الآسيوي",
-       "en": "Marinated chicken breast – Asian honey"
+       "en": "Marinated chicken breast – Asian honey",
+       "img": "assets/kitchen/thumbs/k1.webp",
+       "full": "assets/kitchen/full/k1.webp",
+       "ready": "cook"
       },
       {
        "id": "k2",
        "ar": "صدور فراخ متبلة - تتبيلة الهالبينو والتوم",
-       "en": "Marinated chicken breast – jalapeño & garlic"
+       "en": "Marinated chicken breast – jalapeño & garlic",
+       "img": "assets/kitchen/thumbs/k2.webp",
+       "full": "assets/kitchen/full/k2.webp",
+       "ready": "cook"
       },
       {
        "id": "k3",
        "ar": "صدور فراخ متبلة - تتبيلة إيطالية",
-       "en": "Marinated chicken breast – Italian"
+       "en": "Marinated chicken breast – Italian",
+       "img": "assets/kitchen/thumbs/k3.webp",
+       "full": "assets/kitchen/full/k3.webp",
+       "ready": "cook"
       },
       {
        "id": "k4",
        "ar": "صدور فراخ متبلة - تتبيلة الفاهيتا",
-       "en": "Marinated chicken breast – fajita"
+       "en": "Marinated chicken breast – fajita",
+       "img": "assets/kitchen/thumbs/k4.webp",
+       "full": "assets/kitchen/full/k4.webp",
+       "ready": "cook"
       },
       {
        "id": "k5",
        "ar": "صدور فراخ متبلة - تتبيلة العسل والمستردة",
-       "en": "Marinated chicken breast – honey mustard"
+       "en": "Marinated chicken breast – honey mustard",
+       "img": "assets/kitchen/thumbs/k5.webp",
+       "full": "assets/kitchen/full/k5.webp",
+       "ready": "cook"
       },
       {
        "id": "k6",
        "ar": "صدور فراخ متبلة - تتبيلة الكزبرة والليمون",
-       "en": "Marinated chicken breast – coriander & lemon"
+       "en": "Marinated chicken breast – coriander & lemon",
+       "img": "assets/kitchen/thumbs/k6.webp",
+       "full": "assets/kitchen/full/k6.webp",
+       "ready": "cook"
       },
       {
        "id": "k7",
        "ar": "صدور فراخ متبلة - ملح وفلفل وبصل وباربيكيو مدخن",
-       "en": "Marinated chicken breast – salt, pepper, onion & smoky BBQ"
+       "en": "Marinated chicken breast – salt, pepper, onion & smoky BBQ",
+       "img": "assets/kitchen/thumbs/k7.webp",
+       "full": "assets/kitchen/full/k7.webp",
+       "ready": "cook"
       },
       {
        "id": "k8",
        "ar": "صدور فراخ شيش طاووق متبلة معاها خضار",
-       "en": "Marinated shish tawook breast with vegetables"
+       "en": "Marinated shish tawook breast with vegetables",
+       "img": "assets/kitchen/thumbs/k8.webp",
+       "full": "assets/kitchen/full/k8.webp",
+       "ready": "cook"
       },
       {
        "id": "k9",
        "ar": "صدور فراخ فاهيتا متبلة - بالبصل والخضار",
-       "en": "Marinated fajita breast with onion & vegetables"
+       "en": "Marinated fajita breast with onion & vegetables",
+       "img": "assets/kitchen/thumbs/k9.webp",
+       "full": "assets/kitchen/full/k9.webp",
+       "ready": "cook"
       },
       {
        "id": "k10",
        "ar": "وراق فراخ شيش طاووق متبلة - معاها خضار",
-       "en": "Marinated shish tawook thighs with vegetables"
+       "en": "Marinated shish tawook thighs with vegetables",
+       "img": "assets/kitchen/thumbs/k10.webp",
+       "full": "assets/kitchen/full/k10.webp",
+       "ready": "cook"
       },
       {
        "id": "k11",
        "ar": "صدور فراخ بانيه - كريسبي",
-       "en": "Crispy breaded chicken breast (panne)"
+       "en": "Crispy breaded chicken breast (panne)",
+       "img": "assets/kitchen/thumbs/k11.webp",
+       "full": "assets/kitchen/full/k11.webp",
+       "ready": "eat"
       },
       {
        "id": "k12",
        "ar": "صدور فراخ بانيه - كريسبي وسبايسي",
-       "en": "Crispy spicy breaded chicken breast (panne)"
+       "en": "Crispy spicy breaded chicken breast (panne)",
+       "img": "assets/kitchen/thumbs/k12.webp",
+       "full": "assets/kitchen/full/k12.webp",
+       "ready": "eat"
       },
       {
        "id": "k13",
        "ar": "فراخ متبلة من غير عضم",
-       "en": "Boneless marinated chicken"
+       "en": "Boneless marinated chicken",
+       "img": "assets/kitchen/thumbs/k13.webp",
+       "full": "assets/kitchen/full/k13.webp",
+       "ready": "cook"
       },
       {
        "id": "k14",
        "ar": "فراخ بالبصل في الفرن",
-       "en": "Oven-baked chicken with onions"
+       "en": "Oven-baked chicken with onions",
+       "img": "assets/kitchen/thumbs/k14.webp",
+       "full": "assets/kitchen/full/k14.webp",
+       "ready": "eat"
       },
       {
        "id": "k15",
        "ar": "فراخ محشي فريك",
-       "en": "Chicken stuffed with freekeh"
+       "en": "Chicken stuffed with freekeh",
+       "img": "assets/kitchen/thumbs/k15.webp",
+       "full": "assets/kitchen/full/k15.webp",
+       "ready": "eat"
       },
       {
        "id": "k16",
        "ar": "صدور فراخ بالبطاطس الجراتان",
-       "en": "Chicken breast with potato gratin"
+       "en": "Chicken breast with potato gratin",
+       "img": "assets/kitchen/thumbs/k16.webp",
+       "full": "assets/kitchen/full/k16.webp",
+       "ready": "eat"
       },
       {
        "id": "k17",
        "ar": "صدور فراخ بالصوص الابيض والمشروم",
-       "en": "Chicken breast in white mushroom sauce"
+       "en": "Chicken breast in white mushroom sauce",
+       "img": "assets/kitchen/thumbs/k17.webp",
+       "full": "assets/kitchen/full/k17.webp",
+       "ready": "eat"
       },
       {
        "id": "k18",
        "ar": "كفتة فراخ",
-       "en": "Chicken kofta"
+       "en": "Chicken kofta",
+       "img": "assets/kitchen/thumbs/k18.webp",
+       "full": "assets/kitchen/full/k18.webp",
+       "ready": "cook"
       },
       {
        "id": "k80",
        "ar": "صدور فراخ شيش طاووق متبلة معاها خضار وماشروم",
-       "en": "Marinated shish tawook breast with vegetables & mushrooms"
+       "en": "Marinated shish tawook breast with vegetables & mushrooms",
+       "img": "assets/kitchen/thumbs/k80.webp",
+       "full": "assets/kitchen/full/k80.webp",
+       "ready": "cook"
       },
       {
        "id": "k81",
        "ar": "صدور فراخ فاهيتا متبلة بالبصل والخضار وماشروم",
-       "en": "Marinated fajita breast with onion, vegetables & mushrooms"
+       "en": "Marinated fajita breast with onion, vegetables & mushrooms",
+       "img": "assets/kitchen/thumbs/k81.webp",
+       "full": "assets/kitchen/full/k81.webp",
+       "ready": "cook"
       },
       {
        "id": "k82",
        "ar": "فرخة محشية فريك وكبد",
-       "en": "Whole chicken stuffed with freekeh & liver"
+       "en": "Whole chicken stuffed with freekeh & liver",
+       "img": "assets/kitchen/thumbs/k82.webp",
+       "full": "assets/kitchen/full/k82.webp",
+       "ready": "eat"
       },
       {
        "id": "k83",
        "ar": "فراخ كنتاكي سبايسي",
-       "en": "Spicy Kentucky-style fried chicken"
+       "en": "Spicy Kentucky-style fried chicken",
+       "img": "assets/kitchen/thumbs/k83.webp",
+       "full": "assets/kitchen/full/k83.webp",
+       "ready": "eat"
       },
       {
        "id": "k99",
        "ar": "شرايح شاورما فراخ",
-       "en": "Chicken shawarma slices"
+       "en": "Chicken shawarma slices",
+       "img": "assets/kitchen/thumbs/k99.webp",
+       "full": "assets/kitchen/full/k99.webp",
+       "ready": "eat"
       },
       {
        "id": "k100",
        "ar": "شرايح فراخ تاندوري بالخضار والبصل",
-       "en": "Tandoori chicken slices with vegetables & onion"
+       "en": "Tandoori chicken slices with vegetables & onion",
+       "img": "assets/kitchen/thumbs/k100.webp",
+       "full": "assets/kitchen/full/k100.webp",
+       "ready": "eat"
       },
       {
        "id": "k101",
        "ar": "فراخ بالروزماري والتوم",
-       "en": "Rosemary & garlic chicken"
+       "en": "Rosemary & garlic chicken",
+       "img": "assets/kitchen/thumbs/k101.webp",
+       "full": "assets/kitchen/full/k101.webp",
+       "ready": "eat"
       },
       {
        "id": "k102",
        "ar": "فراخ بالليمون والبهارات ومعاها خضار وبصل",
-       "en": "Lemon & spice chicken with vegetables & onion"
+       "en": "Lemon & spice chicken with vegetables & onion",
+       "img": "assets/kitchen/thumbs/k102.webp",
+       "full": "assets/kitchen/full/k102.webp",
+       "ready": "eat"
       },
       {
        "id": "k103",
        "ar": "فراخ بالزبادي والبهارات ومعاها خضار وبصل",
-       "en": "Yoghurt & spice chicken with vegetables & onion"
+       "en": "Yoghurt & spice chicken with vegetables & onion",
+       "img": "assets/kitchen/thumbs/k103.webp",
+       "full": "assets/kitchen/full/k103.webp",
+       "ready": "eat"
       },
       {
        "id": "k110",
        "ar": "فراخ بالبطاطس والصلصة",
-       "en": "Chicken with potatoes in tomato sauce"
+       "en": "Chicken with potatoes in tomato sauce",
+       "img": "assets/kitchen/thumbs/k110.webp",
+       "full": "assets/kitchen/full/k110.webp",
+       "ready": "eat"
       },
       {
        "id": "k111",
        "ar": "بط محشي فريك",
-       "en": "Duck stuffed with freekeh"
+       "en": "Duck stuffed with freekeh",
+       "img": "assets/kitchen/thumbs/k111.webp",
+       "full": "assets/kitchen/full/k111.webp",
+       "ready": "eat"
       },
       {
        "id": "k112",
        "ar": "حمام محشي فريك",
-       "en": "Pigeon stuffed with freekeh"
+       "en": "Pigeon stuffed with freekeh",
+       "img": "assets/kitchen/thumbs/k112.webp",
+       "full": "assets/kitchen/full/k112.webp",
+       "ready": "eat"
       }
      ]
     },
@@ -173,52 +263,82 @@ window.SABAH_MENU = {
       {
        "id": "k19",
        "ar": "كفتة متبلة - فلفل وباربيكيو مدخن",
-       "en": "Marinated kofta – pepper & smoky BBQ"
+       "en": "Marinated kofta – pepper & smoky BBQ",
+       "img": "assets/kitchen/thumbs/k19.webp",
+       "full": "assets/kitchen/full/k19.webp",
+       "ready": "cook"
       },
       {
        "id": "k90",
        "ar": "شرايح لحمة متبلة",
-       "en": "Marinated beef slices"
+       "en": "Marinated beef slices",
+       "img": "assets/kitchen/thumbs/k90.webp",
+       "full": "assets/kitchen/full/k90.webp",
+       "ready": "cook"
       },
       {
        "id": "k91",
        "ar": "كباب حلة بالبصل",
-       "en": "Stewed beef kebab with onions (kabab halla)"
+       "en": "Stewed beef kebab with onions (kabab halla)",
+       "img": "assets/kitchen/thumbs/k91.webp",
+       "full": "assets/kitchen/full/k91.webp",
+       "ready": "eat"
       },
       {
        "id": "k104",
        "ar": "شرايح شاورما لحمة",
-       "en": "Beef shawarma slices"
+       "en": "Beef shawarma slices",
+       "img": "assets/kitchen/thumbs/k104.webp",
+       "full": "assets/kitchen/full/k104.webp",
+       "ready": "eat"
       },
       {
        "id": "k113",
        "ar": "بيكاتا ستيك بصوص البني",
-       "en": "Steak piccata in brown sauce"
+       "en": "Steak piccata in brown sauce",
+       "img": "assets/kitchen/thumbs/k113.webp",
+       "full": "assets/kitchen/full/k113.webp",
+       "ready": "eat"
       },
       {
        "id": "k114",
        "ar": "بوفتيك",
-       "en": "Breaded beef escalope (boftek)"
+       "en": "Breaded beef escalope (boftek)",
+       "img": "assets/kitchen/thumbs/k114.webp",
+       "full": "assets/kitchen/full/k114.webp",
+       "ready": "eat"
       },
       {
        "id": "k115",
        "ar": "كفتة لحمة",
-       "en": "Beef kofta"
+       "en": "Beef kofta",
+       "img": "assets/kitchen/thumbs/k115.webp",
+       "full": "assets/kitchen/full/k115.webp",
+       "ready": "cook"
       },
       {
        "id": "k116",
        "ar": "كفتة رز",
-       "en": "Rice kofta"
+       "en": "Rice kofta",
+       "img": "assets/kitchen/thumbs/k116.webp",
+       "full": "assets/kitchen/full/k116.webp",
+       "ready": "eat"
       },
       {
        "id": "k117",
        "ar": "كفتة داوود باشا",
-       "en": "Dawood Basha meatballs"
+       "en": "Dawood Basha meatballs",
+       "img": "assets/kitchen/thumbs/k117.webp",
+       "full": "assets/kitchen/full/k117.webp",
+       "ready": "eat"
       },
       {
        "id": "k167",
        "ar": "شرايح لحمة متبلة بالبصل والخضار والمشروم",
-       "en": "Marinated beef slices with onion, vegetables & mushrooms"
+       "en": "Marinated beef slices with onion, vegetables & mushrooms",
+       "img": "assets/kitchen/thumbs/k167.webp",
+       "full": "assets/kitchen/full/k167.webp",
+       "ready": "cook"
       }
      ]
     },
@@ -231,32 +351,50 @@ window.SABAH_MENU = {
       {
        "id": "k20",
        "ar": "سمك السلمون",
-       "en": "Salmon"
+       "en": "Salmon",
+       "img": "assets/kitchen/thumbs/k20.webp",
+       "full": "assets/kitchen/full/k20.webp",
+       "ready": "eat"
       },
       {
        "id": "k21",
        "ar": "السمك السردين",
-       "en": "Sardines"
+       "en": "Sardines",
+       "img": "assets/kitchen/thumbs/k21.webp",
+       "full": "assets/kitchen/full/k21.webp",
+       "ready": "eat"
       },
       {
        "id": "k22",
        "ar": "السمك الماكريل",
-       "en": "Mackerel"
+       "en": "Mackerel",
+       "img": "assets/kitchen/thumbs/k22.webp",
+       "full": "assets/kitchen/full/k22.webp",
+       "ready": "eat"
       },
       {
        "id": "k23",
        "ar": "سمك تونا",
-       "en": "Tuna"
+       "en": "Tuna",
+       "img": "assets/kitchen/thumbs/k23.webp",
+       "full": "assets/kitchen/full/k23.webp",
+       "ready": "eat"
       },
       {
        "id": "k118",
        "ar": "جمبري",
-       "en": "Shrimp"
+       "en": "Shrimp",
+       "img": "assets/kitchen/thumbs/k118.webp",
+       "full": "assets/kitchen/full/k118.webp",
+       "ready": "eat"
       },
       {
        "id": "k119",
        "ar": "سبيط",
-       "en": "Calamari"
+       "en": "Calamari",
+       "img": "assets/kitchen/thumbs/k119.webp",
+       "full": "assets/kitchen/full/k119.webp",
+       "ready": "eat"
       }
      ]
     },
@@ -269,42 +407,66 @@ window.SABAH_MENU = {
       {
        "id": "k24",
        "ar": "بيض مسلوق",
-       "en": "Boiled eggs"
+       "en": "Boiled eggs",
+       "img": "assets/kitchen/thumbs/k24.webp",
+       "full": "assets/kitchen/full/k24.webp",
+       "ready": "eat"
       },
       {
        "id": "k25",
        "ar": "خلطة بيض",
-       "en": "Egg mix"
+       "en": "Egg mix",
+       "img": "assets/kitchen/thumbs/k25.webp",
+       "full": "assets/kitchen/full/k25.webp",
+       "ready": "cook"
       },
       {
        "id": "k26",
        "ar": "الزبادي اليوناني",
-       "en": "Greek yoghurt"
+       "en": "Greek yoghurt",
+       "img": "assets/kitchen/thumbs/k26.webp",
+       "full": "assets/kitchen/full/k26.webp",
+       "ready": "eat"
       },
       {
        "id": "k27",
        "ar": "لبنة قليلة الدسم",
-       "en": "Low-fat labneh"
+       "en": "Low-fat labneh",
+       "img": "assets/kitchen/thumbs/k27.webp",
+       "full": "assets/kitchen/full/k27.webp",
+       "ready": "eat"
       },
       {
        "id": "k86",
        "ar": "جبنة قريش مضروبة",
-       "en": "Whipped cottage cheese (areesh)"
+       "en": "Whipped cottage cheese (areesh)",
+       "img": "assets/kitchen/thumbs/k86.webp",
+       "full": "assets/kitchen/full/k86.webp",
+       "ready": "eat"
       },
       {
        "id": "k109",
        "ar": "جبنة قريش بالخلطة سبايسي",
-       "en": "Spicy seasoned cottage cheese (areesh)"
+       "en": "Spicy seasoned cottage cheese (areesh)",
+       "img": "assets/kitchen/thumbs/k109.webp",
+       "full": "assets/kitchen/full/k109.webp",
+       "ready": "eat"
       },
       {
        "id": "k165",
        "ar": "خلطة بيض بالبصل",
-       "en": "Egg mix with onions"
+       "en": "Egg mix with onions",
+       "img": "assets/kitchen/thumbs/k165.webp",
+       "full": "assets/kitchen/full/k165.webp",
+       "ready": "cook"
       },
       {
        "id": "k166",
        "ar": "جبنة قريش مضروبة بالزعتر",
-       "en": "Whipped cottage cheese with za'atar"
+       "en": "Whipped cottage cheese with za'atar",
+       "img": "assets/kitchen/thumbs/k166.webp",
+       "full": "assets/kitchen/full/k166.webp",
+       "ready": "eat"
       }
      ]
     },
@@ -317,37 +479,58 @@ window.SABAH_MENU = {
       {
        "id": "k28",
        "ar": "حمص مسلوق",
-       "en": "Boiled chickpeas"
+       "en": "Boiled chickpeas",
+       "img": "assets/kitchen/thumbs/k28.webp",
+       "full": "assets/kitchen/full/k28.webp",
+       "ready": "eat"
       },
       {
        "id": "k29",
        "ar": "سلطة حمص مطحون",
-       "en": "Mashed chickpea salad (hummus)"
+       "en": "Mashed chickpea salad (hummus)",
+       "img": "assets/kitchen/thumbs/k29.webp",
+       "full": "assets/kitchen/full/k29.webp",
+       "ready": "eat"
       },
       {
        "id": "k30",
        "ar": "العدس",
-       "en": "Lentils"
+       "en": "Lentils",
+       "img": "assets/kitchen/thumbs/k30.webp",
+       "full": "assets/kitchen/full/k30.webp",
+       "ready": "eat"
       },
       {
        "id": "k31",
        "ar": "فول",
-       "en": "Fava beans (ful)"
+       "en": "Fava beans (ful)",
+       "img": "assets/kitchen/thumbs/k31.webp",
+       "full": "assets/kitchen/full/k31.webp",
+       "ready": "eat"
       },
       {
        "id": "k32",
        "ar": "ترمس مسلوق بالليمون والشطة الخفيفة",
-       "en": "Boiled lupini beans with lemon & mild chili"
+       "en": "Boiled lupini beans with lemon & mild chili",
+       "img": "assets/kitchen/thumbs/k32.webp",
+       "full": "assets/kitchen/full/k32.webp",
+       "ready": "eat"
       },
       {
        "id": "k33",
        "ar": "فاصوليا حمراء",
-       "en": "Red kidney beans"
+       "en": "Red kidney beans",
+       "img": "assets/kitchen/thumbs/k33.webp",
+       "full": "assets/kitchen/full/k33.webp",
+       "ready": "eat"
       },
       {
        "id": "k34",
        "ar": "فاصوليا بيضاء - متشوحة مع بصل من غير طبيخ",
-       "en": "White beans – sautéed with onion, no stew"
+       "en": "White beans – sautéed with onion, no stew",
+       "img": "assets/kitchen/thumbs/k34.webp",
+       "full": "assets/kitchen/full/k34.webp",
+       "ready": "eat"
       }
      ]
     },
@@ -360,102 +543,162 @@ window.SABAH_MENU = {
       {
        "id": "k35",
        "ar": "بسلة خضرا - طبيخ",
-       "en": "Green peas – stew"
+       "en": "Green peas – stew",
+       "img": "assets/kitchen/thumbs/k35.webp",
+       "full": "assets/kitchen/full/k35.webp",
+       "ready": "eat"
       },
       {
        "id": "k36",
        "ar": "لوبيا - طبيخ",
-       "en": "Black-eyed peas – stew"
+       "en": "Black-eyed peas – stew",
+       "img": "assets/kitchen/thumbs/k36.webp",
+       "full": "assets/kitchen/full/k36.webp",
+       "ready": "eat"
       },
       {
        "id": "k37",
        "ar": "فاصوليا بيضاء - طبيخ",
-       "en": "White beans – stew"
+       "en": "White beans – stew",
+       "img": "assets/kitchen/thumbs/k37.webp",
+       "full": "assets/kitchen/full/k37.webp",
+       "ready": "eat"
       },
       {
        "id": "k38",
        "ar": "فاصوليا خضراء - طبيخ",
-       "en": "Green beans – stew"
+       "en": "Green beans – stew",
+       "img": "assets/kitchen/thumbs/k38.webp",
+       "full": "assets/kitchen/full/k38.webp",
+       "ready": "eat"
       },
       {
        "id": "k39",
        "ar": "كوسة - طبيخ",
-       "en": "Zucchini – stew"
+       "en": "Zucchini – stew",
+       "img": "assets/kitchen/thumbs/k39.webp",
+       "full": "assets/kitchen/full/k39.webp",
+       "ready": "eat"
       },
       {
        "id": "k40",
        "ar": "بروكلي",
-       "en": "Broccoli"
+       "en": "Broccoli",
+       "img": "assets/kitchen/thumbs/k40.webp",
+       "full": "assets/kitchen/full/k40.webp",
+       "ready": "eat"
       },
       {
        "id": "k41",
        "ar": "سبانخ - طبيخ",
-       "en": "Spinach – stew"
+       "en": "Spinach – stew",
+       "img": "assets/kitchen/thumbs/k41.webp",
+       "full": "assets/kitchen/full/k41.webp",
+       "ready": "eat"
       },
       {
        "id": "k42",
        "ar": "بامية - طبيخ",
-       "en": "Okra – stew"
+       "en": "Okra – stew",
+       "img": "assets/kitchen/thumbs/k42.webp",
+       "full": "assets/kitchen/full/k42.webp",
+       "ready": "eat"
       },
       {
        "id": "k43",
        "ar": "كرنب - طبيخ",
-       "en": "Cabbage – stew"
+       "en": "Cabbage – stew",
+       "img": "assets/kitchen/thumbs/k43.webp",
+       "full": "assets/kitchen/full/k43.webp",
+       "ready": "eat"
       },
       {
        "id": "k44",
        "ar": "كوسة متبلة حلو وخفيف",
-       "en": "Lightly seasoned sweet zucchini"
+       "en": "Lightly seasoned sweet zucchini",
+       "img": "assets/kitchen/thumbs/k44.webp",
+       "full": "assets/kitchen/full/k44.webp",
+       "ready": "cook"
       },
       {
        "id": "k84",
        "ar": "ملوخية طبيخ",
-       "en": "Molokhia stew"
+       "en": "Molokhia stew",
+       "img": "assets/kitchen/thumbs/k84.webp",
+       "full": "assets/kitchen/full/k84.webp",
+       "ready": "eat"
       },
       {
        "id": "k85",
        "ar": "كابوتشا",
-       "en": "Kabocha squash"
+       "en": "Kabocha squash",
+       "img": "assets/kitchen/thumbs/k85.webp",
+       "full": "assets/kitchen/full/k85.webp",
+       "ready": "eat"
       },
       {
        "id": "k97",
        "ar": "ذرة حلوة",
-       "en": "Sweet corn"
+       "en": "Sweet corn",
+       "img": "assets/kitchen/thumbs/k97.webp",
+       "full": "assets/kitchen/full/k97.webp",
+       "ready": "eat"
       },
       {
        "id": "k138",
        "ar": "كوسة بشاميل",
-       "en": "Zucchini béchamel"
+       "en": "Zucchini béchamel",
+       "img": "assets/kitchen/thumbs/k138.webp",
+       "full": "assets/kitchen/full/k138.webp",
+       "ready": "eat"
       },
       {
        "id": "k139",
        "ar": "بطاطس بوري",
-       "en": "Mashed potatoes"
+       "en": "Mashed potatoes",
+       "img": "assets/kitchen/thumbs/k139.webp",
+       "full": "assets/kitchen/full/k139.webp",
+       "ready": "eat"
       },
       {
        "id": "k140",
        "ar": "مسقعة",
-       "en": "Moussaka"
+       "en": "Moussaka",
+       "img": "assets/kitchen/thumbs/k140.webp",
+       "full": "assets/kitchen/full/k140.webp",
+       "ready": "eat"
       },
       {
        "id": "k141",
        "ar": "خضار مشكل",
-       "en": "Mixed vegetables"
+       "en": "Mixed vegetables",
+       "img": "assets/kitchen/thumbs/k141.webp",
+       "full": "assets/kitchen/full/k141.webp",
+       "ready": "eat"
       },
       {
        "id": "k142",
        "ar": "قلقاس",
-       "en": "Taro (qolqas)"
+       "en": "Taro (qolqas)",
+       "img": "assets/kitchen/thumbs/k142.webp",
+       "full": "assets/kitchen/full/k142.webp",
+       "ready": "eat"
       },
       {
        "id": "k143",
        "ar": "محاشي",
-       "en": "Stuffed vegetables (mahshi)"
+       "en": "Stuffed vegetables (mahshi)",
+       "img": "assets/kitchen/thumbs/k143.webp",
+       "full": "assets/kitchen/full/k143.webp",
+       "ready": "eat"
       },
       {
        "id": "k164",
        "ar": "فلفل أخضر حامي",
-       "en": "Hot green peppers"
+       "en": "Hot green peppers",
+       "img": "assets/kitchen/thumbs/k164.webp",
+       "full": "assets/kitchen/full/k164.webp",
+       "ready": "eat"
       }
      ]
     },
@@ -468,62 +711,98 @@ window.SABAH_MENU = {
       {
        "id": "k45",
        "ar": "سلطة البنجر - سكر دايت",
-       "en": "Beetroot salad – diet sugar"
+       "en": "Beetroot salad – diet sugar",
+       "img": "assets/kitchen/thumbs/k45.webp",
+       "full": "assets/kitchen/full/k45.webp",
+       "ready": "eat"
       },
       {
        "id": "k46",
        "ar": "سلطة روكا - دريسينج صحي",
-       "en": "Rocket salad – healthy dressing"
+       "en": "Rocket salad – healthy dressing",
+       "img": "assets/kitchen/thumbs/k46.webp",
+       "full": "assets/kitchen/full/k46.webp",
+       "ready": "eat"
       },
       {
        "id": "k47",
        "ar": "سلطة سيزر",
-       "en": "Caesar salad"
+       "en": "Caesar salad",
+       "img": "assets/kitchen/thumbs/k47.webp",
+       "full": "assets/kitchen/full/k47.webp",
+       "ready": "eat"
       },
       {
        "id": "k475",
        "ar": "سلطة تونة",
-       "en": "Tuna salad"
+       "en": "Tuna salad",
+       "img": "assets/kitchen/thumbs/k475.webp",
+       "full": "assets/kitchen/full/k475.webp",
+       "ready": "eat"
       },
       {
        "id": "k98",
        "ar": "سلطة تشيكين سيزر",
-       "en": "Chicken Caesar salad"
+       "en": "Chicken Caesar salad",
+       "img": "assets/kitchen/thumbs/k98.webp",
+       "full": "assets/kitchen/full/k98.webp",
+       "ready": "eat"
       },
       {
        "id": "k48",
        "ar": "خيار",
-       "en": "Cucumber"
+       "en": "Cucumber",
+       "img": "assets/kitchen/thumbs/k48.webp",
+       "full": "assets/kitchen/full/k48.webp",
+       "ready": "eat"
       },
       {
        "id": "k49",
        "ar": "خس",
-       "en": "Lettuce"
+       "en": "Lettuce",
+       "img": "assets/kitchen/thumbs/k49.webp",
+       "full": "assets/kitchen/full/k49.webp",
+       "ready": "eat"
       },
       {
        "id": "k50",
        "ar": "طماطم",
-       "en": "Tomatoes"
+       "en": "Tomatoes",
+       "img": "assets/kitchen/thumbs/k50.webp",
+       "full": "assets/kitchen/full/k50.webp",
+       "ready": "eat"
       },
       {
        "id": "k51",
        "ar": "فلفل أصفر",
-       "en": "Yellow peppers"
+       "en": "Yellow peppers",
+       "img": "assets/kitchen/thumbs/k51.webp",
+       "full": "assets/kitchen/full/k51.webp",
+       "ready": "eat"
       },
       {
        "id": "k52",
        "ar": "فلفل أحمر",
-       "en": "Red peppers"
+       "en": "Red peppers",
+       "img": "assets/kitchen/thumbs/k52.webp",
+       "full": "assets/kitchen/full/k52.webp",
+       "ready": "eat"
       },
       {
        "id": "k53",
        "ar": "جزر",
-       "en": "Carrots"
+       "en": "Carrots",
+       "img": "assets/kitchen/thumbs/k53.webp",
+       "full": "assets/kitchen/full/k53.webp",
+       "ready": "eat"
       },
       {
        "id": "k54",
        "ar": "قرنبيط",
-       "en": "Cauliflower"
+       "en": "Cauliflower",
+       "img": "assets/kitchen/thumbs/k54.webp",
+       "full": "assets/kitchen/full/k54.webp",
+       "ready": "eat"
       }
      ]
     },
@@ -536,57 +815,90 @@ window.SABAH_MENU = {
       {
        "id": "k55",
        "ar": "فريك بالمشروم والكبد والبصل",
-       "en": "Freekeh with mushrooms, liver & onion"
+       "en": "Freekeh with mushrooms, liver & onion",
+       "img": "assets/kitchen/thumbs/k55.webp",
+       "full": "assets/kitchen/full/k55.webp",
+       "ready": "eat"
       },
       {
        "id": "k56",
        "ar": "فريك بالمشروم والبصل",
-       "en": "Freekeh with mushrooms & onion"
+       "en": "Freekeh with mushrooms & onion",
+       "img": "assets/kitchen/thumbs/k56.webp",
+       "full": "assets/kitchen/full/k56.webp",
+       "ready": "eat"
       },
       {
        "id": "k57",
        "ar": "كينوا",
-       "en": "Quinoa"
+       "en": "Quinoa",
+       "img": "assets/kitchen/thumbs/k57.webp",
+       "full": "assets/kitchen/full/k57.webp",
+       "ready": "eat"
       },
       {
        "id": "k58",
        "ar": "مكرونة القمح الكامل",
-       "en": "Whole-wheat pasta"
+       "en": "Whole-wheat pasta",
+       "img": "assets/kitchen/thumbs/k58.webp",
+       "full": "assets/kitchen/full/k58.webp",
+       "ready": "eat"
       },
       {
        "id": "k59",
        "ar": "عيش بلدي",
-       "en": "Baladi bread"
+       "en": "Baladi bread",
+       "img": "assets/kitchen/thumbs/k59.webp",
+       "full": "assets/kitchen/full/k59.webp",
+       "ready": "eat"
       },
       {
        "id": "k60",
        "ar": "خبز القمح الكامل",
-       "en": "Whole-wheat bread"
+       "en": "Whole-wheat bread",
+       "img": "assets/kitchen/thumbs/k60.webp",
+       "full": "assets/kitchen/full/k60.webp",
+       "ready": "eat"
       },
       {
        "id": "k87",
        "ar": "عيش قريش بحبة البركة",
-       "en": "Nigella-seed crispbread (eish qorsh)"
+       "en": "Nigella-seed crispbread (eish qorsh)",
+       "img": "assets/kitchen/thumbs/k87.webp",
+       "full": "assets/kitchen/full/k87.webp",
+       "ready": "eat"
       },
       {
        "id": "k88",
        "ar": "توست بني محمص مكعبات",
-       "en": "Toasted brown bread cubes"
+       "en": "Toasted brown bread cubes",
+       "img": "assets/kitchen/thumbs/k88.webp",
+       "full": "assets/kitchen/full/k88.webp",
+       "ready": "eat"
       },
       {
        "id": "k105",
        "ar": "توست بني بالتوم وزيت الزيتون",
-       "en": "Brown toast with garlic & olive oil"
+       "en": "Brown toast with garlic & olive oil",
+       "img": "assets/kitchen/thumbs/k105.webp",
+       "full": "assets/kitchen/full/k105.webp",
+       "ready": "eat"
       },
       {
        "id": "k106",
        "ar": "توست بني بالزعتر والزيتون",
-       "en": "Brown toast with za'atar & olives"
+       "en": "Brown toast with za'atar & olives",
+       "img": "assets/kitchen/thumbs/k106.webp",
+       "full": "assets/kitchen/full/k106.webp",
+       "ready": "eat"
       },
       {
        "id": "k107",
        "ar": "كراكرز باليانسون والقرفة",
-       "en": "Anise & cinnamon crackers"
+       "en": "Anise & cinnamon crackers",
+       "img": "assets/kitchen/thumbs/k107.webp",
+       "full": "assets/kitchen/full/k107.webp",
+       "ready": "eat"
       }
      ]
     },
@@ -599,72 +911,114 @@ window.SABAH_MENU = {
       {
        "id": "k61",
        "ar": "موز",
-       "en": "Bananas"
+       "en": "Bananas",
+       "img": "assets/kitchen/thumbs/k61.webp",
+       "full": "assets/kitchen/full/k61.webp",
+       "ready": "eat"
       },
       {
        "id": "k62",
        "ar": "تفاح أصفر",
-       "en": "Yellow apples"
+       "en": "Yellow apples",
+       "img": "assets/kitchen/thumbs/k62.webp",
+       "full": "assets/kitchen/full/k62.webp",
+       "ready": "eat"
       },
       {
        "id": "k63",
        "ar": "جوافة",
-       "en": "Guava"
+       "en": "Guava",
+       "img": "assets/kitchen/thumbs/k63.webp",
+       "full": "assets/kitchen/full/k63.webp",
+       "ready": "eat"
       },
       {
        "id": "k64",
        "ar": "فراولة",
-       "en": "Strawberries"
+       "en": "Strawberries",
+       "img": "assets/kitchen/thumbs/k64.webp",
+       "full": "assets/kitchen/full/k64.webp",
+       "ready": "eat"
       },
       {
        "id": "k65",
        "ar": "كانتالوب",
-       "en": "Cantaloupe"
+       "en": "Cantaloupe",
+       "img": "assets/kitchen/thumbs/k65.webp",
+       "full": "assets/kitchen/full/k65.webp",
+       "ready": "eat"
       },
       {
        "id": "k66",
        "ar": "برتقال",
-       "en": "Oranges"
+       "en": "Oranges",
+       "img": "assets/kitchen/thumbs/k66.webp",
+       "full": "assets/kitchen/full/k66.webp",
+       "ready": "eat"
       },
       {
        "id": "k67",
        "ar": "ليمون",
-       "en": "Lemons"
+       "en": "Lemons",
+       "img": "assets/kitchen/thumbs/k67.webp",
+       "full": "assets/kitchen/full/k67.webp",
+       "ready": "eat"
       },
       {
        "id": "k68",
        "ar": "كيوي",
-       "en": "Kiwi"
+       "en": "Kiwi",
+       "img": "assets/kitchen/thumbs/k68.webp",
+       "full": "assets/kitchen/full/k68.webp",
+       "ready": "eat"
       },
       {
        "id": "k92",
        "ar": "خوخ",
-       "en": "Peaches"
+       "en": "Peaches",
+       "img": "assets/kitchen/thumbs/k92.webp",
+       "full": "assets/kitchen/full/k92.webp",
+       "ready": "eat"
       },
       {
        "id": "k93",
        "ar": "عنب أسود",
-       "en": "Black grapes"
+       "en": "Black grapes",
+       "img": "assets/kitchen/thumbs/k93.webp",
+       "full": "assets/kitchen/full/k93.webp",
+       "ready": "eat"
       },
       {
        "id": "k94",
        "ar": "عنب أصفر",
-       "en": "White grapes"
+       "en": "White grapes",
+       "img": "assets/kitchen/thumbs/k94.webp",
+       "full": "assets/kitchen/full/k94.webp",
+       "ready": "eat"
       },
       {
        "id": "k95",
        "ar": "شمام",
-       "en": "Honeydew melon"
+       "en": "Honeydew melon",
+       "img": "assets/kitchen/thumbs/k95.webp",
+       "full": "assets/kitchen/full/k95.webp",
+       "ready": "eat"
       },
       {
        "id": "k96",
        "ar": "بطيخ",
-       "en": "Watermelon"
+       "en": "Watermelon",
+       "img": "assets/kitchen/thumbs/k96.webp",
+       "full": "assets/kitchen/full/k96.webp",
+       "ready": "eat"
       },
       {
        "id": "k161",
        "ar": "رمان",
-       "en": "Pomegranate"
+       "en": "Pomegranate",
+       "img": "assets/kitchen/thumbs/k161.webp",
+       "full": "assets/kitchen/full/k161.webp",
+       "ready": "eat"
       }
      ]
     },
@@ -677,67 +1031,106 @@ window.SABAH_MENU = {
       {
        "id": "k69",
        "ar": "بطاطا مشوية",
-       "en": "Roasted sweet potato"
+       "en": "Roasted sweet potato",
+       "img": "assets/kitchen/thumbs/k69.webp",
+       "full": "assets/kitchen/full/k69.webp",
+       "ready": "eat"
       },
       {
        "id": "k70",
        "ar": "كيكة بالشوفان والجزر المهروس والكاكاو الخام",
-       "en": "Oat cake with mashed carrot & raw cacao"
+       "en": "Oat cake with mashed carrot & raw cacao",
+       "img": "assets/kitchen/thumbs/k70.webp",
+       "full": "assets/kitchen/full/k70.webp",
+       "ready": "eat"
       },
       {
        "id": "k71",
        "ar": "كيكة بالشوفان والموز المهروس",
-       "en": "Oat cake with mashed banana"
+       "en": "Oat cake with mashed banana",
+       "img": "assets/kitchen/thumbs/k71.webp",
+       "full": "assets/kitchen/full/k71.webp",
+       "ready": "eat"
       },
       {
        "id": "k72",
        "ar": "كيكة بالشوفان والتفاح المهروس",
-       "en": "Oat cake with mashed apple"
+       "en": "Oat cake with mashed apple",
+       "img": "assets/kitchen/thumbs/k72.webp",
+       "full": "assets/kitchen/full/k72.webp",
+       "ready": "eat"
       },
       {
        "id": "k73",
        "ar": "كيكة بالشوفان والجزر المهروس",
-       "en": "Oat cake with mashed carrot"
+       "en": "Oat cake with mashed carrot",
+       "img": "assets/kitchen/thumbs/k73.webp",
+       "full": "assets/kitchen/full/k73.webp",
+       "ready": "eat"
       },
       {
        "id": "k74",
        "ar": "كيكة أشكال بالشوفان والموز المهروس",
-       "en": "Shaped oat cakes with mashed banana"
+       "en": "Shaped oat cakes with mashed banana",
+       "img": "assets/kitchen/thumbs/k74.webp",
+       "full": "assets/kitchen/full/k74.webp",
+       "ready": "eat"
       },
       {
        "id": "k75",
        "ar": "كيكة أشكال بالشوفان والتفاح المهروس",
-       "en": "Shaped oat cakes with mashed apple"
+       "en": "Shaped oat cakes with mashed apple",
+       "img": "assets/kitchen/thumbs/k75.webp",
+       "full": "assets/kitchen/full/k75.webp",
+       "ready": "eat"
       },
       {
        "id": "k76",
        "ar": "كيكة أشكال بالشوفان والجزر المهروس",
-       "en": "Shaped oat cakes with mashed carrot"
+       "en": "Shaped oat cakes with mashed carrot",
+       "img": "assets/kitchen/thumbs/k76.webp",
+       "full": "assets/kitchen/full/k76.webp",
+       "ready": "eat"
       },
       {
        "id": "k77",
        "ar": "بان كيكس بالشوفان والموز المهروس",
-       "en": "Oat pancakes with mashed banana"
+       "en": "Oat pancakes with mashed banana",
+       "img": "assets/kitchen/thumbs/k77.webp",
+       "full": "assets/kitchen/full/k77.webp",
+       "ready": "eat"
       },
       {
        "id": "k78",
        "ar": "بان كيكس بالشوفان والتفاح المهروس",
-       "en": "Oat pancakes with mashed apple"
+       "en": "Oat pancakes with mashed apple",
+       "img": "assets/kitchen/thumbs/k78.webp",
+       "full": "assets/kitchen/full/k78.webp",
+       "ready": "eat"
       },
       {
        "id": "k79",
        "ar": "بان كيكس بالشوفان والجزر المهروس",
-       "en": "Oat pancakes with mashed carrot"
+       "en": "Oat pancakes with mashed carrot",
+       "img": "assets/kitchen/thumbs/k79.webp",
+       "full": "assets/kitchen/full/k79.webp",
+       "ready": "eat"
       },
       {
        "id": "k108",
        "ar": "بان كيكس بالقرفة والموز رفيعة",
-       "en": "Thin cinnamon & banana pancakes"
+       "en": "Thin cinnamon & banana pancakes",
+       "img": "assets/kitchen/thumbs/k108.webp",
+       "full": "assets/kitchen/full/k108.webp",
+       "ready": "eat"
       },
       {
        "id": "k168",
        "ar": "كيكة حبة كاملة بالجزر",
-       "en": "Whole-grain carrot cake"
+       "en": "Whole-grain carrot cake",
+       "img": "assets/kitchen/thumbs/k168.webp",
+       "full": "assets/kitchen/full/k168.webp",
+       "ready": "eat"
       }
      ]
     },
@@ -750,52 +1143,82 @@ window.SABAH_MENU = {
       {
        "id": "k120",
        "ar": "جلاش جبنة",
-       "en": "Cheese goulash (filo pie)"
+       "en": "Cheese goulash (filo pie)",
+       "img": "assets/kitchen/thumbs/k120.webp",
+       "full": "assets/kitchen/full/k120.webp",
+       "ready": "eat"
       },
       {
        "id": "k121",
        "ar": "جلاش لحمة",
-       "en": "Meat goulash (filo pie)"
+       "en": "Meat goulash (filo pie)",
+       "img": "assets/kitchen/thumbs/k121.webp",
+       "full": "assets/kitchen/full/k121.webp",
+       "ready": "eat"
       },
       {
        "id": "k122",
        "ar": "جلاش خضار",
-       "en": "Vegetable goulash (filo pie)"
+       "en": "Vegetable goulash (filo pie)",
+       "img": "assets/kitchen/thumbs/k122.webp",
+       "full": "assets/kitchen/full/k122.webp",
+       "ready": "eat"
       },
       {
        "id": "k123",
        "ar": "جلاش خضار ومشروم",
-       "en": "Vegetable & mushroom goulash (filo pie)"
+       "en": "Vegetable & mushroom goulash (filo pie)",
+       "img": "assets/kitchen/thumbs/k123.webp",
+       "full": "assets/kitchen/full/k123.webp",
+       "ready": "eat"
       },
       {
        "id": "k124",
        "ar": "سمبوسك خضار",
-       "en": "Vegetable sambousek"
+       "en": "Vegetable sambousek",
+       "img": "assets/kitchen/thumbs/k124.webp",
+       "full": "assets/kitchen/full/k124.webp",
+       "ready": "eat"
       },
       {
        "id": "k125",
        "ar": "سمبوسك خضار ومشروم",
-       "en": "Vegetable & mushroom sambousek"
+       "en": "Vegetable & mushroom sambousek",
+       "img": "assets/kitchen/thumbs/k125.webp",
+       "full": "assets/kitchen/full/k125.webp",
+       "ready": "eat"
       },
       {
        "id": "k126",
        "ar": "سمبوسك جبنة",
-       "en": "Cheese sambousek"
+       "en": "Cheese sambousek",
+       "img": "assets/kitchen/thumbs/k126.webp",
+       "full": "assets/kitchen/full/k126.webp",
+       "ready": "eat"
       },
       {
        "id": "k127",
        "ar": "سمبوسك لحمة",
-       "en": "Meat sambousek"
+       "en": "Meat sambousek",
+       "img": "assets/kitchen/thumbs/k127.webp",
+       "full": "assets/kitchen/full/k127.webp",
+       "ready": "eat"
       },
       {
        "id": "k128",
        "ar": "سمبوسك فراخ",
-       "en": "Chicken sambousek"
+       "en": "Chicken sambousek",
+       "img": "assets/kitchen/thumbs/k128.webp",
+       "full": "assets/kitchen/full/k128.webp",
+       "ready": "eat"
       },
       {
        "id": "k129",
        "ar": "حواوشي صيامي",
-       "en": "Vegan hawawshi"
+       "en": "Vegan hawawshi",
+       "img": "assets/kitchen/thumbs/k129.webp",
+       "full": "assets/kitchen/full/k129.webp",
+       "ready": "eat"
       }
      ]
     },
@@ -808,42 +1231,66 @@ window.SABAH_MENU = {
       {
        "id": "k130",
        "ar": "رز بشعرية",
-       "en": "Rice with vermicelli"
+       "en": "Rice with vermicelli",
+       "img": "assets/kitchen/thumbs/k130.webp",
+       "full": "assets/kitchen/full/k130.webp",
+       "ready": "eat"
       },
       {
        "id": "k131",
        "ar": "رز أبيض",
-       "en": "White rice"
+       "en": "White rice",
+       "img": "assets/kitchen/thumbs/k131.webp",
+       "full": "assets/kitchen/full/k131.webp",
+       "ready": "eat"
       },
       {
        "id": "k132",
        "ar": "رز معمر",
-       "en": "Baked rice (roz moammar)"
+       "en": "Baked rice (roz moammar)",
+       "img": "assets/kitchen/thumbs/k132.webp",
+       "full": "assets/kitchen/full/k132.webp",
+       "ready": "eat"
       },
       {
        "id": "k133",
        "ar": "مكرونة بشاميل",
-       "en": "Pasta béchamel"
+       "en": "Pasta béchamel",
+       "img": "assets/kitchen/thumbs/k133.webp",
+       "full": "assets/kitchen/full/k133.webp",
+       "ready": "eat"
       },
       {
        "id": "k134",
        "ar": "مكرونة بشاميل بالمشروم والخضار",
-       "en": "Pasta béchamel with mushrooms & vegetables"
+       "en": "Pasta béchamel with mushrooms & vegetables",
+       "img": "assets/kitchen/thumbs/k134.webp",
+       "full": "assets/kitchen/full/k134.webp",
+       "ready": "eat"
       },
       {
        "id": "k135",
        "ar": "مكرونة بالصلصة الحمرا",
-       "en": "Pasta in red sauce"
+       "en": "Pasta in red sauce",
+       "img": "assets/kitchen/thumbs/k135.webp",
+       "full": "assets/kitchen/full/k135.webp",
+       "ready": "eat"
       },
       {
        "id": "k136",
        "ar": "مكرونة بالصلصة البيضاء",
-       "en": "Pasta in white sauce"
+       "en": "Pasta in white sauce",
+       "img": "assets/kitchen/thumbs/k136.webp",
+       "full": "assets/kitchen/full/k136.webp",
+       "ready": "eat"
       },
       {
        "id": "k137",
        "ar": "كشري",
-       "en": "Koshari"
+       "en": "Koshari",
+       "img": "assets/kitchen/thumbs/k137.webp",
+       "full": "assets/kitchen/full/k137.webp",
+       "ready": "eat"
       }
      ]
     },
@@ -856,17 +1303,26 @@ window.SABAH_MENU = {
       {
        "id": "k144",
        "ar": "ممبار",
-       "en": "Mombar (stuffed sausage casings)"
+       "en": "Mombar (stuffed sausage casings)",
+       "img": "assets/kitchen/thumbs/k144.webp",
+       "full": "assets/kitchen/full/k144.webp",
+       "ready": "eat"
       },
       {
        "id": "k145",
        "ar": "كوارع",
-       "en": "Kawareh (trotters)"
+       "en": "Kawareh (trotters)",
+       "img": "assets/kitchen/thumbs/k145.webp",
+       "full": "assets/kitchen/full/k145.webp",
+       "ready": "eat"
       },
       {
        "id": "k146",
        "ar": "فته",
-       "en": "Fatta"
+       "en": "Fatta",
+       "img": "assets/kitchen/thumbs/k146.webp",
+       "full": "assets/kitchen/full/k146.webp",
+       "ready": "eat"
       }
      ]
     },
@@ -879,12 +1335,18 @@ window.SABAH_MENU = {
       {
        "id": "k147",
        "ar": "شوربة عدس",
-       "en": "Lentil soup"
+       "en": "Lentil soup",
+       "img": "assets/kitchen/thumbs/k147.webp",
+       "full": "assets/kitchen/full/k147.webp",
+       "ready": "eat"
       },
       {
        "id": "k148",
        "ar": "شوربة خضار",
-       "en": "Vegetable soup"
+       "en": "Vegetable soup",
+       "img": "assets/kitchen/thumbs/k148.webp",
+       "full": "assets/kitchen/full/k148.webp",
+       "ready": "eat"
       }
      ]
     },
@@ -897,62 +1359,98 @@ window.SABAH_MENU = {
       {
        "id": "k149",
        "ar": "كنافة بالكريمة",
-       "en": "Kunafa with cream"
+       "en": "Kunafa with cream",
+       "img": "assets/kitchen/thumbs/k149.webp",
+       "full": "assets/kitchen/full/k149.webp",
+       "ready": "eat"
       },
       {
        "id": "k150",
        "ar": "كنافة بالقشطة",
-       "en": "Kunafa with qishta"
+       "en": "Kunafa with qishta",
+       "img": "assets/kitchen/thumbs/k150.webp",
+       "full": "assets/kitchen/full/k150.webp",
+       "ready": "eat"
       },
       {
        "id": "k151",
        "ar": "رز بلبن",
-       "en": "Rice pudding"
+       "en": "Rice pudding",
+       "img": "assets/kitchen/thumbs/k151.webp",
+       "full": "assets/kitchen/full/k151.webp",
+       "ready": "eat"
       },
       {
        "id": "k152",
        "ar": "أم علي",
-       "en": "Om Ali"
+       "en": "Om Ali",
+       "img": "assets/kitchen/thumbs/k152.webp",
+       "full": "assets/kitchen/full/k152.webp",
+       "ready": "eat"
       },
       {
        "id": "k153",
        "ar": "كريم كراميل",
-       "en": "Crème caramel"
+       "en": "Crème caramel",
+       "img": "assets/kitchen/thumbs/k153.webp",
+       "full": "assets/kitchen/full/k153.webp",
+       "ready": "eat"
       },
       {
        "id": "k154",
        "ar": "بطاطا بالكريم والكراميل",
-       "en": "Sweet potato with cream & caramel"
+       "en": "Sweet potato with cream & caramel",
+       "img": "assets/kitchen/thumbs/k154.webp",
+       "full": "assets/kitchen/full/k154.webp",
+       "ready": "eat"
       },
       {
        "id": "k155",
        "ar": "بطاطا بالبشاميل",
-       "en": "Sweet potato béchamel"
+       "en": "Sweet potato béchamel",
+       "img": "assets/kitchen/thumbs/k155.webp",
+       "full": "assets/kitchen/full/k155.webp",
+       "ready": "eat"
       },
       {
        "id": "k156",
        "ar": "جلاش حلو",
-       "en": "Sweet goulash (filo pastry)"
+       "en": "Sweet goulash (filo pastry)",
+       "img": "assets/kitchen/thumbs/k156.webp",
+       "full": "assets/kitchen/full/k156.webp",
+       "ready": "eat"
       },
       {
        "id": "k157",
        "ar": "بسبوسة",
-       "en": "Basbousa"
+       "en": "Basbousa",
+       "img": "assets/kitchen/thumbs/k157.webp",
+       "full": "assets/kitchen/full/k157.webp",
+       "ready": "eat"
       },
       {
        "id": "k158",
        "ar": "كيكة صيامي",
-       "en": "Vegan cake"
+       "en": "Vegan cake",
+       "img": "assets/kitchen/thumbs/k158.webp",
+       "full": "assets/kitchen/full/k158.webp",
+       "ready": "eat"
       },
       {
        "id": "k159",
        "ar": "كنافة صيامي",
-       "en": "Vegan kunafa"
+       "en": "Vegan kunafa",
+       "img": "assets/kitchen/thumbs/k159.webp",
+       "full": "assets/kitchen/full/k159.webp",
+       "ready": "eat"
       },
       {
        "id": "k160",
        "ar": "كوكيز",
-       "en": "Cookies"
+       "en": "Cookies",
+       "img": "assets/kitchen/thumbs/k160.webp",
+       "full": "assets/kitchen/full/k160.webp",
+       "ready": "eat"
       }
      ]
     },
@@ -965,32 +1463,50 @@ window.SABAH_MENU = {
       {
        "id": "k89",
        "ar": "صلصة حمرا",
-       "en": "Red (tomato) sauce"
+       "en": "Red (tomato) sauce",
+       "img": "assets/kitchen/thumbs/k89.webp",
+       "full": "assets/kitchen/full/k89.webp",
+       "ready": "eat"
       },
       {
        "id": "k200",
        "ar": "صلصة بيضاء",
-       "en": "White sauce"
+       "en": "White sauce",
+       "img": "assets/kitchen/thumbs/k200.webp",
+       "full": "assets/kitchen/full/k200.webp",
+       "ready": "eat"
       },
       {
        "id": "k201",
        "ar": "مخللات متنوعة",
-       "en": "Assorted pickles"
+       "en": "Assorted pickles",
+       "img": "assets/kitchen/thumbs/k201.webp",
+       "full": "assets/kitchen/full/k201.webp",
+       "ready": "eat"
       },
       {
        "id": "k162",
        "ar": "إزازة ليمون نعناع من غير سكر",
-       "en": "Bottle of lemon-mint, no sugar"
+       "en": "Bottle of lemon-mint, no sugar",
+       "img": "assets/kitchen/thumbs/k162.webp",
+       "full": "assets/kitchen/full/k162.webp",
+       "ready": "eat"
       },
       {
        "id": "k163",
        "ar": "إزازة كركديه نعناع من غير سكر",
-       "en": "Bottle of hibiscus-mint, no sugar"
+       "en": "Bottle of hibiscus-mint, no sugar",
+       "img": "assets/kitchen/thumbs/k163.webp",
+       "full": "assets/kitchen/full/k163.webp",
+       "ready": "eat"
       },
       {
        "id": "k169",
        "ar": "إزازة كركديه من غير سكر",
-       "en": "Bottle of hibiscus, no sugar"
+       "en": "Bottle of hibiscus, no sugar",
+       "img": "assets/kitchen/thumbs/k169.webp",
+       "full": "assets/kitchen/full/k169.webp",
+       "ready": "eat"
       }
      ]
     }
