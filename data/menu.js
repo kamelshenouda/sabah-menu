@@ -4514,5 +4514,270 @@ window.SABAH_MENU = {
   "plate": 3,
   "piece": 4,
   "feast": 0.55
- }
+ },
+ "categories": [
+  {
+   "id": "chicken",
+   "ar": "فراخ",
+   "en": "Chicken",
+   "cover": "k14",
+   "sections": [
+    "chicken"
+   ]
+  },
+  {
+   "id": "meat-fish",
+   "ar": "لحمة وسمك",
+   "en": "Meat & fish",
+   "cover": "k91",
+   "sections": [
+    "beef",
+    "fish"
+   ]
+  },
+  {
+   "id": "stews",
+   "ar": "طبيخ وأكلات مصرية",
+   "en": "Stews & Egyptian classics",
+   "cover": "k143",
+   "sections": [
+    "vegetables",
+    "legumes",
+    "egyptian",
+    "soup"
+   ]
+  },
+  {
+   "id": "carbs",
+   "ar": "رز ومكرونة ومعجنات",
+   "en": "Rice, pasta & pastries",
+   "cover": "k133",
+   "sections": [
+    "rice-pasta",
+    "pastries",
+    "whole-grains"
+   ]
+  },
+  {
+   "id": "salads",
+   "ar": "سلطات وفطار",
+   "en": "Salads & breakfast",
+   "cover": "k46",
+   "sections": [
+    "salads",
+    "eggs-dairy"
+   ]
+  },
+  {
+   "id": "sweets",
+   "ar": "حلويات",
+   "en": "Desserts",
+   "cover": "k150",
+   "sections": [
+    "desserts",
+    "healthy-sweets"
+   ]
+  },
+  {
+   "id": "fruit",
+   "ar": "فاكهة ومشروبات وإضافات",
+   "en": "Fruit, drinks & extras",
+   "cover": "k64",
+   "sections": [
+    "fruit",
+    "other"
+   ]
+  },
+  {
+   "id": "butcherista",
+   "ar": "بوتشريستا",
+   "en": "Butcherista",
+   "cover": "b19",
+   "sections": [
+    "air-fryer",
+    "turkish",
+    "steaks",
+    "beef-cuts",
+    "marinated-beef",
+    "marinated-chicken",
+    "diet-plates",
+    "appetizers",
+    "add-ons"
+   ]
+  }
+ ],
+ "families": [
+  {
+   "id": "marinated-breast",
+   "ar": "صدور فراخ متبلة",
+   "en": "Marinated chicken breast",
+   "members": [
+    {
+     "id": "k1",
+     "ar": "العسل الآسيوي",
+     "en": "Asian honey"
+    },
+    {
+     "id": "k2",
+     "ar": "الهالبينو والتوم",
+     "en": "Jalapeño & garlic"
+    },
+    {
+     "id": "k3",
+     "ar": "إيطالية",
+     "en": "Italian"
+    },
+    {
+     "id": "k4",
+     "ar": "الفاهيتا",
+     "en": "Fajita"
+    },
+    {
+     "id": "k5",
+     "ar": "العسل والمستردة",
+     "en": "Honey mustard"
+    },
+    {
+     "id": "k6",
+     "ar": "الكزبرة والليمون",
+     "en": "Coriander & lemon"
+    },
+    {
+     "id": "k7",
+     "ar": "ملح وفلفل وبصل وباربيكيو مدخن",
+     "en": "Salt, pepper, onion & smoky BBQ"
+    }
+   ]
+  },
+  {
+   "id": "goulash",
+   "ar": "جلاش",
+   "en": "Goulash (filo pie)",
+   "members": [
+    {
+     "id": "k120",
+     "ar": "جبنة",
+     "en": "Cheese"
+    },
+    {
+     "id": "k121",
+     "ar": "لحمة",
+     "en": "Meat"
+    },
+    {
+     "id": "k122",
+     "ar": "خضار",
+     "en": "Vegetable"
+    },
+    {
+     "id": "k123",
+     "ar": "خضار ومشروم",
+     "en": "Vegetable & mushroom"
+    }
+   ]
+  },
+  {
+   "id": "sambousek",
+   "ar": "سمبوسك",
+   "en": "Sambousek",
+   "members": [
+    {
+     "id": "k124",
+     "ar": "خضار",
+     "en": "Vegetable"
+    },
+    {
+     "id": "k125",
+     "ar": "خضار ومشروم",
+     "en": "Vegetable & mushroom"
+    },
+    {
+     "id": "k126",
+     "ar": "جبنة",
+     "en": "Cheese"
+    },
+    {
+     "id": "k127",
+     "ar": "لحمة",
+     "en": "Meat"
+    },
+    {
+     "id": "k128",
+     "ar": "فراخ",
+     "en": "Chicken"
+    }
+   ]
+  },
+  {
+   "id": "oat-cake",
+   "ar": "كيكة بالشوفان",
+   "en": "Oat cake",
+   "members": [
+    {
+     "id": "k70",
+     "ar": "جزر وكاكاو خام",
+     "en": "Carrot & raw cacao"
+    },
+    {
+     "id": "k71",
+     "ar": "موز",
+     "en": "Banana"
+    },
+    {
+     "id": "k72",
+     "ar": "تفاح",
+     "en": "Apple"
+    },
+    {
+     "id": "k73",
+     "ar": "جزر",
+     "en": "Carrot"
+    }
+   ]
+  },
+  {
+   "id": "oat-shapes",
+   "ar": "كيكة أشكال بالشوفان",
+   "en": "Shaped oat cakes",
+   "members": [
+    {
+     "id": "k74",
+     "ar": "موز",
+     "en": "Banana"
+    },
+    {
+     "id": "k75",
+     "ar": "تفاح",
+     "en": "Apple"
+    },
+    {
+     "id": "k76",
+     "ar": "جزر",
+     "en": "Carrot"
+    }
+   ]
+  },
+  {
+   "id": "oat-pancakes",
+   "ar": "بان كيكس بالشوفان",
+   "en": "Oat pancakes",
+   "members": [
+    {
+     "id": "k77",
+     "ar": "موز",
+     "en": "Banana"
+    },
+    {
+     "id": "k78",
+     "ar": "تفاح",
+     "en": "Apple"
+    },
+    {
+     "id": "k79",
+     "ar": "جزر",
+     "en": "Carrot"
+    }
+   ]
+  }
+ ]
 };

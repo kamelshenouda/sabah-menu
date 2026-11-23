@@ -18,15 +18,25 @@ the next swipe. A bar at the bottom lists every stop from the first screen and
 jumps straight to it, and each stop has buttons that open the matching bundle or filtered menu. The logo opens the
 landing page again from anywhere, and `#menu` links straight to the menu.
 
-On the menu you can:
+The menu has three levels, so there is never much to choose from at once:
 
-- tap **+ Add** on any dish to add it straight away, then use − / + on the card to change the amount;
-- tap the photo or name for the full details (unit, size, options, a note for the chef);
-- jump between sections from the bar at the top, which follows you as you scroll;
-- filter by ready to cook, ready to eat, healthy, or your favourites (the heart on each dish);
-- add a whole ready-made bundle (a week of meals or a feast) in one tap, unticking anything you
-  don't want;
-- re-add your last sent order with **Order again**.
+- **Home:** the five ways to order (ready to cook, ready to eat, meals of the week, عزومات,
+  healthy) and eight photo categories (chicken, meat and fish, stews, rice and pastries, salads and
+  breakfast, desserts, fruit and drinks, Butcherista). Approved food ideas add a ninth tile.
+- **A category or a way:** a compact list with one row of filters (the category's sections, then
+  ready to cook / ready to eat / healthy / favourites where they apply). The ways list dishes
+  from every category with a bar of categories that follows the scroll. Meals of the week and
+  عزومات open their bundles.
+- **A dish:** tap its photo or name for the full details; tap **+** to add it straight away and
+  use − / + to change the amount.
+
+Flavours of the same dish (for example the seven marinated chicken breasts) are listed under one
+heading, each still its own row, so nothing is hidden. After adding a dish, the list suggests what
+usually goes with it ("بيتطلب معاها"). Search understands words like صحي, للعزومة, أكل الأسبوع,
+فطار or حلويات and offers the matching list or bundles, as well as finding dishes by name.
+
+Categories and flavour families are set in `categories` and `families` in `data/menu.js`; the
+"goes well with" pairs and the search words are at the top of the Browse part of `app.js`.
 
 Then you review the order and send it as a WhatsApp message, or copy it.
 The WhatsApp message is always written in Arabic, even when the app is showing English,
