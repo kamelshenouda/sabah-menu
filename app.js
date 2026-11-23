@@ -154,7 +154,7 @@
       h1: "أكل البيت… من غير تعب البيت",
       lead: "متبّل تسوّيه في دقايق، أو مطبوخ تسخّنه وتاكل. للأسبوع كله أو لعزومتك الجاية، وطلبك يوصل للشيف على واتساب في دقيقة.",
       start: "ابدأ طلبك",
-      rail: { cookeat: "جاهز للطبخ أو للأكل", week: "أكل الأسبوع", feast: "عزومات", healthy: "صحي" },
+      rail: { cookeat: "جاهز أو متبل", week: "أكل الأسبوع", feast: "عزومات", healthy: "صحي" },
       raw: "جاهز للطبخ", cooked: "جاهز للأكل",
       cookeatTitle: "نفس الأكلة. اختار تطلبها إزاي.",
       cookeatText: "متبّلة ومتجهّزة تسوّيها انت في دقايق وتطلع طازة، أو مطبوخة في البيت وجاهزة تسخّنها وتاكل.",
@@ -180,7 +180,7 @@
       h1: "Home food, without the home chores",
       lead: "Marinated to cook in minutes, or cooked to heat and eat. For the whole week or your next feast, and your order reaches the chef on WhatsApp in a minute.",
       start: "Start your order",
-      rail: { cookeat: "Cook or eat", week: "Meals of the week", feast: "Feasts", healthy: "Healthy" },
+      rail: { cookeat: "Ready or marinated", week: "Meals of the week", feast: "Feasts", healthy: "Healthy" },
       raw: "Ready to cook", cooked: "Ready to eat",
       cookeatTitle: "Same dish. Your choice how.",
       cookeatText: "Marinated and prepped for you to cook fresh in minutes, or cooked at home and ready to heat and eat.",
@@ -325,15 +325,14 @@
   };
 
   // ---------- State ----------
-  // Pages with their own address. "" opens the landing page on a first visit (when nothing is in
-  // the order yet) and the menu after that.
+  // Pages with their own address. The site's plain address ("") always opens the landing page.
   const HASH_VIEWS = { welcome: "welcome", menu: "browse", order: "cart", ideas: "ideas", admin: "admin" };
   const VIEW_HASH = { welcome: "#welcome", browse: "#menu", cart: "#order", ideas: "#ideas", admin: "#admin" };
   function viewFromHash() {
     const v = HASH_VIEWS[location.hash.slice(1)];
     if ((v === "ideas" || v === "admin") && !window.SabahIdeas) return "browse";
     if (v) return v;
-    return !store.get("sabah-welcomed", false) && !state.cart.length ? "welcome" : "browse";
+    return "welcome";
   }
 
   // The last approved ideas list is kept on the device so the Ideas tab shows right away.
@@ -1440,7 +1439,6 @@
   function renderWelcome() {
     const h = HOME[state.lang];
     const u = ui();
-    store.set("sabah-welcomed", true);
     $("fab").replaceChildren();
     const bundle = (id) => COLLECTIONS.find((c) => c.id === id);
     const week = bundle(HOME_WEEK);
