@@ -113,7 +113,8 @@ Extra fields that shape the menu:
 ### Ready-made bundles
 
 `collections` at the end of `data/menu.js` lists the bundles shown on the landing page and above
-the menu:
+the menu. A bundle is a list of **slots**: a day of the week, or a role such as rice or dessert.
+Each slot has a **pool** of dishes that fit it:
 
 ```js
 {
@@ -121,12 +122,35 @@ the menu:
  "kind": "week",            // "week" (meals of the week) or "feast" (عزومات)
  "ar": "أسبوع العيلة", "en": "Family week",
  "desc": { "ar": "…", "en": "…" },
- "items": ["k14", "k91", "k110"]
+ "slots": [
+  { "day": 0, "ar": "السبت", "en": "Saturday", "pool": ["k14", "k110", "k101"] },
+  { "ar": "رز", "en": "Rice", "pool": ["k131", "k130"] }
+ ]
 }
 ```
 
-Each item id must be a dish on the menu. Adding a bundle adds each dish once with its starting unit
-and an amount of 1; people change amounts on the order page.
+`day` is 0 for Saturday through 6 for Friday. Every id in a pool must be a dish on the menu, and the
+first dish in a pool is preferred when nothing else decides.
+
+In the bundle sheet people can:
+
+- **Refresh** to pick new dishes for every slot that isn't locked. Picks avoid dishes from the
+  last few sent orders and dishes the person switched away from, and lean towards favourites and
+  healthy dishes (strongly in the healthy bundle).
+- **Lock** a dish so refresh keeps it, untick a dish to leave it out, or **switch** one dish to see
+  up to three better options, each tagged with why: a favourite, healthier, not ordered lately,
+  or something different.
+- Choose amounts **by number of people** or set them **by hand**. The estimates come from
+  `portions` in `data/menu.js`: how many people a kilo, a plate/box and a piece/bag feed, and
+  `feast`, the share of a normal portion each guest eats of every dish at a feast (several dishes,
+  smaller helpings). Kilos round up to the nearest half.
+- Add notes for every dish (low salt, no onions, less oil, mildly spicy, or their own). In a week
+  bundle each dish also gets its day in its note ("يوم السبت"). In a feast they can give the date
+  and time, which goes into the order's general note.
+
+The order page has a general note for the chef, sent at the end of the WhatsApp message.
+Picks, the people count, the history of sent orders and switched-away dishes are kept on the
+device only.
 
 ## Food ideas page (`#ideas`)
 

@@ -59,6 +59,8 @@
       favAdd: "أضف للمفضلة",
       favEmpty: "لسه مفيش مفضلة. اضغط القلب على أي أكلة بتحبها.",
       bundles: "باقات جاهزة",
+      orderNote: "ملاحظة عامة للشيف",
+      orderNotePh: "مثال: العزومة يوم الجمعة الساعة ٢، أو التوصيل بعد العصر",
       bundlesSub: "اختار باقة وضيفها كلها بضغطة، وعدّل الكميات بعدين.",
       kinds: { week: "أكل الأسبوع", feast: "عزومات" },
       addAll: (n) => `ضيف ${n === 1 ? "الصنف" : n === 2 ? "الصنفين" : "الـ" + n + " أصناف"} للطلب`,
@@ -126,6 +128,8 @@
       favAdd: "Add to favourites",
       favEmpty: "No favourites yet. Tap the heart on any dish you love.",
       bundles: "Ready-made bundles",
+      orderNote: "A note for the chef about the whole order",
+      orderNotePh: "e.g. the feast is on Friday at 2 pm, or deliver after 4",
       bundlesSub: "Pick a bundle, add it all in one tap, and adjust amounts later.",
       kinds: { week: "Meals of the week", feast: "Feasts" },
       addAll: (n) => `Add ${n} item${n === 1 ? "" : "s"} to order`,
@@ -240,6 +244,9 @@
     leaf: '<path d="M5 19c0-8.3 6-14 15-14 0 9-6 15-14.5 15"/><path d="M5 19l7-7"/>',
     home: '<path d="M4 11l8-7 8 7"/><path d="M6 9.5V20h12V9.5"/>',
     up: '<path d="M12 19V5M6 11l6-6 6 6"/>',
+    lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+    unlock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.5-1.9"/>',
+    swap: '<path d="M7 4 4 7l3 3"/><path d="M4 7h13a3 3 0 0 1 3 3v1"/><path d="M17 20l3-3-3-3"/><path d="M20 17H7a3 3 0 0 1-3-3v-1"/>',
     grid: '<rect x="4" y="4" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1"/>',
   };
 
@@ -342,6 +349,8 @@
     search: "",
     cart: savedCart.filter((c) => byId.has(c.id)),
     favs: new Set((store.get("sabah-favs", []) || []).filter((id) => typeof id === "string")),
+    // A note for the whole order (for example the date and time of a feast), sent at the end.
+    cartNote: String(store.get("sabah-cart-note", "") || ""),
   };
   state.view = viewFromHash();
 
@@ -349,6 +358,12 @@
   const tr = (obj) => (obj ? obj[state.lang] || obj.ar || "" : "");
   const saveCart = () => store.set("sabah-cart", state.cart);
   const saveFavs = () => store.set("sabah-favs", [...state.favs]);
+  const saveCartNote = () => store.set("sabah-cart-note", state.cartNote);
+  function addOrderNote(text) {
+    if (state.cartNote.includes(text)) return;
+    state.cartNote = state.cartNote ? state.cartNote + "\n" + text : text;
+    saveCartNote();
+  }
   const inCart = (id) => state.cart.find((c) => c.id === id);
   const reduceMotion = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -542,12 +557,20 @@
         });
       if (lines.length) blocks.push(`${section.emoji} *${section.ar}*\n${lines.join("\n")}`);
     });
+    if (state.cartNote.trim()) blocks.push(`📝 *${u.orderNote}*\n${state.cartNote.trim()}`);
     return blocks.join("\n\n");
   }
 
   // The order is remembered when it is sent or copied, so it can be ordered again in one tap.
   function rememberOrder() {
     store.set("sabah-last-order", { at: Date.now(), cart: state.cart.map((c) => ({ ...c })) });
+    // A short history of sent orders lets bundles avoid repeating recent dishes.
+    const ids = state.cart.map((c) => c.id).sort();
+    const hist = history();
+    const prev = hist[hist.length - 1];
+    if (prev && Date.now() - prev.at < 30 * 60 * 1000) hist.pop();
+    hist.push({ at: Date.now(), ids });
+    store.set("sabah-history", hist.slice(-6));
   }
   function lastOrder() {
     const last = store.get("sabah-last-order", null);
@@ -707,7 +730,7 @@
   }
 
   function bundleCard(c) {
-    const items = c.items.filter((id) => byId.has(id));
+    const items = bundleItems(c);
     const pics = items.map((id) => byId.get(id).item).filter((i) => i.img).slice(0, 3);
     return el("button", { type: "button", class: "bundle-card", onclick: () => openBundle(c.id) },
       el("span", { class: "bundle-pics n" + pics.length }, pics.map((i) => el("img", { src: i.img, alt: "", loading: "lazy", decoding: "async" }))),
@@ -897,10 +920,23 @@
     const message = buildMessage();
     out.push(
       el("button", { type: "button", class: "btn text add-more", onclick: () => go("browse") }, icon("plus"), u.addMore),
+      el("p", { class: "field-label" }, u.orderNote),
+      el("textarea", {
+        class: "note order-note", rows: "2", placeholder: u.orderNotePh,
+        oninput: (e) => {
+          state.cartNote = e.target.value;
+          saveCartNote();
+          const msg = buildMessage();
+          const pv = document.querySelector(".preview");
+          if (pv) pv.textContent = msg;
+          const wa = document.querySelector(".send-bar .btn.whatsapp");
+          if (wa) wa.href = "https://wa.me/?text=" + encodeURIComponent(msg);
+        },
+      }, state.cartNote),
       el("details", { class: "preview-box" },
         el("summary", null, u.preview),
         el("div", { class: "preview", dir: "rtl", lang: "ar" }, message),
-        el("button", { type: "button", class: "btn outline small", onclick: () => copyMessage(message) }, icon("copy"), u.copy)),
+        el("button", { type: "button", class: "btn outline small", onclick: () => copyMessage(buildMessage()) }, icon("copy"), u.copy)),
       el("p", { class: "send-note" }, u.sendNote),
       el("div", { class: "actions" }, el("button", { type: "button", class: "btn text danger", onclick: clearCart }, u.clear))
     );
@@ -925,7 +961,9 @@
   function clearCart() {
     if (!window.confirm(ui().confirmClear)) return;
     state.cart = [];
+    state.cartNote = "";
     saveCart();
+    saveCartNote();
     render();
   }
 
@@ -933,15 +971,22 @@
   function openPanel(build, label) {
     const backdrop = $("sheet");
     const close = () => { backdrop.hidden = true; backdrop.replaceChildren(); document.body.style.overflow = ""; };
+    // The sheet element is created once; redraws only replace what is inside it, so its
+    // slide-up animation and scroll position are kept while people tap inside it.
+    const sheet = el("div", { class: "sheet", role: "dialog", "aria-modal": "true", "aria-label": label });
     const draw = () => {
-      const scroll = backdrop.firstChild ? backdrop.firstChild.scrollTop : 0;
-      const sheet = el("div", { class: "sheet", role: "dialog", "aria-modal": "true", "aria-label": label },
+      const scroll = sheet.scrollTop;
+      const focused = document.activeElement && sheet.contains(document.activeElement) && document.activeElement.tagName === "INPUT"
+        ? [...sheet.querySelectorAll("input")].indexOf(document.activeElement) : -1;
+      sheet.replaceChildren(...[
         el("div", { class: "handle" }),
         el("button", { type: "button", class: "sheet-close icon-btn small", "aria-label": ui().close, onclick: close }, icon("close")),
-        build({ close, draw }));
-      backdrop.replaceChildren(sheet);
+        el("div", { class: "sheet-body" }, build({ close, draw })),
+      ]);
       sheet.scrollTop = scroll;
+      if (focused >= 0) { const inp = sheet.querySelectorAll("input")[focused]; if (inp) inp.focus(); }
     };
+    backdrop.replaceChildren(sheet);
     backdrop.onclick = (e) => { if (e.target === backdrop) close(); };
     backdrop.hidden = false;
     document.body.style.overflow = "hidden";
@@ -1036,40 +1081,257 @@
     }, tr(item));
   }
 
+  // ---------- Smart bundles ----------
+  // A bundle is a list of slots (a day of the week, or a role such as "rice" or "dessert"), each
+  // with a pool of dishes that fit it. The app picks one dish per slot, can re-pick them all
+  // (refresh), and offers better alternatives for one slot (switch). Picks avoid dishes from
+  // recent orders, lean towards favourites and healthy dishes, and avoid dishes the person
+  // switched away from before. Everything is stored on the device only.
+  const PORTIONS = Object.assign({ kg: 4, plate: 3, piece: 4, feast: 0.55 }, MENU.portions || {});
+  const DAY_NAMES = {
+    ar: ["السبت", "الأحد", "الاتنين", "التلات", "الأربع", "الخميس", "الجمعة"],
+    en: ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+  };
+  // Quick notes for every dish in a bundle. The chef reads Arabic, so the note text is always `ar`.
+  const BUNDLE_NOTES = [
+    { ar: "قليل الملح", en: "Low salt" },
+    { ar: "من غير بصل", en: "No onions" },
+    { ar: "قليل الزيت", en: "Less oil" },
+    { ar: "سبايسي خفيف", en: "Mildly spicy" },
+  ];
+  const REASONS = {
+    fav: { ar: "من مفضلتك", en: "A favourite" },
+    fresh: { ar: "مطلبتهاش من فترة", en: "Not ordered lately" },
+    healthier: { ar: "صحي أكتر", en: "Healthier" },
+    variety: { ar: "تنويع", en: "Something different" },
+  };
+
+  const history = () => (store.get("sabah-history", []) || []).filter((h) => h && Array.isArray(h.ids));
+  function recentIds(n) {
+    const out = new Set();
+    history().slice(-n).forEach((h) => h.ids.forEach((id) => out.add(id)));
+    return out;
+  }
+  const skipped = () => new Set(store.get("sabah-skips", []) || []);
+  function addSkip(id) {
+    const list = (store.get("sabah-skips", []) || []).filter((x) => x !== id);
+    list.push(id);
+    store.set("sabah-skips", list.slice(-40));
+  }
+  const slotPool = (slot) => (slot.pool || []).filter((id) => byId.has(id) && !byId.get(id).item.removed);
+  const isHealthyBundle = (c) => /healthy/.test(c.id);
+
+  function scoreDish(id, c) {
+    const { item, section } = byId.get(id);
+    let s = 0;
+    if (state.favs.has(id)) s += 2;
+    if (history().length) {
+      if (!recentIds(3).has(id)) s += 1.5;
+      if (recentIds(1).has(id)) s -= 2;
+    }
+    if (isHealthy(item, section)) s += isHealthyBundle(c) ? 2 : 0.6;
+    if (skipped().has(id)) s -= 2.5;
+    return s;
+  }
+
+  // Why a dish is suggested instead of `current`, shown as small tags.
+  function reasonsFor(id, current) {
+    const out = [];
+    const { item, section } = byId.get(id);
+    if (state.favs.has(id)) out.push("fav");
+    if (current) {
+      const cur = byId.get(current);
+      if (isHealthy(item, section) && !isHealthy(cur.item, cur.section)) out.push("healthier");
+    }
+    if (history().length && !recentIds(3).has(id)) out.push("fresh");
+    if (!out.length) out.push("variety");
+    return out.slice(0, 2);
+  }
+
+  function pickFor(slot, c, taken, exclude, rotate) {
+    const pool = slotPool(slot);
+    const options = pool.filter((id) => !taken.has(id) && id !== exclude);
+    if (!options.length) return exclude && pool.includes(exclude) ? exclude : pool[0];
+    const scored = options.map((id, i) => ({ id, s: scoreDish(id, c) - i * 0.05 + (rotate ? Math.random() * 1.6 : 0) }));
+    scored.sort((a, b) => b.s - a.s);
+    return scored[0].id;
+  }
+
+  // The bundle's current picks: remembered on the device, or picked fresh.
+  function bundlePicks(c) {
+    const saved = (store.get("sabah-bundles", {}) || {})[c.id];
+    if (Array.isArray(saved) && saved.length === c.slots.length && saved.every((id, i) => slotPool(c.slots[i]).includes(id))) return saved;
+    const taken = new Set();
+    return c.slots.map((slot) => { const id = pickFor(slot, c, taken, null, false); taken.add(id); return id; });
+  }
+  function saveBundlePicks(c, picks) {
+    const all = store.get("sabah-bundles", {}) || {};
+    all[c.id] = picks;
+    store.set("sabah-bundles", all);
+  }
+  const bundleItems = (c) => bundlePicks(c).filter(Boolean);
+
+  function autoQty(id, c, people) {
+    const { item, section, group } = byId.get(id);
+    const unit = defaultUnit(item, section, group);
+    const units = (people * (c.kind === "feast" ? PORTIONS.feast : 1)) / (PORTIONS[unit] || 3);
+    if (unit === "kg") return Math.max(0.5, Math.ceil(units * 2 - 0.2) / 2);
+    return Math.max(1, Math.ceil(units - 0.15));
+  }
+
   function openBundle(collectionId) {
     const c = COLLECTIONS.find((x) => x.id === collectionId);
     if (!c) return;
-    const ids = c.items.filter((id) => byId.has(id));
-    const picked = new Set(ids.filter((id) => !inCart(id)));
+    const isWeek = c.kind === "week";
+    const peopleKey = isWeek ? "sabah-people" : "sabah-guests";
+    const b = {
+      picks: bundlePicks(c).slice(),
+      on: c.slots.map(() => true),
+      locks: c.slots.map(() => false),
+      mode: store.get("sabah-qty-mode", "auto") === "manual" ? "manual" : "auto",
+      people: Math.min(30, Math.max(1, Number(store.get(peopleKey, isWeek ? 4 : 8)) || (isWeek ? 4 : 8))),
+      qty: [],
+      notes: new Set(),
+      noteText: "",
+      when: "",
+      open: -1,
+      changed: new Set(),
+    };
+    const fillQty = () => { b.qty = b.picks.map((id) => (b.mode === "auto" ? autoQty(id, c, b.people) : 1)); };
+    fillQty();
+
     openPanel(({ close, draw }) => {
       const u = ui();
-      const n = picked.size;
+      const L = state.lang;
+      if (b.changed.size) setTimeout(() => { b.changed = new Set(); }, 50);
+      const T = BUNDLE_UI[L];
+      const n = b.on.filter(Boolean).length;
+      const unitOf = (id) => { const { item, section, group } = byId.get(id); return defaultUnit(item, section, group); };
+      const stepOf = (id) => (unitOf(id) === "kg" ? 0.5 : 1);
+      const unitLabel = (id) => tr(KITCHEN_UNITS.find((x) => x.id === unitOf(id)) || KITCHEN_UNITS[0]);
+
+      const refresh = () => {
+        const taken = new Set(b.picks.filter((_, i) => b.locks[i] || !b.on[i]));
+        b.picks = b.picks.map((cur, i) => {
+          if (b.locks[i] || !b.on[i]) return cur;
+          const id = pickFor(c.slots[i], c, taken, cur, true);
+          taken.add(id);
+          return id;
+        });
+        if (b.mode === "auto") fillQty();
+        b.open = -1;
+        const before = bundlePicks(c);
+        b.changed = new Set(b.picks.map((id, i) => (id !== before[i] ? i : -1)).filter((i) => i >= 0));
+        saveBundlePicks(c, b.picks);
+        buzz();
+        draw();
+      };
+      const swap = (i, id) => {
+        addSkip(b.picks[i]);
+        b.picks[i] = id;
+        if (b.mode === "auto") b.qty[i] = autoQty(id, c, b.people);
+        b.open = -1;
+        b.changed = new Set([i]);
+        saveBundlePicks(c, b.picks);
+        buzz();
+        draw();
+      };
+      const alternatives = (i) => {
+        const taken = new Set(b.picks.filter((_, k) => k !== i));
+        const cur = b.picks[i];
+        return slotPool(c.slots[i]).filter((id) => id !== cur && !taken.has(id))
+          .map((id, k) => ({ id, s: scoreDish(id, c) - k * 0.05 }))
+          .sort((x, y) => y.s - x.s).slice(0, 3).map((x) => x.id);
+      };
+
+      const rows = c.slots.map((slot, i) => {
+        const id = b.picks[i];
+        const { item, section } = byId.get(id);
+        const alts = b.open === i ? alternatives(i) : [];
+        return el("div", { class: "brow" + (b.on[i] ? "" : " off") + (b.locks[i] ? " locked" : "") },
+          el("div", { class: "brow-main" },
+            el("button", { type: "button", class: "tick-btn", "aria-pressed": String(b.on[i]), "aria-label": tr(item), onclick: () => { b.on[i] = !b.on[i]; draw(); } }, icon("check")),
+            el("img", { class: "brow-img" + (b.changed.has(i) ? " fresh" : ""), src: item.img, alt: "", loading: "lazy" }),
+            el("div", { class: "brow-text" },
+              el("span", { class: "brow-slot" }, isWeek && slot.day !== undefined ? DAY_NAMES[L][slot.day] : tr(slot)),
+              el("button", { type: "button", class: "brow-name", onclick: () => openSheet(id) }, tr(item)),
+              el("span", { class: "brow-tags" }, readyTag(item, section),
+                reasonsFor(id, null).filter((r) => r !== "variety").map((r) => el("span", { class: "why why-" + r }, tr(REASONS[r]))))),
+            el("div", { class: "brow-tools" },
+              el("button", { type: "button", class: "icon-btn small" + (b.locks[i] ? " active" : ""), "aria-pressed": String(b.locks[i]), "aria-label": T.lock, title: T.lock, onclick: () => { b.locks[i] = !b.locks[i]; draw(); } }, icon(b.locks[i] ? "lock" : "unlock")),
+              slotPool(slot).length > 1 ? el("button", { type: "button", class: "icon-btn small" + (b.open === i ? " active" : ""), "aria-expanded": String(b.open === i), "aria-label": T.switch, title: T.switch, onclick: () => { b.open = b.open === i ? -1 : i; draw(); } }, icon("swap")) : null)
+          ),
+          b.on[i] ? el("div", { class: "brow-qty" },
+            el("button", { type: "button", class: "qbtn", "aria-label": "−", onclick: () => { b.qty[i] = Math.max(stepOf(id), Math.round((b.qty[i] - stepOf(id)) * 10) / 10); draw(); } }, icon("minus")),
+            el("span", { class: "qval" }, el("b", null, fmtQty(b.qty[i])), " ", unitLabel(id)),
+            el("button", { type: "button", class: "qbtn", "aria-label": "+", onclick: () => { b.qty[i] = Math.round((b.qty[i] + stepOf(id)) * 10) / 10; draw(); } }, icon("plus"))) : null,
+          alts.length ? el("div", { class: "alts" },
+            el("p", { class: "alts-title" }, T.better),
+            alts.map((aid) => {
+              const a = byId.get(aid).item;
+              return el("button", { type: "button", class: "alt", onclick: () => swap(i, aid) },
+                el("img", { src: a.img, alt: "", loading: "lazy" }),
+                el("span", { class: "alt-name" }, tr(a)),
+                el("span", { class: "brow-tags" }, reasonsFor(aid, id).map((r) => el("span", { class: "why why-" + r }, tr(REASONS[r])))));
+            })) : null
+        );
+      });
+
       return [
         el("span", { class: "eyebrow" }, u.kinds[c.kind] || ""),
         el("h2", { class: "sheet-title" }, tr(c)),
         c.desc ? el("p", { class: "sheet-desc" }, tr(c.desc)) : null,
-        el("p", { class: "bundle-hint" }, u.bundleHint),
-        el("div", { class: "bundle-list" }, ids.map((id) => {
-          const { item, section, group } = byId.get(id);
-          const already = !!inCart(id);
-          const on = picked.has(id);
-          return el("button", {
-            type: "button", class: "bundle-item", "aria-pressed": String(on || already), disabled: already,
-            onclick: () => { if (on) picked.delete(id); else picked.add(id); draw(); },
-          },
-            el("span", { class: "tick" }, icon("check")),
-            item.img ? el("img", { src: item.img, alt: "", loading: "lazy" }) : el("span", { class: "card-img-empty" }, section.emoji),
-            el("span", { class: "bundle-item-text" },
-              el("span", { class: "bundle-item-name" }, tr(item)),
-              el("span", { class: "bundle-item-meta" }, already ? u.alreadyIn : qtyLabel(makeEntry(id), group))),
-            readyTag(item, section)
-          );
-        })),
+
+        el("div", { class: "bctl" },
+          el("button", { type: "button", class: "btn tinted small", onclick: refresh }, icon("repeat"), T.refresh),
+          el("span", { class: "bctl-hint" }, T.refreshHint)),
+
+        el("div", { class: "bqty" },
+          el("div", { class: "segmented small", role: "tablist" },
+            ["auto", "manual"].map((m) => el("button", {
+              type: "button", role: "tab", "aria-selected": String(b.mode === m),
+              onclick: () => { b.mode = m; store.set("sabah-qty-mode", m); fillQty(); draw(); },
+            }, T.modes[m]))),
+          b.mode === "auto" ? el("div", { class: "people" },
+            el("span", { class: "people-label" }, isWeek ? T.people : T.guests),
+            el("button", { type: "button", class: "qbtn", "aria-label": "−", onclick: () => { b.people = Math.max(1, b.people - 1); store.set(peopleKey, b.people); fillQty(); draw(); } }, icon("minus")),
+            el("b", { class: "people-n" }, b.people),
+            el("button", { type: "button", class: "qbtn", "aria-label": "+", onclick: () => { b.people = Math.min(30, b.people + 1); store.set(peopleKey, b.people); fillQty(); draw(); } }, icon("plus"))) : null,
+          el("p", { class: "bctl-hint" }, b.mode === "auto" ? T.autoHint(PORTIONS) : T.manualHint)),
+
+        el("div", { class: "bundle-rows" }, rows),
+
+        el("p", { class: "field-label" }, T.notesTitle),
+        el("div", { class: "choice-row" }, BUNDLE_NOTES.map((nt, k) => el("button", {
+          type: "button", class: "choice small", "aria-pressed": String(b.notes.has(k)),
+          onclick: () => { if (b.notes.has(k)) b.notes.delete(k); else b.notes.add(k); draw(); },
+        }, tr(nt)))),
+        el("input", { class: "note", type: "text", value: b.noteText, placeholder: T.notePh, oninput: (e) => { b.noteText = e.target.value; } }),
+        isWeek ? el("p", { class: "bctl-hint" }, T.dayHint) : [
+          el("p", { class: "field-label" }, T.when),
+          el("input", { class: "note", type: "text", value: b.when, placeholder: T.whenPh, oninput: (e) => { b.when = e.target.value; } }),
+        ],
+
         el("div", { class: "sheet-actions" },
           el("button", {
             type: "button", class: "btn solid wide", disabled: !n,
             onclick: () => {
-              ids.forEach((id) => { if (picked.has(id) && !inCart(id)) state.cart.push(makeEntry(id)); });
+              const extra = [...b.notes].sort().map((k) => BUNDLE_NOTES[k].ar);
+              if (b.noteText.trim()) extra.push(b.noteText.trim());
+              c.slots.forEach((slot, i) => {
+                if (!b.on[i]) return;
+                const id = b.picks[i];
+                const entry = makeEntry(id);
+                entry.qty = b.qty[i];
+                const parts = [];
+                if (isWeek && slot.day !== undefined) parts.push("يوم " + DAY_NAMES.ar[slot.day]);
+                entry.note = parts.concat(extra).join(" · ");
+                const idx = state.cart.findIndex((x) => x.id === id);
+                if (idx >= 0) state.cart[idx] = entry;
+                else state.cart.push(entry);
+              });
+              if (!isWeek && b.when.trim()) addOrderNote(`${tr2ar(c)}: ${b.when.trim()}`);
+              saveBundlePicks(c, b.picks);
               saveCart();
               buzz();
               close();
@@ -1080,6 +1342,32 @@
       ];
     }, tr(c));
   }
+  const tr2ar = (obj) => obj.ar || obj.en || "";
+
+  const BUNDLE_UI = {
+    ar: {
+      refresh: "غيّر الأصناف", refreshHint: "بيختار أصناف جديدة بدل اللي مش مقفولة، ويبعد عن اللي طلبته قريب.",
+      lock: "ثبّت الصنف ده", switch: "بدّل الصنف", better: "بدايل أحسن",
+      modes: { auto: "حسب عدد الأفراد", manual: "أنا هحدد الكميات" },
+      people: "كام فرد؟", guests: "كام ضيف؟",
+      autoHint: (p) => `الكميات تقريبية: الكيلو لـ ${p.kg} أفراد، والطبق لـ ${p.plate}. تقدر تعدّل أي صنف.`,
+      manualHint: "كل صنف بيبدأ بكمية واحدة، وانت تزوّد أو تقلّل.",
+      notesTitle: "ملاحظات للشيف على كل الأصناف", notePh: "ملاحظة تانية (اختياري)",
+      dayHint: "كل صنف بيتكتب جنبه اليوم بتاعه في رسالة الشيف.",
+      when: "ميعاد العزومة", whenPh: "مثال: الجمعة الساعة ٢ الضهر",
+    },
+    en: {
+      refresh: "Refresh dishes", refreshHint: "Picks new dishes for everything not locked, avoiding what you ordered recently.",
+      lock: "Keep this dish", switch: "Switch dish", better: "Better options",
+      modes: { auto: "By number of people", manual: "I'll set amounts" },
+      people: "How many people?", guests: "How many guests?",
+      autoHint: (p) => `Amounts are estimates: a kilo feeds ${p.kg}, a plate feeds ${p.plate}. You can change any dish.`,
+      manualHint: "Each dish starts at one; adjust as you like.",
+      notesTitle: "Notes for the chef on every dish", notePh: "Another note (optional)",
+      dayHint: "Each dish gets its day written next to it in the chef's message.",
+      when: "Date and time of the feast", whenPh: "e.g. Friday at 2 pm",
+    },
+  };
 
   // ---------- Lightbox ----------
   function openLightbox(item) {
@@ -1154,8 +1442,8 @@
     const bundle = (id) => COLLECTIONS.find((c) => c.id === id);
     const week = bundle(HOME_WEEK);
     const feast = bundle(HOME_FEAST);
-    const weekIds = week ? week.items.filter((id) => byId.has(id)).slice(0, 7) : [];
-    const feastIds = feast ? feast.items.filter((id) => byId.has(id)).slice(0, 6) : [];
+    const weekIds = week ? bundleItems(week).slice(0, 7) : [];
+    const feastIds = feast ? bundleItems(feast).slice(0, 6) : [];
     const nCook = countWhere((i, s) => readiness(i, s) === "cook");
     const nEat = countWhere((i, s) => readiness(i, s) === "eat");
     const nHealthy = countWhere((i, s) => isHealthy(i, s));
