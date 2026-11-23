@@ -325,15 +325,14 @@
   };
 
   // ---------- State ----------
-  // Pages with their own address. "" opens the landing page on a first visit (when nothing is in
-  // the order yet) and the menu after that.
+  // Pages with their own address. The site's plain address ("") always opens the landing page.
   const HASH_VIEWS = { welcome: "welcome", menu: "browse", order: "cart", ideas: "ideas", admin: "admin" };
   const VIEW_HASH = { welcome: "#welcome", browse: "#menu", cart: "#order", ideas: "#ideas", admin: "#admin" };
   function viewFromHash() {
     const v = HASH_VIEWS[location.hash.slice(1)];
     if ((v === "ideas" || v === "admin") && !window.SabahIdeas) return "browse";
     if (v) return v;
-    return !store.get("sabah-welcomed", false) && !state.cart.length ? "welcome" : "browse";
+    return "welcome";
   }
 
   // The last approved ideas list is kept on the device so the Ideas tab shows right away.
@@ -1440,7 +1439,6 @@
   function renderWelcome() {
     const h = HOME[state.lang];
     const u = ui();
-    store.set("sabah-welcomed", true);
     $("fab").replaceChildren();
     const bundle = (id) => COLLECTIONS.find((c) => c.id === id);
     const week = bundle(HOME_WEEK);
