@@ -5214,8 +5214,8 @@ window.SABAH_MENU = {
        "id": "b62",
        "ar": "كبيبة لحم",
        "en": "Beef Kobeba",
-       "img": "assets/butcherista/thumbs/d0a1e67d-0d1b-4398-aff6-149990205bb1.webp",
-       "full": "assets/butcherista/full/d0a1e67d-0d1b-4398-aff6-149990205bb1.webp",
+       "img": "assets/kitchen/thumbs/b62.webp",
+       "full": "assets/kitchen/full/b62.webp",
        "sizes": [
         {
          "ar": "٥٠٠ جم",
