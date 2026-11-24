@@ -4603,7 +4603,23 @@ window.SABAH_MENU = {
    "includeLabel": {
     "ar": "مخللات وصوصات",
     "en": "Pickles & sauces"
-   }
+   },
+   "subGroups": [
+    {
+     "id": "cut-veg",
+     "ar": "خضار مقطّع",
+     "en": "Cut vegetables",
+     "ids": [
+      "k48",
+      "k49",
+      "k50",
+      "k51",
+      "k52",
+      "k53",
+      "k54"
+     ]
+    }
+   ]
   },
   {
    "id": "sweets",
@@ -4649,7 +4665,113 @@ window.SABAH_MENU = {
     "appetizers",
     "add-ons"
    ],
-   "keepName": true
+   "keepName": true,
+   "subGroups": [
+    {
+     "id": "b-chicken",
+     "ar": "دجاج",
+     "en": "Chicken",
+     "ids": [
+      "b1",
+      "b2",
+      "b4",
+      "b9",
+      "b14",
+      "b45",
+      "b46",
+      "b47",
+      "b48",
+      "b49",
+      "b50",
+      "b51",
+      "b52",
+      "b53",
+      "b54",
+      "b55"
+     ]
+    },
+    {
+     "id": "b-beef",
+     "ar": "لحم بقري وضاني",
+     "en": "Beef & lamb",
+     "ids": [
+      "b3",
+      "b8",
+      "b10",
+      "b11",
+      "b12",
+      "b13",
+      "b15",
+      "b16",
+      "b17",
+      "b18",
+      "b19",
+      "b20",
+      "b21",
+      "b22",
+      "b23",
+      "b24",
+      "b25",
+      "b26",
+      "b27",
+      "b28",
+      "b29",
+      "b30",
+      "b31",
+      "b32",
+      "b33",
+      "b34",
+      "b35",
+      "b36",
+      "b37",
+      "b38",
+      "b39",
+      "b40",
+      "b41",
+      "b42",
+      "b43",
+      "b44",
+      "b56",
+      "b57",
+      "b58",
+      "b59"
+     ]
+    },
+    {
+     "id": "b-boxes",
+     "ar": "حلومي وبوكسات",
+     "en": "Halloumi & boxes",
+     "ids": [
+      "b5",
+      "b6",
+      "b7"
+     ]
+    },
+    {
+     "id": "b-sides",
+     "ar": "مقبلات وإضافات",
+     "en": "Appetizers & add-ons",
+     "ids": [
+      "b60",
+      "b61",
+      "b62",
+      "b63",
+      "b64",
+      "b65",
+      "b66",
+      "b67",
+      "b68",
+      "b69",
+      "b70",
+      "b71",
+      "b72",
+      "b73",
+      "b74",
+      "b75",
+      "b76"
+     ]
+    }
+   ]
   }
  ],
  "families": [
@@ -4844,6 +4966,671 @@ window.SABAH_MENU = {
      "id": "k170",
      "ar": "سبايسي بالفلفل الأخضر",
      "en": "Spicy with green pepper"
+    }
+   ]
+  },
+  {
+   "id": "panne",
+   "ar": "صدور فراخ بانيه",
+   "en": "Breaded chicken breast (panne)",
+   "members": [
+    {
+     "id": "k11",
+     "ar": "كريسبي",
+     "en": "Crispy"
+    },
+    {
+     "id": "k12",
+     "ar": "كريسبي وسبايسي",
+     "en": "Crispy & spicy"
+    }
+   ]
+  },
+  {
+   "id": "shish-tawook",
+   "ar": "شيش طاووق متبل",
+   "en": "Marinated shish tawook",
+   "members": [
+    {
+     "id": "k8",
+     "ar": "صدور معاها خضار",
+     "en": "Breast with vegetables"
+    },
+    {
+     "id": "k80",
+     "ar": "صدور معاها خضار ومشروم",
+     "en": "Breast with vegetables & mushrooms"
+    },
+    {
+     "id": "k10",
+     "ar": "وراك معاها خضار",
+     "en": "Thighs with vegetables"
+    }
+   ]
+  },
+  {
+   "id": "fajita",
+   "ar": "صدور فراخ فاهيتا متبلة",
+   "en": "Marinated fajita breast",
+   "members": [
+    {
+     "id": "k9",
+     "ar": "بالبصل والخضار",
+     "en": "With onion & vegetables"
+    },
+    {
+     "id": "k81",
+     "ar": "بالبصل والخضار والمشروم",
+     "en": "With onion, vegetables & mushrooms"
+    }
+   ]
+  },
+  {
+   "id": "freekeh-stuffed",
+   "ar": "محشي فريك",
+   "en": "Stuffed with freekeh",
+   "members": [
+    {
+     "id": "k15",
+     "ar": "فراخ",
+     "en": "Chicken"
+    },
+    {
+     "id": "k82",
+     "ar": "فرخة كاملة بالفريك والكبد",
+     "en": "Whole chicken with freekeh & liver"
+    },
+    {
+     "id": "k111",
+     "ar": "بط",
+     "en": "Duck"
+    },
+    {
+     "id": "k112",
+     "ar": "حمام",
+     "en": "Pigeon"
+    }
+   ]
+  },
+  {
+   "id": "spiced-chicken",
+   "ar": "فراخ بالبهارات ومعاها خضار وبصل",
+   "en": "Spiced chicken with vegetables & onion",
+   "members": [
+    {
+     "id": "k102",
+     "ar": "بالليمون",
+     "en": "With lemon"
+    },
+    {
+     "id": "k103",
+     "ar": "بالزبادي",
+     "en": "With yoghurt"
+    }
+   ]
+  },
+  {
+   "id": "kofta",
+   "ar": "كفتة",
+   "en": "Kofta",
+   "members": [
+    {
+     "id": "k115",
+     "ar": "لحمة",
+     "en": "Beef"
+    },
+    {
+     "id": "k19",
+     "ar": "متبلة بالفلفل والباربيكيو المدخن",
+     "en": "Marinated, pepper & smoky BBQ"
+    },
+    {
+     "id": "k116",
+     "ar": "رز",
+     "en": "Rice"
+    },
+    {
+     "id": "k117",
+     "ar": "داوود باشا",
+     "en": "Dawood Basha"
+    }
+   ]
+  },
+  {
+   "id": "beef-slices",
+   "ar": "شرايح لحمة متبلة",
+   "en": "Marinated beef slices",
+   "members": [
+    {
+     "id": "k90",
+     "ar": "عادية",
+     "en": "Plain"
+    },
+    {
+     "id": "k167",
+     "ar": "بالبصل والخضار والمشروم",
+     "en": "With onion, vegetables & mushrooms"
+    }
+   ]
+  },
+  {
+   "id": "stews",
+   "ar": "طبيخ",
+   "en": "Stews",
+   "members": [
+    {
+     "id": "k35",
+     "ar": "بسلة خضرا",
+     "en": "Green peas"
+    },
+    {
+     "id": "k36",
+     "ar": "لوبيا",
+     "en": "Black-eyed peas"
+    },
+    {
+     "id": "k37",
+     "ar": "فاصوليا بيضاء",
+     "en": "White beans"
+    },
+    {
+     "id": "k38",
+     "ar": "فاصوليا خضراء",
+     "en": "Green beans"
+    },
+    {
+     "id": "k39",
+     "ar": "كوسة",
+     "en": "Zucchini"
+    },
+    {
+     "id": "k41",
+     "ar": "سبانخ",
+     "en": "Spinach"
+    },
+    {
+     "id": "k42",
+     "ar": "بامية",
+     "en": "Okra"
+    },
+    {
+     "id": "k43",
+     "ar": "كرنب",
+     "en": "Cabbage"
+    },
+    {
+     "id": "k84",
+     "ar": "ملوخية",
+     "en": "Molokhia"
+    }
+   ]
+  },
+  {
+   "id": "cottage-cheese",
+   "ar": "جبنة قريش",
+   "en": "Cottage cheese (areesh)",
+   "members": [
+    {
+     "id": "k86",
+     "ar": "مضروبة",
+     "en": "Whipped"
+    },
+    {
+     "id": "k166",
+     "ar": "مضروبة بالزعتر",
+     "en": "Whipped with za'atar"
+    },
+    {
+     "id": "k109",
+     "ar": "بالخلطة سبايسي",
+     "en": "Spicy seasoned"
+    }
+   ]
+  },
+  {
+   "id": "freekeh",
+   "ar": "فريك بالمشروم والبصل",
+   "en": "Freekeh with mushrooms & onion",
+   "members": [
+    {
+     "id": "k56",
+     "ar": "من غير كبد",
+     "en": "Without liver"
+    },
+    {
+     "id": "k55",
+     "ar": "بالكبد",
+     "en": "With liver"
+    }
+   ]
+  },
+  {
+   "id": "bread",
+   "ar": "عيش",
+   "en": "Bread",
+   "members": [
+    {
+     "id": "k59",
+     "ar": "بلدي",
+     "en": "Baladi"
+    },
+    {
+     "id": "k60",
+     "ar": "قمح كامل",
+     "en": "Whole wheat"
+    },
+    {
+     "id": "k87",
+     "ar": "قريش بحبة البركة",
+     "en": "Nigella-seed crispbread (qorsh)"
+    }
+   ]
+  },
+  {
+   "id": "toast",
+   "ar": "توست بني",
+   "en": "Brown toast",
+   "members": [
+    {
+     "id": "k88",
+     "ar": "محمص مكعبات",
+     "en": "Toasted cubes"
+    },
+    {
+     "id": "k105",
+     "ar": "بالتوم وزيت الزيتون",
+     "en": "Garlic & olive oil"
+    },
+    {
+     "id": "k106",
+     "ar": "بالزعتر والزيتون",
+     "en": "Za'atar & olives"
+    }
+   ]
+  },
+  {
+   "id": "rice",
+   "ar": "رز",
+   "en": "Rice",
+   "members": [
+    {
+     "id": "k131",
+     "ar": "أبيض",
+     "en": "White"
+    },
+    {
+     "id": "k130",
+     "ar": "بشعرية",
+     "en": "With vermicelli"
+    },
+    {
+     "id": "k132",
+     "ar": "معمر",
+     "en": "Baked (moammar)"
+    }
+   ]
+  },
+  {
+   "id": "pasta",
+   "ar": "مكرونة",
+   "en": "Pasta",
+   "members": [
+    {
+     "id": "k133",
+     "ar": "بشاميل",
+     "en": "Béchamel"
+    },
+    {
+     "id": "k134",
+     "ar": "بشاميل بالمشروم والخضار",
+     "en": "Béchamel with mushrooms & vegetables"
+    },
+    {
+     "id": "k135",
+     "ar": "بالصلصة الحمرا",
+     "en": "Red sauce"
+    },
+    {
+     "id": "k136",
+     "ar": "بالصلصة البيضاء",
+     "en": "White sauce"
+    },
+    {
+     "id": "k58",
+     "ar": "قمح كامل",
+     "en": "Whole wheat"
+    }
+   ]
+  },
+  {
+   "id": "soup",
+   "ar": "شوربة",
+   "en": "Soup",
+   "members": [
+    {
+     "id": "k147",
+     "ar": "عدس",
+     "en": "Lentil"
+    },
+    {
+     "id": "k148",
+     "ar": "خضار",
+     "en": "Vegetable"
+    }
+   ]
+  },
+  {
+   "id": "grapes",
+   "ar": "عنب",
+   "en": "Grapes",
+   "members": [
+    {
+     "id": "k93",
+     "ar": "أسود",
+     "en": "Black"
+    },
+    {
+     "id": "k94",
+     "ar": "أصفر",
+     "en": "White"
+    }
+   ]
+  },
+  {
+   "id": "kunafa",
+   "ar": "كنافة",
+   "en": "Kunafa",
+   "members": [
+    {
+     "id": "k149",
+     "ar": "بالكريمة",
+     "en": "With cream"
+    },
+    {
+     "id": "k150",
+     "ar": "بالقشطة",
+     "en": "With qishta"
+    },
+    {
+     "id": "k159",
+     "ar": "صيامي",
+     "en": "Vegan"
+    }
+   ]
+  },
+  {
+   "id": "sweet-potato",
+   "ar": "بطاطا",
+   "en": "Sweet potato",
+   "members": [
+    {
+     "id": "k154",
+     "ar": "بالكريم والكراميل",
+     "en": "With cream & caramel"
+    },
+    {
+     "id": "k155",
+     "ar": "بالبشاميل",
+     "en": "Béchamel"
+    }
+   ]
+  },
+  {
+   "id": "drinks",
+   "ar": "إزازة من غير سكر",
+   "en": "Bottle, no sugar",
+   "members": [
+    {
+     "id": "k162",
+     "ar": "ليمون نعناع",
+     "en": "Lemon-mint"
+    },
+    {
+     "id": "k163",
+     "ar": "كركديه نعناع",
+     "en": "Hibiscus-mint"
+    },
+    {
+     "id": "k169",
+     "ar": "كركديه",
+     "en": "Hibiscus"
+    }
+   ]
+  },
+  {
+   "id": "sauces",
+   "ar": "صلصة",
+   "en": "Sauce",
+   "members": [
+    {
+     "id": "k89",
+     "ar": "حمرا",
+     "en": "Red (tomato)"
+    },
+    {
+     "id": "k200",
+     "ar": "بيضاء",
+     "en": "White"
+    }
+   ]
+  },
+  {
+   "id": "b-kofta",
+   "ar": "كفتة",
+   "en": "Kofta",
+   "members": [
+    {
+     "id": "b32",
+     "ar": "الحاتي",
+     "en": "Haty"
+    },
+    {
+     "id": "b33",
+     "ar": "تركي أضنة",
+     "en": "Turkish Adana"
+    },
+    {
+     "id": "b34",
+     "ar": "لبناني",
+     "en": "Lebanese"
+    },
+    {
+     "id": "b16",
+     "ar": "تركي بالجبنة",
+     "en": "Turkish with cheese"
+    }
+   ]
+  },
+  {
+   "id": "b-hawawshi",
+   "ar": "لحم حواوشي",
+   "en": "Hawawshi meat",
+   "members": [
+    {
+     "id": "b42",
+     "ar": "عادي",
+     "en": "Plain"
+    },
+    {
+     "id": "b43",
+     "ar": "بالجبنة",
+     "en": "With cheese"
+    }
+   ]
+  },
+  {
+   "id": "b-burger-beef",
+   "ar": "برجر لحم",
+   "en": "Beef burger",
+   "members": [
+    {
+     "id": "b40",
+     "ar": "بيف برجر",
+     "en": "Beef burger"
+    },
+    {
+     "id": "b41",
+     "ar": "جوسي لوسي",
+     "en": "Juicy Lucy"
+    },
+    {
+     "id": "b59",
+     "ar": "قليل الدسم",
+     "en": "Diet, low fat"
+    }
+   ]
+  },
+  {
+   "id": "b-steaks",
+   "ar": "ستيك",
+   "en": "Steak",
+   "members": [
+    {
+     "id": "b18",
+     "ar": "فيليه تندرلوين",
+     "en": "Fillet tenderloin"
+    },
+    {
+     "id": "b19",
+     "ar": "ريب أي",
+     "en": "Rib eye"
+    },
+    {
+     "id": "b20",
+     "ar": "انتركوت",
+     "en": "Striploin"
+    },
+    {
+     "id": "b58",
+     "ar": "دايت",
+     "en": "Diet"
+    }
+   ]
+  },
+  {
+   "id": "b-shawarma-beef",
+   "ar": "شاورما لحم",
+   "en": "Beef shawarma",
+   "members": [
+    {
+     "id": "b22",
+     "ar": "بقري (غير متبل)",
+     "en": "Beef, plain cut"
+    },
+    {
+     "id": "b37",
+     "ar": "بقري متبلة",
+     "en": "Beef, marinated"
+    },
+    {
+     "id": "b57",
+     "ar": "دايت",
+     "en": "Diet"
+    }
+   ]
+  },
+  {
+   "id": "b-shawarma-chicken",
+   "ar": "شاورما دجاج",
+   "en": "Chicken shawarma",
+   "members": [
+    {
+     "id": "b47",
+     "ar": "متبلة",
+     "en": "Marinated"
+    },
+    {
+     "id": "b54",
+     "ar": "دايت",
+     "en": "Diet"
+    }
+   ]
+  },
+  {
+   "id": "b-breast",
+   "ar": "صدور دجاج متبلة",
+   "en": "Marinated chicken breast",
+   "members": [
+    {
+     "id": "b45",
+     "ar": "عادية",
+     "en": "Regular"
+    },
+    {
+     "id": "b52",
+     "ar": "دايت",
+     "en": "Diet"
+    }
+   ]
+  },
+  {
+   "id": "b-tawook",
+   "ar": "شيش طاووق",
+   "en": "Shish taouk",
+   "members": [
+    {
+     "id": "b46",
+     "ar": "عادي",
+     "en": "Regular"
+    },
+    {
+     "id": "b53",
+     "ar": "دايت",
+     "en": "Diet"
+    }
+   ]
+  },
+  {
+   "id": "b-burger-chicken",
+   "ar": "برجر دجاج",
+   "en": "Chicken burger",
+   "members": [
+    {
+     "id": "b48",
+     "ar": "عادي",
+     "en": "Regular"
+    },
+    {
+     "id": "b55",
+     "ar": "دايت",
+     "en": "Diet"
+    }
+   ]
+  },
+  {
+   "id": "b-sauces",
+   "ar": "صوصات",
+   "en": "Sauces",
+   "members": [
+    {
+     "id": "b68",
+     "ar": "سموكي باربكيو",
+     "en": "Smoky BBQ"
+    },
+    {
+     "id": "b69",
+     "ar": "شيدر",
+     "en": "Cheddar"
+    },
+    {
+     "id": "b70",
+     "ar": "تندوري دايت",
+     "en": "Tandoori diet"
+    },
+    {
+     "id": "b71",
+     "ar": "تيكساس",
+     "en": "Texas"
+    },
+    {
+     "id": "b72",
+     "ar": "طحينة",
+     "en": "Tahina"
+    },
+    {
+     "id": "b73",
+     "ar": "تومية",
+     "en": "Thomia"
     }
    ]
   }

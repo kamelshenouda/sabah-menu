@@ -39,7 +39,11 @@ usually goes with it ("بيتطلب معاها"). Search understands words like 
 Categories and flavour families are set in `categories` and `families` in `data/menu.js`. A
 category lists whole sections, and can leave out dishes (`exclude`) or bring in dishes from other
 sections (`include`, shown under its `includeLabel` filter), so every dish sits in exactly one
-category with a name that fits it; the
+category with a name that fits it. `subGroups` regroup a category's dishes by kind whatever
+section they come from (Butcherista: chicken, beef and lamb, halloumi and boxes, sides; salads:
+cut vegetables apart from salads). In "الكل" each part shows under its own heading, so kinds never
+mix. A family puts the flavours of one dish (e.g. جبنة قريش, توست بني, طبيخ) under one heading,
+each still its own row; a dish belongs to at most one family. The
 "goes well with" pairs and the search words are at the top of the Browse part of `app.js`.
 
 Then you review the order and send it as a WhatsApp message, or copy it.
