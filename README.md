@@ -53,7 +53,45 @@ The app works in Arabic and English and follows the phone's light or dark mode. 
 the Cool Teal mode of Kamel's design system (Cairo for Arabic; Sora, Outfit and Montserrat for English).
 The order, favourites and last order are saved on the device, so they are still there if the page is closed.
 
-Page addresses: `#welcome` (landing page), `#menu`, `#order`, `#ideas`, `#admin`.
+Page addresses: `#welcome` (landing page), `#menu`, `#order`, `#ideas`, `#admin`, `#plan`
+(the smart week) and `#plan-setup` (its questions).
+
+### Smart week (`#plan`)
+
+The smart week plans the coming week for one family. The first time, `#plan-setup` asks a few
+questions: how many days (5 = Sunday to Thursday, 6 = Saturday to Thursday, or 7), how many people
+(1 to 6, + for more), ready to cook, ready to eat or both, what goes in each day (a full meal of
+protein + rice, pasta or a tray + salad + dessert; protein only; or your own mix), the week's mood
+(tasty & varied, healthy or fasting), and, optionally, fasting days and a day with guests. People
+can then see the whole week or go day by day (one big card per day: yes, or something else). The
+answers are kept, so later weeks open straight on the result.
+
+`#plan` shows one row per day: the protein with its amount and why it was picked, the day's sides,
+a swap button (for the protein or any side, by tapping it) and a lock. "غيّر الأسبوع" refreshes
+every day that isn't locked, and one button adds the whole week to the order, each dish with its
+day in the note ("يوم الأحد"), and with the same dish on two days added once with both days.
+
+How it picks:
+
+- **Taste and rotation:** favourites come forward, nothing from the last sent order comes back the
+  next week, dishes not ordered for 3 weeks or more come back with a "رجعت بعد … أسابيع" tag,
+  dishes ordered very often step back, and a dish swapped away rests for 6 weeks.
+- **Balance:** one fish day (two in a healthy 6–7 day week), the rest split between chicken and
+  meat, never the same kind two days running. Sides rotate between rice with a different طبيخ,
+  a pasta and a tray (مكرونة بشاميل, كوسة بشاميل, مسقعة, رز معمر), never rice every day, and dishes
+  that already come with rice, freekeh or potatoes get no extra carb. Salads and desserts change
+  every day, and flavours of one dish (a family) appear once a week where possible.
+- **Calendar:** fasting days (and a fasting week) use only dishes in `fasting` in `data/menu.js`
+  (today fish, legumes, the صيامي desserts and the cut vegetables; add the kitchen's other fasting
+  dishes there). A guests day leans to dishes from the عزومات bundles. In Ramadan (read from the
+  phone's Islamic calendar) every day gets soup and a dessert for iftar. In summer healthy dishes
+  get a small lift.
+
+The menu home, the meals-of-the-week page and the landing page show a card for it: "خطط أسبوعك في
+دقيقة" before the first plan, then "أسبوعك الجاي جاهز" (with "النهارده يوم طلبك" on the usual order
+day, learned from when orders were sent). Once an order has been sent, "زي الأسبوع اللي فات"
+repeats it with up to three smart changes, each shown before and after so it can be kept as it
+was. A new plan is made after each sent order, or after a week. Everything stays on the phone.
 
 ## How to open it
 
