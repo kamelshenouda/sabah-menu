@@ -1593,8 +1593,8 @@ window.SABAH_MENU = {
        "id": "b1",
        "ar": "ستربس دجاج صحي",
        "en": "Healthy Chicken Strips",
-       "img": "assets/butcherista/thumbs/7f973708-407c-4a93-89b7-d8ba868d09c7.webp",
-       "full": "assets/butcherista/full/7f973708-407c-4a93-89b7-d8ba868d09c7.webp",
+       "img": "assets/kitchen/thumbs/b1.webp",
+       "full": "assets/kitchen/full/b1.webp",
        "sizes": [
         {
          "ar": "٤٠٠ جم",
