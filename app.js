@@ -607,7 +607,7 @@
     store.set("sabah-last-order", { at: Date.now(), cart: state.cart.map((c) => ({ ...c })) });
     // A short history of sent orders lets bundles avoid repeating recent dishes.
     const ids = state.cart.map((c) => c.id).sort();
-    const hist = history();
+    const hist = orderHistory();
     const prev = hist[hist.length - 1];
     if (prev && Date.now() - prev.at < 30 * 60 * 1000) hist.pop();
     hist.push({ at: Date.now(), ids });
@@ -847,8 +847,28 @@
     row.after(strip);
   }
 
-  function backBar(label) {
-    return el("button", { type: "button", class: "back-link", onclick: () => goMenu() }, icon("chevron", "flip-ltr"), label || ui().menu);
+  // The row of ways (or categories) at the top of an inner page: switch between them in place.
+  // Switching replaces the address, so the back button still returns to the menu home.
+  function topNav(items, active, onPick) {
+    const u = ui();
+    const nav = el("nav", { class: "topnav", "aria-label": u.menu },
+      el("div", { class: "topnav-row" },
+        el("button", { type: "button", class: "tnav home", onclick: () => goMenu() }, icon("grid"), u.menu),
+        items.map((it) => el("button", {
+          type: "button", class: "tnav", "aria-current": it.id === active ? "page" : null,
+          onclick: () => { if (it.id !== active) onPick(it.id); },
+        }, it.thumb ? el("img", { src: it.thumb, alt: "", loading: "lazy" }) : icon(it.icon), it.label))));
+    requestAnimationFrame(() => {
+      const on = nav.querySelector('[aria-current="page"]');
+      if (on) on.scrollIntoView({ block: "nearest", inline: "center" });
+    });
+    return nav;
+  }
+  const wayNav = (active) => topNav(WAYS.map((w) => ({ id: w.id, icon: w.icon, label: wayLabel(w.id) })), active, (id) => goMenu({ way: id }, true));
+  function catNav(active) {
+    const cats = CATEGORIES.slice();
+    if (shownItems(IDEAS_SECTION).length) cats.push({ id: "ideas", ar: IDEAS_SECTION.ar, en: IDEAS_SECTION.en, cover: shownItems(IDEAS_SECTION)[0].id });
+    return topNav(cats.map((c) => { const hit = byId.get(c.cover); return { id: c.id, label: tr(c), thumb: hit && hit.item.img }; }), active, (id) => goMenu({ cat: id }, true));
   }
 
   function renderHome() {
@@ -904,7 +924,8 @@
     }, icon(ic), u.filters[k])));
 
     return [
-      el("div", { class: "page-head" }, backBar(), el("h1", { class: "page-title" }, tr(c)), el("span", { class: "count" }, shown.length)),
+      catNav(c.id),
+      el("div", { class: "page-head" }, el("h1", { class: "page-title" }, tr(c)), el("span", { class: "count" }, shown.length)),
       chips.length ? el("div", { class: "fbar" }, el("div", { class: "fbar-row" }, chips)) : null,
       shown.length ? dishList(shown) : el("div", { class: "empty" }, el("p", { class: "empty-title" }, u.noResults), el("p", null, u.noResultsHint)),
     ];
@@ -917,7 +938,8 @@
     const blocks = CATEGORIES.map((c) => ({ c, entries: catItems(c).filter(({ item, section }) => wayMatch(way, item, section)) })).filter((b) => b.entries.length);
     const total = blocks.reduce((n, b) => n + b.entries.length, 0);
     return [
-      el("div", { class: "page-head" }, backBar(), el("h1", { class: "page-title" }, wayLabel(way)), el("span", { class: "count" }, total)),
+      wayNav(way),
+      el("div", { class: "page-head" }, el("h1", { class: "page-title" }, wayLabel(way)), el("span", { class: "count" }, total)),
       el("p", { class: "page-sub" }, u.wayDesc[way]),
       el("nav", { class: "fbar cat-tabs" }, el("div", { class: "fbar-row" }, blocks.map(({ c, entries }) =>
         el("button", { type: "button", class: "fchip", "data-for": c.id, onclick: () => jumpTo(c.id) }, tr(c), el("b", null, entries.length))))),
@@ -929,11 +951,9 @@
   function renderBundlesPage(way) {
     const u = ui();
     return [
-      el("div", { class: "page-head" }, backBar(), el("h1", { class: "page-title" }, wayLabel(way))),
+      wayNav(way),
+      el("div", { class: "page-head" }, el("h1", { class: "page-title" }, wayLabel(way)), el("span", { class: "count" }, COLLECTIONS.filter((c) => c.kind === way).length)),
       el("p", { class: "page-sub" }, u.wayDesc[way]),
-      el("div", { class: "segmented small" }, ["week", "feast"].map((k) => el("button", {
-        type: "button", role: "tab", "aria-selected": String(way === k), onclick: () => goMenu({ way: k }, true),
-      }, u.kinds[k]))),
       el("div", { class: "bundle-grid" }, COLLECTIONS.filter((c) => c.kind === way).map(bundleCard)),
     ];
   }
@@ -1331,10 +1351,10 @@
     variety: { ar: "تنويع", en: "Something different" },
   };
 
-  const history = () => (store.get("sabah-history", []) || []).filter((h) => h && Array.isArray(h.ids));
+  const orderHistory = () => (store.get("sabah-history", []) || []).filter((h) => h && Array.isArray(h.ids));
   function recentIds(n) {
     const out = new Set();
-    history().slice(-n).forEach((h) => h.ids.forEach((id) => out.add(id)));
+    orderHistory().slice(-n).forEach((h) => h.ids.forEach((id) => out.add(id)));
     return out;
   }
   const skipped = () => new Set(store.get("sabah-skips", []) || []);
@@ -1350,7 +1370,7 @@
     const { item, section } = byId.get(id);
     let s = 0;
     if (state.favs.has(id)) s += 2;
-    if (history().length) {
+    if (orderHistory().length) {
       if (!recentIds(3).has(id)) s += 1.5;
       if (recentIds(1).has(id)) s -= 2;
     }
@@ -1368,7 +1388,7 @@
       const cur = byId.get(current);
       if (isHealthy(item, section) && !isHealthy(cur.item, cur.section)) out.push("healthier");
     }
-    if (history().length && !recentIds(3).has(id)) out.push("fresh");
+    if (orderHistory().length && !recentIds(3).has(id)) out.push("fresh");
     if (!out.length) out.push("variety");
     return out.slice(0, 2);
   }

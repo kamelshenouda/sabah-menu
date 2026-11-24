@@ -992,3 +992,22 @@ html[lang="en"] .way-block-title { font-weight: 600; font-size: 11.5px; letter-s
 html[lang="en"] .intent-text b { font-weight: 600; }
 .intent-text span { font-family: var(--f-label); font-size: 12px; color: var(--fg-2); }
 .intent > .ico { color: var(--accent-text); }
+
+/* the row of ways or categories at the top of an inner page */
+.topnav { margin: 2px -16px 0; padding: 0 16px; }
+.topnav-row { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 2px 0 4px; }
+.topnav-row::-webkit-scrollbar { display: none; }
+.tnav {
+  flex: none; display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 12px 0 10px;
+  border-radius: var(--r-btn); border: 1px solid var(--line); background: var(--surface); color: var(--fg);
+  font-family: var(--f-label); font-weight: 700; font-size: 13px; white-space: nowrap;
+}
+html[dir="rtl"] .tnav { padding: 0 10px 0 12px; }
+html[lang="en"] .tnav { font-weight: 600; }
+.tnav .ico { width: 18px; height: 18px; color: var(--accent-text); }
+.tnav img { width: 26px; height: 26px; border-radius: var(--r-chip); object-fit: cover; flex: none; }
+.tnav.home { color: var(--fg-2); background: transparent; }
+.tnav.home .ico { color: var(--fg-2); }
+.tnav[aria-current="page"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.tnav[aria-current="page"] .ico { color: var(--accent-ink); }
+.browse.inner .page-head { margin-top: 12px; }
