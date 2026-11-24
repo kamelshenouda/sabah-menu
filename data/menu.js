@@ -5239,8 +5239,8 @@ window.SABAH_MENU = {
        "id": "b63",
        "ar": "كرات الدجاج بالجبن",
        "en": "Chicken Cheese Pops",
-       "img": "assets/butcherista/thumbs/3537b404-d7ff-40db-8ba8-1afa732bda54.webp",
-       "full": "assets/butcherista/full/3537b404-d7ff-40db-8ba8-1afa732bda54.webp",
+       "img": "assets/kitchen/thumbs/b63.webp",
+       "full": "assets/kitchen/full/b63.webp",
        "sizes": [
         {
          "ar": "٥٠٠ جم (١٦ قطعة)",
