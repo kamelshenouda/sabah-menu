@@ -2848,8 +2848,8 @@ window.SABAH_MENU = {
        "id": "b6",
        "ar": "بوكس حالومي و كرات دجاج اربع نكهات (٤x٤٠٠g)",
        "en": "4 Flavors Halloumi & Chicken Pops BOX (4x400g)",
-       "img": "assets/butcherista/thumbs/988b2d41-dcc8-4a4b-9177-690df8ef0cda.webp",
-       "full": "assets/butcherista/full/988b2d41-dcc8-4a4b-9177-690df8ef0cda.webp",
+       "img": "assets/kitchen/thumbs/b6.webp",
+       "full": "assets/kitchen/full/b6.webp",
        "sizes": [
         {
          "ar": "٤ أطباق ٤٠٠ جم",
