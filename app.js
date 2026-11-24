@@ -758,7 +758,14 @@
       const hit = byId.get(id);
       if (hit && !hit.item.removed) out.push({ item: hit.item, section: hit.section, group: hit.group, sub: c.includeLabel ? extra : hit.section });
     });
-    return out;
+    // `subGroups` regroup a category's dishes by kind (e.g. chicken vs beef), whatever section they're in.
+    const subOf = new Map();
+    (c.subGroups || []).forEach((g) => g.ids.forEach((id) => subOf.set(id, g)));
+    if (!subOf.size) return out;
+    const order = (c.subGroups || []).map((g) => g.id);
+    out.forEach((e) => { if (subOf.has(e.item.id)) e.sub = subOf.get(e.item.id); });
+    const rank = (e) => (e.sub === extra ? order.length : order.indexOf(e.sub.id));
+    return out.map((e, i) => [e, i]).sort((a, b) => rank(a[0]) - rank(b[0]) || a[1] - b[1]).map(([e]) => e);
   }
   function wayMatch(way, item, section) {
     if (way === "cook" || way === "eat") return readiness(item, section) === way;
@@ -939,7 +946,12 @@
       catNav(c.id),
       el("div", { class: "page-head" }, el("h1", { class: "page-title" }, tr(c)), el("span", { class: "count" }, shown.length)),
       chips.length ? el("div", { class: "fbar" }, el("div", { class: "fbar-row" }, chips)) : null,
-      shown.length ? dishList(shown) : el("div", { class: "empty" }, el("p", { class: "empty-title" }, u.noResults), el("p", null, u.noResultsHint)),
+      !shown.length ? el("div", { class: "empty" }, el("p", { class: "empty-title" }, u.noResults), el("p", null, u.noResultsHint))
+        // "All" with several parts: each part under its own heading, so different kinds never mix.
+        : state.sub === "all" && sections.length > 1
+          ? sections.map((s) => ({ s, list: shown.filter((e) => e.sub.id === s.id) })).filter((b) => b.list.length).map(({ s, list }) =>
+            el("section", { class: "way-block" }, el("h2", { class: "way-block-title" }, tr(s), el("b", { class: "way-block-n" }, list.length)), dishList(list)))
+          : dishList(shown),
     ];
   }
 
