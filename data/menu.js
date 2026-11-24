@@ -1757,8 +1757,8 @@ window.SABAH_MENU = {
        "id": "b5",
        "ar": "أصابع حلومي صحية",
        "en": "Healthy Halloumi Fingers",
-       "img": "assets/butcherista/thumbs/60fa598b-20bf-404d-a5b8-6fda42cafb09.webp",
-       "full": "assets/butcherista/full/60fa598b-20bf-404d-a5b8-6fda42cafb09.webp",
+       "img": "assets/kitchen/thumbs/b5.webp",
+       "full": "assets/kitchen/full/b5.webp",
        "sizes": [
         {
          "ar": "٤٠٠ جم",
