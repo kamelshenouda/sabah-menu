@@ -460,8 +460,25 @@
     const hit = byId.get(id);
     const item = hit ? hit.item : {};
     const base = UNIT_DEFS[u] || UNIT_DEFS.box;
-    if (u === "piece" && item.piece) return { id: u, ar: item.piece.ar, en: item.piece.en, feeds: item.piece.feeds || 1 };
-    return { id: u, ar: base.ar, en: base.en, feeds: (MENU.portions || {})[u] || { kg: 4, box: 3, tray: 6, bag: 4, loaf: 1 }[u] || 1 };
+    if (u === "piece" && item.piece) return { id: u, ar: item.piece.ar, en: item.piece.en, feeds: item.feeds || item.piece.feeds || 1 };
+    return { id: u, ar: base.ar, en: base.en, feeds: item.feeds || (MENU.portions || {})[u] || { kg: 4, box: 3, tray: 6, bag: 4, loaf: 1 }[u] || 1 };
+  }
+  // What an amount holds, from the dish's `count` (one unit ≈ n pieces or grams): "حوالي 6 صدور".
+  function countText(id, qty, lang = state.lang) {
+    const hit = byId.get(id);
+    const c = hit && hit.item.count;
+    if (!c || !qty) return "";
+    const n = Math.round(c.n * qty);
+    return lang === "ar" ? `حوالي ${n} ${c.ar}` : `≈ ${n} ${c.en}`;
+  }
+  // "الكيلو حوالي 4 صدور · لكل كيلو حوالي 4 أفراد"
+  function unitHint(id, u, lang = state.lang) {
+    const info = unitInfo(id, u);
+    const parts = [];
+    const c = countText(id, 1, lang);
+    if (c) parts.push(lang === "ar" ? `ال${info.ar} ${c}` : `1 ${info.en} ${c}`);
+    parts.push(feedsHint(id, u, lang));
+    return parts.join(" · ");
   }
   const unitsOf = (id) => unitIds(byId.get(id).item).map((u) => unitInfo(id, u));
   // Older orders used "plate" and "piece" for everything; move them to a unit the dish has.
@@ -1217,6 +1234,8 @@
         el("div", { class: "cart-list" }, entries.map((c) => {
           const { item } = byId.get(c.id);
           const details = entryDetails(c, item);
+          const holds = isPacked(byId.get(c.id).group) ? "" : countText(c.id, c.qty);
+          if (holds) details.push(holds);
           return el("div", { class: "cart-row" },
             item.img ? el("img", { class: "cart-thumb", src: item.img, alt: "" }) : el("span", { class: "cart-thumb card-img-empty" }, section.emoji),
             el("div", { class: "cart-info" },
@@ -1401,7 +1420,7 @@
               draft.unit = units[i].id;
               if (draft.unit !== "kg") draft.qty = Math.max(1, Math.round(draft.qty));
             }, draw) : el("p", { class: "unit-one" }, (state.lang === "ar" ? "بيتباع بال" : "Sold by the ") + tr(cur)),
-            el("p", { class: "unit-hint" }, feedsHint(id, cur.id)),
+            el("p", { class: "unit-hint" }, unitHint(id, cur.id)),
           ];
         })(),
 
@@ -1411,6 +1430,7 @@
           el("div", { class: "step-value" }, el("b", null, fmtQty(draft.qty)), el("span", null, qtyLabel(draft, group).replace(/^\S+\s/, ""))),
           el("button", { type: "button", class: "step-btn", "aria-label": "+", onclick: () => { draft.qty = Math.round((draft.qty + step) * 10) / 10; draw(); } }, icon("plus"))
         ),
+        !packed && countText(id, draft.qty) ? el("p", { class: "unit-hint step-count" }, countText(id, draft.qty)) : null,
 
         el("input", {
           class: "note", type: "text", value: draft.note || "", placeholder: u.notePh,
