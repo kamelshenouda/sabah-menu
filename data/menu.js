@@ -1716,8 +1716,8 @@ window.SABAH_MENU = {
        "id": "b4",
        "ar": "كرات الدجاج بالجبن الصحية",
        "en": "Healthy Chicken-Cheese Pops",
-       "img": "assets/butcherista/thumbs/14523243-2d28-4cc8-9ffe-1e71d551ff92.webp",
-       "full": "assets/butcherista/full/14523243-2d28-4cc8-9ffe-1e71d551ff92.webp",
+       "img": "assets/kitchen/thumbs/b4.webp",
+       "full": "assets/kitchen/full/b4.webp",
        "sizes": [
         {
          "ar": "٤٠٠ جم",
