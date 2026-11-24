@@ -481,6 +481,12 @@ window.SABAH_MENU = {
        "ready": "cook"
       },
       {
+       "id": "k170",
+       "ar": "خلطة بيض سبايسي بالفلفل الأخضر",
+       "en": "Spicy egg mix with green pepper",
+       "ready": "cook"
+      },
+      {
        "id": "k166",
        "ar": "جبنة قريش مضروبة بالزعتر",
        "en": "Whipped cottage cheese with za'atar",
@@ -4514,5 +4520,330 @@ window.SABAH_MENU = {
   "plate": 3,
   "piece": 4,
   "feast": 0.55
- }
+ },
+ "categories": [
+  {
+   "id": "chicken",
+   "ar": "فراخ وطيور",
+   "en": "Chicken & poultry",
+   "cover": "k14",
+   "sections": [
+    "chicken"
+   ]
+  },
+  {
+   "id": "meat",
+   "ar": "لحمة وأكلات مصرية",
+   "en": "Meat & Egyptian classics",
+   "cover": "k91",
+   "sections": [
+    "beef",
+    "egyptian"
+   ]
+  },
+  {
+   "id": "fish",
+   "ar": "سمك وجمبري",
+   "en": "Fish & seafood",
+   "cover": "k20",
+   "sections": [
+    "fish"
+   ]
+  },
+  {
+   "id": "veg",
+   "ar": "خضار وطبيخ وشوربة",
+   "en": "Vegetables, stews & soup",
+   "cover": "k143",
+   "sections": [
+    "vegetables",
+    "soup"
+   ],
+   "exclude": [
+    "k164"
+   ]
+  },
+  {
+   "id": "eggs-legumes",
+   "ar": "بيض وألبان وبقول",
+   "en": "Eggs, dairy & legumes",
+   "cover": "k31",
+   "sections": [
+    "eggs-dairy",
+    "legumes"
+   ]
+  },
+  {
+   "id": "carbs",
+   "ar": "رز ومكرونة وحبوب ومخبوزات",
+   "en": "Rice, pasta, grains & bakery",
+   "cover": "k133",
+   "sections": [
+    "rice-pasta",
+    "whole-grains",
+    "pastries"
+   ]
+  },
+  {
+   "id": "salads",
+   "ar": "سلطات ومخللات وصوصات",
+   "en": "Salads, pickles & sauces",
+   "cover": "k46",
+   "sections": [
+    "salads"
+   ],
+   "include": [
+    "k201",
+    "k164",
+    "k89",
+    "k200"
+   ],
+   "includeLabel": {
+    "ar": "مخللات وصوصات",
+    "en": "Pickles & sauces"
+   }
+  },
+  {
+   "id": "sweets",
+   "ar": "حلويات",
+   "en": "Desserts & sweets",
+   "cover": "k150",
+   "sections": [
+    "desserts",
+    "healthy-sweets"
+   ]
+  },
+  {
+   "id": "fruit",
+   "ar": "فاكهة ومشروبات",
+   "en": "Fruit & drinks",
+   "cover": "k64",
+   "sections": [
+    "fruit"
+   ],
+   "include": [
+    "k162",
+    "k163",
+    "k169"
+   ],
+   "includeLabel": {
+    "ar": "مشروبات",
+    "en": "Drinks"
+   }
+  },
+  {
+   "id": "butcherista",
+   "ar": "بوتشريستا",
+   "en": "Butcherista",
+   "cover": "b19",
+   "sections": [
+    "air-fryer",
+    "turkish",
+    "steaks",
+    "beef-cuts",
+    "marinated-beef",
+    "marinated-chicken",
+    "diet-plates",
+    "appetizers",
+    "add-ons"
+   ],
+   "keepName": true
+  }
+ ],
+ "families": [
+  {
+   "id": "marinated-breast",
+   "ar": "صدور فراخ متبلة",
+   "en": "Marinated chicken breast",
+   "members": [
+    {
+     "id": "k1",
+     "ar": "العسل الآسيوي",
+     "en": "Asian honey"
+    },
+    {
+     "id": "k2",
+     "ar": "الهالبينو والتوم",
+     "en": "Jalapeño & garlic"
+    },
+    {
+     "id": "k3",
+     "ar": "إيطالية",
+     "en": "Italian"
+    },
+    {
+     "id": "k4",
+     "ar": "الفاهيتا",
+     "en": "Fajita"
+    },
+    {
+     "id": "k5",
+     "ar": "العسل والمستردة",
+     "en": "Honey mustard"
+    },
+    {
+     "id": "k6",
+     "ar": "الكزبرة والليمون",
+     "en": "Coriander & lemon"
+    },
+    {
+     "id": "k7",
+     "ar": "ملح وفلفل وبصل وباربيكيو مدخن",
+     "en": "Salt, pepper, onion & smoky BBQ"
+    }
+   ]
+  },
+  {
+   "id": "goulash",
+   "ar": "جلاش",
+   "en": "Goulash (filo pie)",
+   "members": [
+    {
+     "id": "k120",
+     "ar": "جبنة",
+     "en": "Cheese"
+    },
+    {
+     "id": "k121",
+     "ar": "لحمة",
+     "en": "Meat"
+    },
+    {
+     "id": "k122",
+     "ar": "خضار",
+     "en": "Vegetable"
+    },
+    {
+     "id": "k123",
+     "ar": "خضار ومشروم",
+     "en": "Vegetable & mushroom"
+    }
+   ]
+  },
+  {
+   "id": "sambousek",
+   "ar": "سمبوسك",
+   "en": "Sambousek",
+   "members": [
+    {
+     "id": "k124",
+     "ar": "خضار",
+     "en": "Vegetable"
+    },
+    {
+     "id": "k125",
+     "ar": "خضار ومشروم",
+     "en": "Vegetable & mushroom"
+    },
+    {
+     "id": "k126",
+     "ar": "جبنة",
+     "en": "Cheese"
+    },
+    {
+     "id": "k127",
+     "ar": "لحمة",
+     "en": "Meat"
+    },
+    {
+     "id": "k128",
+     "ar": "فراخ",
+     "en": "Chicken"
+    }
+   ]
+  },
+  {
+   "id": "oat-cake",
+   "ar": "كيكة بالشوفان",
+   "en": "Oat cake",
+   "members": [
+    {
+     "id": "k70",
+     "ar": "جزر وكاكاو خام",
+     "en": "Carrot & raw cacao"
+    },
+    {
+     "id": "k71",
+     "ar": "موز",
+     "en": "Banana"
+    },
+    {
+     "id": "k72",
+     "ar": "تفاح",
+     "en": "Apple"
+    },
+    {
+     "id": "k73",
+     "ar": "جزر",
+     "en": "Carrot"
+    }
+   ]
+  },
+  {
+   "id": "oat-shapes",
+   "ar": "كيكة أشكال بالشوفان",
+   "en": "Shaped oat cakes",
+   "members": [
+    {
+     "id": "k74",
+     "ar": "موز",
+     "en": "Banana"
+    },
+    {
+     "id": "k75",
+     "ar": "تفاح",
+     "en": "Apple"
+    },
+    {
+     "id": "k76",
+     "ar": "جزر",
+     "en": "Carrot"
+    }
+   ]
+  },
+  {
+   "id": "oat-pancakes",
+   "ar": "بان كيكس بالشوفان",
+   "en": "Oat pancakes",
+   "members": [
+    {
+     "id": "k77",
+     "ar": "موز",
+     "en": "Banana"
+    },
+    {
+     "id": "k78",
+     "ar": "تفاح",
+     "en": "Apple"
+    },
+    {
+     "id": "k79",
+     "ar": "جزر",
+     "en": "Carrot"
+    }
+   ]
+  },
+  {
+   "id": "egg-mix",
+   "ar": "خلطة بيض",
+   "en": "Egg mix",
+   "members": [
+    {
+     "id": "k25",
+     "ar": "عادية",
+     "en": "Plain"
+    },
+    {
+     "id": "k165",
+     "ar": "بالبصل",
+     "en": "With onions"
+    },
+    {
+     "id": "k170",
+     "ar": "سبايسي بالفلفل الأخضر",
+     "en": "Spicy with green pepper"
+    }
+   ]
+  }
+ ]
 };

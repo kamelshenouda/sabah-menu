@@ -60,6 +60,20 @@
       favEmpty: "لسه مفيش مفضلة. اضغط القلب على أي أكلة بتحبها.",
       bundles: "باقات جاهزة",
       orderNote: "ملاحظة عامة للشيف",
+      categories: "اختار من القائمة",
+      goesWith: "بيتطلب معاها",
+      kindsN: (n) => `${n} أنواع`,
+      bundlesN: (n) => (n === 1 ? "باقة واحدة" : n === 2 ? "باقتين" : `${n} باقات`),
+      tryWords: "جرّب تكتب",
+      recent: "بحثت قبل كده عن",
+      suggestions: "ممكن يعجبك",
+      wayDesc: {
+        cook: "متبّل ومتجهّز، تسوّيه انت في دقايق ويطلع طازة.",
+        eat: "مطبوخ في البيت وجاهز، تسخّنه وتاكل.",
+        healthy: "بروتين خفيف وخضار وحبوب كاملة وحلويات من غير سكر أبيض.",
+        week: "غدا الأسبوع كله في طلب واحد. افتح باقة وغيّر أو بدّل اللي تحبه.",
+        feast: "عزومة كاملة بضغطة. افتح الباقة وحدد عدد الضيوف.",
+      },
       orderNotePh: "مثال: العزومة يوم الجمعة الساعة ٢، أو التوصيل بعد العصر",
       bundlesSub: "اختار باقة وضيفها كلها بضغطة، وعدّل الكميات بعدين.",
       kinds: { week: "أكل الأسبوع", feast: "عزومات" },
@@ -129,6 +143,20 @@
       favEmpty: "No favourites yet. Tap the heart on any dish you love.",
       bundles: "Ready-made bundles",
       orderNote: "A note for the chef about the whole order",
+      categories: "Browse the menu",
+      goesWith: "Goes well with it",
+      kindsN: (n) => `${n} kinds`,
+      bundlesN: (n) => `${n} bundle${n === 1 ? "" : "s"}`,
+      tryWords: "Try typing",
+      recent: "You searched for",
+      suggestions: "You might like",
+      wayDesc: {
+        cook: "Marinated and prepped; you cook it fresh in minutes.",
+        eat: "Cooked at home and ready; heat it and eat.",
+        healthy: "Lean protein, vegetables, whole grains and sweets without white sugar.",
+        week: "The whole week's lunches in one order. Open a bundle and swap what you like.",
+        feast: "A whole feast in one tap. Open a bundle and set the number of guests.",
+      },
       orderNotePh: "e.g. the feast is on Friday at 2 pm, or deliver after 4",
       bundlesSub: "Pick a bundle, add it all in one tap, and adjust amounts later.",
       kinds: { week: "Meals of the week", feast: "Feasts" },
@@ -328,11 +356,19 @@
   // Pages with their own address. The site's plain address ("") always opens the landing page.
   const HASH_VIEWS = { welcome: "welcome", menu: "browse", order: "cart", ideas: "ideas", admin: "admin" };
   const VIEW_HASH = { welcome: "#welcome", browse: "#menu", cart: "#order", ideas: "#ideas", admin: "#admin" };
+  // The menu also has addresses for its inner pages: #menu-<category> and #way-<way>.
   function viewFromHash() {
-    const v = HASH_VIEWS[location.hash.slice(1)];
+    const h = location.hash.slice(1);
+    if (/^menu-[a-z0-9-]+$/.test(h) || /^way-[a-z]+$/.test(h)) return "browse";
+    const v = HASH_VIEWS[h];
     if ((v === "ideas" || v === "admin") && !window.SabahIdeas) return "browse";
     if (v) return v;
     return "welcome";
+  }
+  function applyHash() {
+    const h = location.hash.slice(1);
+    state.cat = h.startsWith("menu-") ? h.slice(5) : null;
+    state.way = h.startsWith("way-") ? h.slice(4) : null;
   }
 
   // The last approved ideas list is kept on the device so the Ideas tab shows right away.
@@ -342,16 +378,19 @@
   const state = {
     lang: store.get("sabah-lang", "ar") === "en" ? "en" : "ar",
     view: "browse",
-    group: "all",
-    filter: "all",
-    bundleKind: "week",
+    cat: null,
+    way: null,
+    sub: "all",
+    flags: new Set(),
     search: "",
+    searchOpen: false,
     cart: savedCart.filter((c) => byId.has(c.id)),
     favs: new Set((store.get("sabah-favs", []) || []).filter((id) => typeof id === "string")),
     // A note for the whole order (for example the date and time of a feast), sent at the end.
     cartNote: String(store.get("sabah-cart-note", "") || ""),
   };
   state.view = viewFromHash();
+  applyHash();
 
   const ui = () => UI[state.lang];
   const tr = (obj) => (obj ? obj[state.lang] || obj.ar || "" : "");
@@ -495,19 +534,22 @@
     document.querySelectorAll(".fav-btn[data-id]").forEach((b) => {
       if (b.dataset.id === id) b.setAttribute("aria-pressed", String(state.favs.has(id)));
     });
-    if (state.filter === "fav" && state.view === "browse") renderBrowse();
+    if (state.view === "browse" && state.flags.has("fav")) renderBrowse();
+    else document.querySelectorAll(`.lrow[data-id="${CSS.escape(id)}"]`).forEach((r) => {
+      const { item, section } = byId.get(id);
+      r.replaceWith(dishRow(item, section, r.classList.contains("sub") && familyOf.get(id) ? familyOf.get(id).member : null));
+    });
   }
 
   // After the order changes, update what is on screen without rebuilding the whole menu.
   function refreshItem(id) {
     renderHeader();
     if (state.view === "cart") { renderCart(); return; }
-    document.querySelectorAll(".card[data-id]").forEach((card) => {
-      if (card.dataset.id !== id) return;
-      const entry = inCart(id);
-      card.classList.toggle("in-cart", !!entry);
-      const slot = card.querySelector(".card-action");
-      if (slot) slot.replaceWith(cardAction(id));
+    document.querySelectorAll(".lrow[data-id]").forEach((row) => {
+      if (row.dataset.id !== id) return;
+      row.classList.toggle("in-cart", !!inCart(id));
+      const slot = row.querySelector(".lrow-act");
+      if (slot) slot.replaceWith(rowAction(id));
     });
     renderFab(true);
   }
@@ -565,7 +607,7 @@
     store.set("sabah-last-order", { at: Date.now(), cart: state.cart.map((c) => ({ ...c })) });
     // A short history of sent orders lets bundles avoid repeating recent dishes.
     const ids = state.cart.map((c) => c.id).sort();
-    const hist = history();
+    const hist = orderHistory();
     const prev = hist[hist.length - 1];
     if (prev && Date.now() - prev.at < 30 * 60 * 1000) hist.pop();
     hist.push({ at: Date.now(), ids });
@@ -628,6 +670,7 @@
     if (!onOrder && state.cart.length) cartBtn.append(el("span", { class: "cart-count" }, state.cart.length));
 
     $("browse-controls").hidden = state.view !== "browse";
+    $("section-nav").hidden = true;
     const search = $("search");
     search.placeholder = u.search;
     search.setAttribute("aria-label", u.search);
@@ -640,25 +683,91 @@
   }
 
   // ---------- Browse ----------
-  function matches(item, section) {
-    if (state.search) {
-      const q = norm(state.search);
-      const hay = [item.ar, item.en, section.ar, section.en].map(norm).join(" | ");
-      if (!q.split(" ").every((w) => hay.includes(w))) return false;
-    }
-    const f = state.filter;
-    if (f === "cook" || f === "eat") return readiness(item, section) === f;
-    if (f === "healthy") return isHealthy(item, section);
-    if (f === "fav") return state.favs.has(item.id);
-    return true;
+  // The menu has three levels so there is never much to choose from at once:
+  //  1. Home: the five ways to order and eight photo categories.
+  //  2. A category (or a way: ready to cook, ready to eat, healthy): a compact list with one row
+  //     of filters. Meals of the week and feasts open their bundles.
+  //  3. A dish: the item sheet.
+  // Search understands intents ("صحي", "للعزومة"…) as well as dish names, and after adding a dish
+  // the list suggests what usually goes with it.
+  const CATEGORIES = (MENU.categories || []).map((c) => ({ ...c }));
+  const FAMILIES = MENU.families || [];
+  const familyOf = new Map();
+  FAMILIES.forEach((f) => f.members.forEach((m) => familyOf.set(m.id, { family: f, member: m })));
+  const sectionById = new Map();
+  allSections.forEach(({ group, section }) => sectionById.set(section.id, { group, section }));
+  const WAYS = [
+    { id: "cook", icon: "flame" },
+    { id: "eat", icon: "plate" },
+    { id: "week", icon: "calendar" },
+    { id: "feast", icon: "table" },
+    { id: "healthy", icon: "leaf" },
+  ];
+  const isBundleWay = (w) => w === "week" || w === "feast";
+
+  // Dishes that usually go with a dish, by its section (first ones that exist and aren't ordered).
+  const PAIRS = {
+    chicken: ["k130", "k46", "k141"], beef: ["k131", "k47", "k201"], fish: ["k130", "k46", "k164"],
+    vegetables: ["k131", "k130", "k201"], legumes: ["k59", "k201", "k164"], egyptian: ["k201", "k59", "k148"],
+    soup: ["k59", "k88"], "rice-pasta": ["k46", "k47", "k141"], pastries: ["k29", "k47"],
+    salads: ["k59", "k60"], "eggs-dairy": ["k59", "k60"], desserts: ["k162", "k163"], "healthy-sweets": ["k162", "k163"],
+    "marinated-chicken": ["b65", "b72", "b68"], "marinated-beef": ["b65", "b68", "b72"], steaks: ["b65", "b68"],
+    "beef-cuts": ["b65", "b75"], turkish: ["b65", "b72"], "air-fryer": ["b69", "b70"], "diet-plates": ["b70", "b65"],
+  };
+  function pairsFor(id) {
+    const hit = byId.get(id);
+    if (!hit) return [];
+    return (PAIRS[hit.section.id] || []).filter((p) => p !== id && byId.has(p) && !inCart(p) && !byId.get(p).item.removed).slice(0, 3);
   }
 
-  function visibleSections() {
-    return allSections
-      .filter(({ group }) => state.group === "all" || group.id === state.group)
-      .map(({ group, section }) => ({ group, section, items: shownItems(section).filter((i) => matches(i, section)) }))
-      .filter((s) => s.items.length);
+  // Search intents: words that mean "show me this way or category" rather than a dish name.
+  const INTENTS = [
+    { way: "healthy", words: ["صحي", "دايت", "رجيم", "خفيف", "healthy", "diet", "light"] },
+    { way: "feast", words: ["عزومه", "للعزومه", "عزايم", "ضيوف", "feast", "guests", "party"] },
+    { way: "week", words: ["اسبوع", "الاسبوع", "week", "weekly"] },
+    { way: "cook", words: ["متبل", "متبله", "تتبيله", "ني", "marinated", "raw"] },
+    { way: "eat", words: ["جاهز", "سريع", "مطبوخ", "ready", "quick", "cooked"] },
+    { cat: "eggs-legumes", words: ["فطار", "فطور", "بيض", "breakfast", "eggs"] },
+    { cat: "sweets", words: ["حلو", "حلويات", "حلي", "dessert", "sweet"] },
+  ].map((x) => ({ ...x, words: x.words.map(norm) }));
+  function intentsFor(q) {
+    const words = norm(q).split(" ").filter(Boolean);
+    return INTENTS.filter((x) => words.some((w) => x.words.some((k) => w === k || (k.length >= 3 && w.startsWith(k)) || (w.length >= 3 && k.startsWith(w)))));
   }
+  const SEARCH_SUGGESTIONS = {
+    ar: ["صحي", "للعزومة", "أكل الأسبوع", "فطار", "حلويات", "سمك", "محشي"],
+    en: ["Healthy", "Feast", "Week", "Breakfast", "Dessert", "Fish", "Mahshi"],
+  };
+  const recentSearches = () => (store.get("sabah-searches", []) || []).filter((s) => typeof s === "string").slice(0, 5);
+  function rememberSearch(q) {
+    q = String(q || "").trim();
+    if (q.length < 2) return;
+    store.set("sabah-searches", [q, ...recentSearches().filter((s) => s !== q)].slice(0, 5));
+  }
+
+  // A category's dishes: its sections, minus `exclude`, plus `include` (dishes from other sections,
+  // shown under the category's `includeLabel` in its filters). `sub` is what the filters group by.
+  function catItems(c) {
+    const skip = new Set(c.exclude || []);
+    const out = c.sections.flatMap((sid) => {
+      const hit = sectionById.get(sid);
+      return hit ? shownItems(hit.section).filter((item) => !skip.has(item.id)).map((item) => ({ item, section: hit.section, group: hit.group, sub: hit.section })) : [];
+    });
+    const extra = { id: "more-" + c.id, ar: (c.includeLabel || {}).ar || "", en: (c.includeLabel || {}).en || "" };
+    (c.include || []).forEach((id) => {
+      const hit = byId.get(id);
+      if (hit && !hit.item.removed) out.push({ item: hit.item, section: hit.section, group: hit.group, sub: c.includeLabel ? extra : hit.section });
+    });
+    return out;
+  }
+  function wayMatch(way, item, section) {
+    if (way === "cook" || way === "eat") return readiness(item, section) === way;
+    if (way === "healthy") return isHealthy(item, section);
+    return true;
+  }
+  const wayLabel = (w) => (isBundleWay(w) ? ui().kinds[w] : ui().filters[w]);
+  const wayCount = (w) => (isBundleWay(w) ? COLLECTIONS.filter((c) => c.kind === w).length
+    : CATEGORIES.reduce((n, c) => n + catItems(c).filter(({ item, section }) => wayMatch(w, item, section)).length, 0));
 
   function readyTag(item, section, extra) {
     const r = readiness(item, section);
@@ -676,138 +785,273 @@
     );
   }
 
-  function cardAction(id) {
-    const entry = inCart(id);
-    return el("div", { class: "card-action" },
-      entry ? stepper(id, true)
-        : el("button", { type: "button", class: "add-btn", onclick: () => addItem(id) }, icon("plus"), ui().add)
-    );
+  function rowAction(id) {
+    return el("div", { class: "lrow-act" },
+      inCart(id) ? stepper(id, true)
+        : el("button", { type: "button", class: "plus-btn", "aria-label": ui().add, onclick: () => quickAdd(id) }, icon("plus")));
   }
 
-  function photoCard(item, section) {
-    const entry = inCart(item.id);
-    const meta = item.sizes ? item.sizes.map(tr).join(" · ")
-      : item.creator ? [`${ui().ideaBy}: `, el("bdi", null, item.creator)] : null;
-    return el("article", { class: "card" + (entry ? " in-cart" : ""), "data-id": item.id },
-      el("button", { type: "button", class: "card-media", "aria-label": tr(item), onclick: () => openSheet(item.id) },
-        item.img
-          ? el("img", { class: "card-img", src: item.img, alt: "", loading: "lazy", decoding: "async", width: "300", height: "300" })
-          : el("span", { class: "card-img card-img-empty", "aria-hidden": "true" }, section.emoji || "🍽️"),
-        readyTag(item, section, "on-card")
-      ),
-      el("button", {
-        type: "button", class: "fav-btn", "data-id": item.id, "aria-pressed": String(state.favs.has(item.id)),
-        "aria-label": ui().favAdd, onclick: () => toggleFav(item.id),
-      }, icon("heart")),
-      el("div", { class: "card-body" },
-        el("button", { type: "button", class: "card-name", onclick: () => openSheet(item.id) }, tr(item)),
-        meta ? el("div", { class: "card-meta" }, meta) : null,
-        cardAction(item.id)
-      )
-    );
+  // One dish as a compact row. `short` shows only the flavour name, under its family heading.
+  function dishRow(item, section, short) {
+    const meta = [
+      readyTag(item, section),
+      isHealthy(item, section) ? el("span", { class: "ready-tag ready-healthy" }, ui().filters.healthy) : null,
+      item.sizes ? el("span", { class: "lrow-sizes" }, item.sizes.map(tr).join(" · ")) : null,
+      item.creator ? el("span", { class: "lrow-sizes" }, `${ui().ideaBy}: `, el("bdi", null, item.creator)) : null,
+      state.favs.has(item.id) ? el("span", { class: "lrow-fav", "aria-label": ui().filters.fav }, icon("heart")) : null,
+    ];
+    return el("div", { class: "lrow" + (inCart(item.id) ? " in-cart" : "") + (short ? " sub" : ""), "data-id": item.id },
+      el("button", { type: "button", class: "lrow-img", "aria-label": tr(item), onclick: () => openSheet(item.id) },
+        item.img ? el("img", { src: item.img, alt: "", loading: "lazy", decoding: "async", width: "144", height: "144" })
+          : el("span", { class: "card-img-empty" }, section.emoji || "🍽️")),
+      el("button", { type: "button", class: "lrow-text", onclick: () => openSheet(item.id) },
+        el("span", { class: "lrow-name" }, short ? tr(short) : tr(item)),
+        el("span", { class: "lrow-meta" }, meta)),
+      rowAction(item.id));
   }
 
-  function filterChips() {
+  // A list of dishes; flavours of one dish sit under one heading, each still its own row.
+  function dishList(entries, opts) {
+    const out = [];
+    const seen = new Set();
+    entries.forEach(({ item, section }) => {
+      const fam = !(opts && opts.flat) && familyOf.get(item.id);
+      if (fam) {
+        if (seen.has(fam.family.id)) return;
+        const members = entries.filter((e) => familyOf.has(e.item.id) && familyOf.get(e.item.id).family === fam.family);
+        if (members.length > 1) {
+          seen.add(fam.family.id);
+          out.push(el("div", { class: "lfam" }, el("span", { class: "lfam-name" }, tr(fam.family)), el("span", { class: "lfam-n" }, ui().kindsN(members.length))));
+          members.forEach((m) => out.push(dishRow(m.item, m.section, familyOf.get(m.item.id).member)));
+          return;
+        }
+      }
+      out.push(dishRow(item, section));
+    });
+    return el("div", { class: "lrows" }, out);
+  }
+
+  function quickAdd(id) {
+    const wasNew = !inCart(id);
+    addItem(id);
+    if (wasNew) showPairs(id);
+  }
+
+  // "Goes well with": a small strip under the row of a dish that was just added.
+  function showPairs(id) {
+    document.querySelectorAll(".pairs").forEach((p) => p.remove());
+    const pairs = pairsFor(id);
+    const row = document.querySelector(`.lrow[data-id="${CSS.escape(id)}"]`);
+    if (!pairs.length || !row) return;
     const u = ui();
-    const keys = ["all", "cook", "eat", "healthy", "fav"];
-    const ico = { cook: "flame", eat: "plate", healthy: "leaf", fav: "heart" };
-    return el("div", { class: "chip-row", role: "group" },
-      keys.map((k) => el("button", {
-        type: "button", class: "chip", "aria-pressed": String(state.filter === k),
-        onclick: () => { state.filter = state.filter === k && k !== "all" ? "all" : k; renderBrowse(); },
-      }, ico[k] ? icon(ico[k]) : null, u.filters[k]))
-    );
+    const strip = el("div", { class: "pairs" },
+      el("div", { class: "pairs-head" }, el("span", null, u.goesWith),
+        el("button", { type: "button", class: "pairs-x", "aria-label": u.close, onclick: () => strip.remove() }, icon("close"))),
+      el("div", { class: "pairs-row" }, pairs.map((p) => {
+        const it = byId.get(p).item;
+        const b = el("button", {
+          type: "button", class: "pair",
+          onclick: () => { addItem(p, true); toast(u.added(tr(it))); b.classList.add("done"); b.disabled = true; },
+        }, it.img ? el("img", { src: it.img, alt: "", loading: "lazy" }) : null, el("span", null, tr(it)), el("span", { class: "pair-ico" }, icon("plus")));
+        return b;
+      })));
+    row.after(strip);
   }
 
-  function groupTabs() {
-    const groups = [{ id: "all", ar: UI.ar.all, en: UI.en.all }, ...GROUPS.filter((g) => g.sections.some((s) => shownItems(s).length))];
-    return el("div", { class: "segmented", role: "tablist" },
-      groups.map((g) => el("button", {
-        type: "button", role: "tab", "aria-selected": String(state.group === g.id),
-        onclick: () => { state.group = g.id; renderBrowse(); scrollToMenuTop(); },
-      }, tr(g)))
-    );
-  }
-
-  function bundleCard(c) {
-    const items = bundleItems(c);
-    const pics = items.map((id) => byId.get(id).item).filter((i) => i.img).slice(0, 3);
-    return el("button", { type: "button", class: "bundle-card", onclick: () => openBundle(c.id) },
-      el("span", { class: "bundle-pics n" + pics.length }, pics.map((i) => el("img", { src: i.img, alt: "", loading: "lazy", decoding: "async" }))),
-      el("span", { class: "bundle-info" },
-        el("span", { class: "bundle-kind" }, ui().kinds[c.kind] || ""),
-        el("span", { class: "bundle-name" }, tr(c)),
-        el("span", { class: "bundle-count" }, ui().itemsN(items.length)))
-    );
-  }
-
-  function bundlesBlock() {
+  // The row of ways (or categories) at the top of an inner page: switch between them in place.
+  // Switching replaces the address, so the back button still returns to the menu home.
+  function topNav(items, active, onPick) {
     const u = ui();
-    const kinds = ["week", "feast"];
-    return el("section", { class: "bundles", id: "bundles" },
-      el("div", { class: "block-head" },
-        el("h2", { class: "block-title" }, u.bundles),
-        el("div", { class: "mini-tabs", role: "tablist" }, kinds.map((k) =>
-          el("button", { type: "button", role: "tab", "aria-selected": String(state.bundleKind === k), onclick: () => { state.bundleKind = k; renderBrowse(); } }, u.kinds[k])))
-      ),
-      el("div", { class: "bundle-row" }, COLLECTIONS.filter((c) => c.kind === state.bundleKind).map(bundleCard))
-    );
+    const nav = el("nav", { class: "topnav", "aria-label": u.menu },
+      el("div", { class: "topnav-row" },
+        el("button", { type: "button", class: "tnav home", onclick: () => goMenu() }, icon("grid"), u.menu),
+        items.map((it) => el("button", {
+          type: "button", class: "tnav", "aria-current": it.id === active ? "page" : null,
+          onclick: () => { if (it.id !== active) onPick(it.id); },
+        }, it.thumb ? el("img", { src: it.thumb, alt: "", loading: "lazy" }) : icon(it.icon), it.label))));
+    requestAnimationFrame(() => {
+      const on = nav.querySelector('[aria-current="page"]');
+      if (on) on.scrollIntoView({ block: "nearest", inline: "center" });
+    });
+    return nav;
+  }
+  const wayNav = (active) => topNav(WAYS.map((w) => ({ id: w.id, icon: w.icon, label: wayLabel(w.id) })), active, (id) => goMenu({ way: id }, true));
+  function catNav(active) {
+    const cats = CATEGORIES.slice();
+    if (shownItems(IDEAS_SECTION).length) cats.push({ id: "ideas", ar: IDEAS_SECTION.ar, en: IDEAS_SECTION.en, cover: shownItems(IDEAS_SECTION)[0].id });
+    return topNav(cats.map((c) => { const hit = byId.get(c.cover); return { id: c.id, label: tr(c), thumb: hit && hit.item.img }; }), active, (id) => goMenu({ cat: id }, true));
   }
 
-  function againBlock() {
-    const last = lastOrder();
-    if (!last) return null;
+  function renderHome() {
     const u = ui();
-    const pics = last.cart.map((c) => byId.get(c.id).item).filter((i) => i.img).slice(0, 3);
-    return el("div", { class: "again" },
-      el("span", { class: "again-pics" }, pics.map((i) => el("img", { src: i.img, alt: "" }))),
-      el("span", { class: "again-text" }, el("b", null, u.orderAgain), el("span", null, u.lastOrder(last.cart.length, fmtDate(last.at)))),
-      el("button", { type: "button", class: "btn tinted small", onclick: addLastOrder }, icon("repeat"), u.addLast)
-    );
+    const tiles = CATEGORIES.slice();
+    if (shownItems(IDEAS_SECTION).length) tiles.push({ id: "ideas", ar: IDEAS_GROUP.sections[0].ar, en: IDEAS_GROUP.sections[0].en, cover: shownItems(IDEAS_SECTION)[0].id, ideas: true });
+    return [
+      el("div", { class: "ways-row" }, WAYS.map((w) => el("button", { type: "button", class: "way-chip", onclick: () => goMenu({ way: w.id }) },
+        el("span", { class: "way-chip-ico" }, icon(w.icon)),
+        el("span", { class: "way-chip-label" }, wayLabel(w.id))))),
+      el("h2", { class: "block-title home-title" }, u.categories),
+      el("div", { class: "tiles" }, tiles.map((c) => {
+        const n = c.ideas ? shownItems(IDEAS_SECTION).length : catItems(c).length;
+        const cover = byId.get(c.cover);
+        return el("button", { type: "button", class: "tile", onclick: () => goMenu({ cat: c.id }) },
+          cover && cover.item.img ? el("img", { src: cover.item.full || cover.item.img, alt: "", loading: "lazy", decoding: "async" }) : null,
+          el("span", { class: "tile-shade" }),
+          el("span", { class: "tile-text" }, el("span", { class: "tile-name" }, tr(c)), el("span", { class: "tile-n" }, u.itemsN(n))));
+      })),
+    ];
+  }
+
+  // A category: one row of filters (its sections, then ready / healthy / favourites), then the list.
+  function renderCategory(c) {
+    const u = ui();
+    let entries = c.ideas ? shownItems(IDEAS_SECTION).map((item) => ({ item, section: IDEAS_SECTION, group: IDEAS_GROUP, sub: IDEAS_SECTION })) : catItems(c);
+    const subs = [...new Map(entries.map((e) => [e.sub.id, e.sub])).values()];
+    const sections = subs;
+    if (state.sub !== "all" && !sections.some((s) => s.id === state.sub)) state.sub = "all";
+    const pool = state.sub === "all" ? entries : entries.filter((e) => e.sub.id === state.sub);
+    const has = (fn) => pool.some(({ item, section }) => fn(item, section));
+    const toggles = [
+      has((i, s) => readiness(i, s) === "cook") && has((i, s) => readiness(i, s) === "eat") ? ["cook", "flame"] : null,
+      has((i, s) => readiness(i, s) === "cook") && has((i, s) => readiness(i, s) === "eat") ? ["eat", "plate"] : null,
+      has((i, s) => isHealthy(i, s)) && !has((i, s) => !isHealthy(i, s)) ? null : has((i, s) => isHealthy(i, s)) ? ["healthy", "leaf"] : null,
+      has((i) => state.favs.has(i.id)) ? ["fav", "heart"] : null,
+    ].filter(Boolean);
+    state.flags.forEach((f) => { if (!toggles.some(([k]) => k === f)) state.flags.delete(f); });
+    let shown = pool;
+    state.flags.forEach((f) => {
+      shown = shown.filter(({ item, section }) => (f === "fav" ? state.favs.has(item.id) : wayMatch(f, item, section)));
+    });
+
+    const chips = [];
+    if (sections.length > 1) {
+      chips.push(el("button", { type: "button", class: "fchip", "aria-pressed": String(state.sub === "all"), onclick: () => { state.sub = "all"; renderBrowse(); } }, u.all, el("b", null, entries.length)));
+      sections.forEach((s) => chips.push(el("button", { type: "button", class: "fchip", "aria-pressed": String(state.sub === s.id), onclick: () => { state.sub = s.id; renderBrowse(); } },
+        tr(s), el("b", null, entries.filter((e) => e.sub.id === s.id).length))));
+    }
+    if (sections.length > 1 && toggles.length) chips.push(el("span", { class: "fsep", "aria-hidden": "true" }));
+    toggles.forEach(([k, ic]) => chips.push(el("button", {
+      type: "button", class: "fchip toggle", "aria-pressed": String(state.flags.has(k)),
+      onclick: () => { if (state.flags.has(k)) state.flags.delete(k); else { if (k === "cook") state.flags.delete("eat"); if (k === "eat") state.flags.delete("cook"); state.flags.add(k); } renderBrowse(); },
+    }, icon(ic), u.filters[k])));
+
+    return [
+      catNav(c.id),
+      el("div", { class: "page-head" }, el("h1", { class: "page-title" }, tr(c)), el("span", { class: "count" }, shown.length)),
+      chips.length ? el("div", { class: "fbar" }, el("div", { class: "fbar-row" }, chips)) : null,
+      shown.length ? dishList(shown) : el("div", { class: "empty" }, el("p", { class: "empty-title" }, u.noResults), el("p", null, u.noResultsHint)),
+    ];
+  }
+
+  // A way (ready to cook, ready to eat, healthy): its dishes from every category, with a bar of
+  // categories that follows the scroll.
+  function renderWay(way) {
+    const u = ui();
+    const blocks = CATEGORIES.map((c) => ({ c, entries: catItems(c).filter(({ item, section }) => wayMatch(way, item, section)) })).filter((b) => b.entries.length);
+    // Name each block by what it actually shows: the category name when all its parts are there,
+    // otherwise the names of the parts that are (so a block never promises dishes it doesn't list).
+    const blockName = (c, entries) => {
+      const allSubs = [...new Set(catItems(c).map((e) => e.sub.id))];
+      const present = [...new Map(entries.map((e) => [e.sub.id, e.sub])).values()];
+      if (c.keepName || present.length === allSubs.length) return tr(c);
+      return present.map(tr).join(" · ");
+    };
+    const total = blocks.reduce((n, b) => n + b.entries.length, 0);
+    return [
+      wayNav(way),
+      el("div", { class: "page-head" }, el("h1", { class: "page-title" }, wayLabel(way)), el("span", { class: "count" }, total)),
+      el("p", { class: "page-sub" }, u.wayDesc[way]),
+      el("nav", { class: "fbar cat-tabs" }, el("div", { class: "fbar-row" }, blocks.map(({ c, entries }) =>
+        el("button", { type: "button", class: "fchip", "data-for": c.id, onclick: () => jumpTo(c.id) }, blockName(c, entries), el("b", null, entries.length))))),
+      blocks.map(({ c, entries }) => el("section", { class: "way-block", id: "s-" + c.id, "data-section": c.id },
+        el("h2", { class: "way-block-title" }, blockName(c, entries)), dishList(entries))),
+    ];
+  }
+
+  function renderBundlesPage(way) {
+    const u = ui();
+    return [
+      wayNav(way),
+      el("div", { class: "page-head" }, el("h1", { class: "page-title" }, wayLabel(way)), el("span", { class: "count" }, COLLECTIONS.filter((c) => c.kind === way).length)),
+      el("p", { class: "page-sub" }, u.wayDesc[way]),
+      el("div", { class: "bundle-grid" }, COLLECTIONS.filter((c) => c.kind === way).map(bundleCard)),
+    ];
+  }
+
+  // Search: intents first (they open a way, a category or bundles), then dishes by name.
+  function renderSearch() {
+    const u = ui();
+    const q = state.search.trim();
+    if (!q) {
+      const recent = recentSearches();
+      return [
+        el("div", { class: "search-panel" },
+          el("p", { class: "field-label" }, u.tryWords),
+          el("div", { class: "choice-row" }, SEARCH_SUGGESTIONS[state.lang].map((s) => el("button", { type: "button", class: "choice small", onclick: () => setSearch(s) }, s))),
+          recent.length ? [el("p", { class: "field-label" }, u.recent),
+            el("div", { class: "choice-row" }, recent.map((s) => el("button", { type: "button", class: "choice small", onclick: () => setSearch(s) }, icon("repeat"), s)))] : null),
+      ];
+    }
+    const words = norm(q).split(" ").filter(Boolean);
+    const intents = intentsFor(q);
+    const all = CATEGORIES.flatMap(catItems).concat(shownItems(IDEAS_SECTION).map((item) => ({ item, section: IDEAS_SECTION, group: IDEAS_GROUP })));
+    const hits = all.filter(({ item, section }) => {
+      const hay = [item.ar, item.en, section.ar, section.en].map(norm).join(" | ");
+      return words.every((w) => hay.includes(w));
+    });
+    const cards = [];
+    intents.forEach((x) => {
+      if (x.way) {
+        const n = wayCount(x.way);
+        cards.push(el("button", { type: "button", class: "intent", onclick: () => { rememberSearch(q); goMenu({ way: x.way }); } },
+          el("span", { class: "way-chip-ico" }, icon(WAYS.find((w) => w.id === x.way).icon)),
+          el("span", { class: "intent-text" }, el("b", null, wayLabel(x.way)), el("span", null, isBundleWay(x.way) ? u.bundlesN(n) : u.itemsN(n))),
+          icon("chevron", "flip-rtl")));
+      } else if (x.cat) {
+        const c = CATEGORIES.find((k) => k.id === x.cat);
+        if (c) cards.push(el("button", { type: "button", class: "intent", onclick: () => { rememberSearch(q); goMenu({ cat: c.id }); } },
+          el("span", { class: "way-chip-ico" }, icon("grid")),
+          el("span", { class: "intent-text" }, el("b", null, tr(c)), el("span", null, u.itemsN(catItems(c).length))),
+          icon("chevron", "flip-rtl")));
+      }
+    });
+    const bundleWays = intents.filter((x) => x.way && isBundleWay(x.way)).map((x) => x.way);
+    const bundles = COLLECTIONS.filter((c) => bundleWays.includes(c.kind));
+    // When the words name a way but few dishes by name, show some of that way's dishes.
+    let suggested = [];
+    const listWay = intents.find((x) => x.way && !isBundleWay(x.way));
+    if (listWay && hits.length < 4) suggested = all.filter(({ item, section }) => wayMatch(listWay.way, item, section) && !hits.some((h) => h.item === item)).slice(0, 12);
+    return [
+      hits.length || !cards.length ? el("p", { class: "result-count" }, u.results(hits.length)) : null,
+      cards.length ? el("div", { class: "intents" }, cards) : null,
+      bundles.length ? el("div", { class: "bundle-grid" }, bundles.map(bundleCard)) : null,
+      hits.length ? dishList(hits, { flat: true }) : null,
+      suggested.length ? [el("h2", { class: "way-block-title" }, u.suggestions), dishList(suggested, { flat: true })] : null,
+      !hits.length && !cards.length ? el("div", { class: "empty" }, el("p", { class: "empty-title" }, u.noResults), el("p", null, u.noResultsHint)) : null,
+    ];
+  }
+  function setSearch(s) {
+    state.search = s;
+    $("search").value = s;
+    $("search-clear").hidden = false;
+    rememberSearch(s);
+    renderBrowse();
+    window.scrollTo({ top: 0 });
   }
 
   let spyHandler = null;
   function renderBrowse() {
-    const u = ui();
-    const sections = visibleSections();
-    const searching = !!state.search;
-    const total = sections.reduce((n, s) => n + s.items.length, 0);
-    const out = [];
+    const searching = !!state.search.trim() || state.searchOpen;
+    const cat = state.cat && (CATEGORIES.find((c) => c.id === state.cat) || (state.cat === "ideas" ? { id: "ideas", ar: IDEAS_SECTION.ar, en: IDEAS_SECTION.en, ideas: true } : null));
+    let body;
+    if (searching) body = renderSearch();
+    else if (cat) body = renderCategory(cat);
+    else if (state.way && isBundleWay(state.way)) body = renderBundlesPage(state.way);
+    else if (state.way) body = renderWay(state.way);
+    else body = renderHome();
+    $("main").replaceChildren(el("div", { class: "wrap browse" + (cat || state.way || searching ? " inner" : " home-menu") }, body));
+    document.documentElement.style.setProperty("--topbar-h", $("topbar").getBoundingClientRect().height + "px");
 
-    if (!searching) {
-      out.push(againBlock());
-      if (COLLECTIONS.length && state.filter === "all") out.push(bundlesBlock());
-    }
-    out.push(el("div", { class: "menu-tools", id: "menu-top" }, groupTabs(), filterChips()));
-    if (searching) out.push(el("p", { class: "result-count" }, u.results(total)));
-
-    let lastGroup = null;
-    sections.forEach(({ group, section, items }) => {
-      if (state.group === "all" && group !== lastGroup && !searching) {
-        out.push(el("h2", { class: "group-title" }, tr(group)));
-        lastGroup = group;
-      }
-      out.push(el("section", { class: "section", id: "s-" + section.id, "data-section": section.id },
-        el("div", { class: "section-head" },
-          el("h3", { class: "section-title" }, el("span", { class: "section-emoji", "aria-hidden": "true" }, section.emoji), tr(section)),
-          el("span", { class: "count" }, items.length)
-        ),
-        el("div", { class: "grid" }, items.map((item) => photoCard(item, section)))
-      ));
-    });
-
-    if (!sections.length) {
-      out.push(el("div", { class: "empty" },
-        el("p", { class: "empty-title" }, state.filter === "fav" && !searching ? u.favEmpty : u.noResults),
-        state.filter === "fav" && !searching ? null : el("p", null, u.noResultsHint)));
-    }
-    $("main").replaceChildren(el("div", { class: "wrap browse" }, out));
-
-    // Section shortcuts in the top bar: tap to jump, and the current section lights up as you scroll.
-    const nav = $("section-nav");
-    nav.replaceChildren(...sections.map(({ section }) =>
-      el("button", { type: "button", class: "nav-chip", "data-for": section.id, onclick: () => jumpTo(section.id) },
-        el("span", { "aria-hidden": "true" }, section.emoji), " ", tr(section))));
     if (spyHandler) window.removeEventListener("scroll", spyHandler);
     let ticking = false;
     spyHandler = () => {
@@ -820,40 +1064,61 @@
     renderFab(false);
   }
 
-  function headerOffset() { return $("topbar").getBoundingClientRect().height + 8; }
-  function jumpTo(sectionId) {
-    const target = $("s-" + sectionId);
-    if (!target) return;
-    const y = target.getBoundingClientRect().top + window.scrollY - headerOffset();
-    window.scrollTo({ top: y, behavior: reduceMotion() ? "auto" : "smooth" });
+  function goMenu(where, replace) {
+    state.search = "";
+    state.searchOpen = false;
+    state.sub = "all";
+    state.flags = new Set();
+    const hash = where && where.cat ? "#menu-" + where.cat : where && where.way ? "#way-" + where.way : "#menu";
+    if (location.hash === hash) { applyHash(); show("browse"); return; }
+    if (replace) { history.replaceState(null, "", hash); applyHash(); show("browse"); return; }
+    location.hash = hash;
   }
-  function scrollToMenuTop() {
-    const t = $("menu-top");
-    if (t && t.getBoundingClientRect().top < headerOffset()) {
-      window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - headerOffset() });
-    }
+
+  function headerOffset() { return $("topbar").getBoundingClientRect().height + 8; }
+  function jumpTo(id) {
+    const target = $("s-" + id);
+    if (!target) return;
+    const bar = document.querySelector(".cat-tabs");
+    const y = target.getBoundingClientRect().top + window.scrollY - headerOffset() - (bar ? bar.offsetHeight : 0);
+    window.scrollTo({ top: y, behavior: reduceMotion() ? "auto" : "smooth" });
   }
   let lastSpy = null;
   function spy() {
     if (state.view !== "browse") return;
-    const line = headerOffset() + 24;
-    let current = null;
-    document.querySelectorAll(".section[data-section]").forEach((s) => {
-      if (s.getBoundingClientRect().top <= line) current = s.dataset.section;
-    });
-    if (current === lastSpy && document.querySelector(".nav-chip.active")) return;
-    lastSpy = current;
-    document.querySelectorAll(".nav-chip").forEach((b) => {
-      const on = b.dataset.for === current;
-      b.classList.toggle("active", on);
-      if (on) {
-        const nav = $("section-nav");
-        const r = b.getBoundingClientRect(), nr = nav.getBoundingClientRect();
-        if (r.left < nr.left || r.right > nr.right) nav.scrollBy({ left: r.left - nr.left - (nr.width - r.width) / 2, behavior: "smooth" });
-      }
-    });
     const up = $("to-top");
     if (up) up.hidden = window.scrollY < 900;
+    const bar = document.querySelector(".cat-tabs");
+    if (!bar) return;
+    const line = headerOffset() + bar.offsetHeight + 24;
+    let current = null;
+    document.querySelectorAll(".way-block[data-section]").forEach((s) => {
+      if (s.getBoundingClientRect().top <= line) current = s.dataset.section;
+    });
+    if (!current) { const first = document.querySelector(".way-block[data-section]"); current = first && first.dataset.section; }
+    if (current === lastSpy && bar.querySelector('.fchip[aria-pressed="true"]')) return;
+    lastSpy = current;
+    bar.querySelectorAll(".fchip").forEach((b) => {
+      const on = b.dataset.for === current;
+      b.setAttribute("aria-pressed", String(on));
+      if (on) {
+        const row = bar.querySelector(".fbar-row");
+        const r = b.getBoundingClientRect(), nr = row.getBoundingClientRect();
+        if (r.left < nr.left || r.right > nr.right) row.scrollBy({ left: r.left - nr.left - (nr.width - r.width) / 2, behavior: "smooth" });
+      }
+    });
+  }
+
+  function bundleCard(c) {
+    const items = bundleItems(c);
+    const pics = items.map((id) => byId.get(id).item).filter((i) => i.img).slice(0, 3);
+    return el("button", { type: "button", class: "bundle-card", onclick: () => openBundle(c.id) },
+      el("span", { class: "bundle-pics n" + pics.length }, pics.map((i) => el("img", { src: i.img, alt: "", loading: "lazy", decoding: "async" }))),
+      el("span", { class: "bundle-info" },
+        el("span", { class: "bundle-kind" }, ui().kinds[c.kind] || ""),
+        el("span", { class: "bundle-name" }, tr(c)),
+        el("span", { class: "bundle-count" }, ui().itemsN(items.length)))
+    );
   }
 
   // ---------- Bottom bar ----------
@@ -1106,10 +1371,10 @@
     variety: { ar: "تنويع", en: "Something different" },
   };
 
-  const history = () => (store.get("sabah-history", []) || []).filter((h) => h && Array.isArray(h.ids));
+  const orderHistory = () => (store.get("sabah-history", []) || []).filter((h) => h && Array.isArray(h.ids));
   function recentIds(n) {
     const out = new Set();
-    history().slice(-n).forEach((h) => h.ids.forEach((id) => out.add(id)));
+    orderHistory().slice(-n).forEach((h) => h.ids.forEach((id) => out.add(id)));
     return out;
   }
   const skipped = () => new Set(store.get("sabah-skips", []) || []);
@@ -1125,7 +1390,7 @@
     const { item, section } = byId.get(id);
     let s = 0;
     if (state.favs.has(id)) s += 2;
-    if (history().length) {
+    if (orderHistory().length) {
       if (!recentIds(3).has(id)) s += 1.5;
       if (recentIds(1).has(id)) s -= 2;
     }
@@ -1143,7 +1408,7 @@
       const cur = byId.get(current);
       if (isHealthy(item, section) && !isHealthy(cur.item, cur.section)) out.push("healthier");
     }
-    if (history().length && !recentIds(3).has(id)) out.push("fresh");
+    if (orderHistory().length && !recentIds(3).has(id)) out.push("fresh");
     if (!out.length) out.push("variety");
     return out.slice(0, 2);
   }
@@ -1411,16 +1676,7 @@
   };
 
   function startWith(way) {
-    state.search = "";
-    state.group = "all";
-    if (way === "week" || way === "feast") {
-      state.filter = "all";
-      state.bundleKind = way;
-      go("browse", "bundles");
-    } else {
-      state.filter = way || "all";
-      go("browse", way ? "menu-top" : null);
-    }
+    goMenu(way ? { way } : null);
   }
 
   let homeHandler = null;
@@ -1689,14 +1945,37 @@
   $("ideas-btn").addEventListener("click", () => go(state.view === "ideas" ? "browse" : "ideas"));
   window.addEventListener("hashchange", () => {
     const v = viewFromHash();
-    if (v !== state.view || pendingAnchor) show(v);
+    const before = state.cat + "|" + state.way;
+    applyHash();
+    if (v === "browse" && (state.cat + "|" + state.way) !== before) {
+      state.search = ""; state.searchOpen = false; state.sub = "all"; state.flags = new Set();
+    }
+    show(v);
   });
   let searchTimer;
   $("search").addEventListener("input", (e) => {
     state.search = e.target.value;
     $("search-clear").hidden = !state.search;
     clearTimeout(searchTimer);
-    searchTimer = setTimeout(() => { renderBrowse(); scrollToMenuTop(); }, 120);
+    searchTimer = setTimeout(() => { renderBrowse(); window.scrollTo({ top: 0 }); }, 120);
+  });
+  $("search").addEventListener("focus", () => {
+    if (state.searchOpen) return;
+    state.searchOpen = true;
+    if (!state.search) { renderBrowse(); window.scrollTo({ top: 0 }); }
+  });
+  $("search").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { rememberSearch(state.search); $("search").blur(); }
+    if (e.key === "Escape") { state.search = ""; state.searchOpen = false; $("search").value = ""; $("search").blur(); renderBrowse(); }
+  });
+  $("search").addEventListener("blur", () => {
+    // Leave the suggestions panel when nothing was typed (a tap on a suggestion runs first).
+    setTimeout(() => {
+      if (!state.search.trim() && state.searchOpen && document.activeElement !== $("search")) {
+        state.searchOpen = false;
+        if (state.view === "browse") renderBrowse();
+      }
+    }, 200);
   });
   $("search-clear").addEventListener("click", () => {
     state.search = "";
