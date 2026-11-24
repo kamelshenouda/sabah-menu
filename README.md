@@ -172,8 +172,9 @@ Extra fields that shape the menu:
 
 How the kitchen cooks for the house: الدقيق (أبيض / حبة كاملة), الدهون اللي بنطبخ بيها (زيت درة,
 زيت زيتون, سمنة بلدي, زبدة, زيت على زبدة, each with a one-line hint), كمية الدهون (قليلة خالص /
-متوسطة), الخلطة (عادي / سبايسي) and التتبيلة (خفيفة / متوسطة / قوية). Nothing set means the kitchen
-cooks it its usual way ("زي المطبخ").
+متوسطة), الخلطة (عادي / سبايسي) and التتبيلة (خفيفة / متوسطة / قوية). Each starts on a default (أبيض, زيت درة,
+متوسطة, عادي, متوسطة) until the house picks another; on a dish's page, picking the house's choice
+again puts that dish back on the house preferences.
 
 - The order page shows a "هيتعمل كده" card with only the preferences that apply to the dishes in
   the order; "غيّر" sets them for the house.

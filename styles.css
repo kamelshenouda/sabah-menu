@@ -1098,10 +1098,10 @@ html[lang="en"] .pday-dish { font-family: var(--f-head); font-weight: 600; font-
 @media (prefers-reduced-motion: reduce) { .pswipe-card { animation: none; } }
 
 /* ---------- Cooking preferences ---------- */
-.pseg.wrap { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+.pseg.two-col { display: flex; flex-wrap: wrap; gap: 6px; }
+.pseg.two-col button { flex: 1 1 calc(50% - 3px); }
 .cook-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .cook-tag { padding: 2px 8px; border-radius: var(--r-chip); border: 1px solid var(--line); background: var(--surface); font-size: 13px; color: var(--fg); }
-.cook-tag.unset { color: var(--fg-2); border-style: dashed; }
 .cook-tag.own { border-color: var(--accent-text); color: var(--accent-text); font-weight: 700; }
 .cook-box { margin-top: 14px; padding: 12px; border-radius: var(--r-card); background: var(--surface-2); display: flex; flex-direction: column; gap: 8px; }
 .cook-box-label { margin: 0; font-family: var(--f-label); font-weight: 700; font-size: 13px; color: var(--fg-2); }
@@ -1112,5 +1112,4 @@ html[lang="en"] .pday-dish { font-family: var(--f-head); font-weight: 600; font-
 .cook-card-label { font-family: var(--f-label); font-weight: 700; font-size: 13px; color: #7ad6ff; }
 html[lang="en"] .cook-card-label { font-weight: 600; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; }
 .cook-card .cook-tag { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.18); color: #fff; }
-.cook-card .cook-tag.unset { color: #9db3b4; }
 .cook-card-sub { font-size: 13px; color: #9db3b4; }
