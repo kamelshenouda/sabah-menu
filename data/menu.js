@@ -3376,8 +3376,8 @@ window.SABAH_MENU = {
        "id": "b7",
        "ar": "بوكس حار اربع نكهات (٤x٤٠٠g)",
        "en": "4 Flavors Spicy BOX (4x400g)",
-       "img": "assets/butcherista/thumbs/e70529e6-de2c-4d03-a5d0-7b562bb52a92.webp",
-       "full": "assets/butcherista/full/e70529e6-de2c-4d03-a5d0-7b562bb52a92.webp",
+       "img": "assets/kitchen/thumbs/b7.webp",
+       "full": "assets/kitchen/full/b7.webp",
        "sizes": [
         {
          "ar": "٤ أطباق ٤٠٠ جم",
