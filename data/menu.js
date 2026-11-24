@@ -1634,8 +1634,8 @@ window.SABAH_MENU = {
        "id": "b2",
        "ar": "دجاج بانيه صحي",
        "en": "Healthy Chicken Panne",
-       "img": "assets/butcherista/thumbs/f5a1d6b5-e523-4b5d-92c2-be4b92b626f2.webp",
-       "full": "assets/butcherista/full/f5a1d6b5-e523-4b5d-92c2-be4b92b626f2.webp",
+       "img": "assets/kitchen/thumbs/b2.webp",
+       "full": "assets/kitchen/full/b2.webp",
        "sizes": [
         {
          "ar": "٤٠٠ جم",
