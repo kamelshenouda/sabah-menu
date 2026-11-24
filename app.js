@@ -576,6 +576,7 @@
       const choice = opt.choices[(entry.opts || [])[i] || 0];
       if (choice) parts.push(t(choice));
     });
+    if (byId.has(entry.id)) parts.push(...dishPrefDiffs(entry.id, lang));
     return parts;
   }
 
@@ -584,6 +585,8 @@
   function buildMessage() {
     const u = UI.ar;
     const blocks = [];
+    const cook = cookBlockLines(state.cart.map((c) => c.id));
+    if (cook.length) blocks.push(`🧂 *طريقة الطبخ للطلب كله*\n${cook.join("\n")}`);
     allSections.forEach(({ group, section }) => {
       const lines = state.cart
         .filter((c) => byId.get(c.id).section === section)
@@ -1204,6 +1207,7 @@
     const message = buildMessage();
     out.push(
       el("button", { type: "button", class: "btn text add-more", onclick: () => go("browse") }, icon("plus"), u.addMore),
+      cookCard(),
       el("p", { class: "field-label" }, u.orderNote),
       el("textarea", {
         class: "note order-note", rows: "2", placeholder: u.orderNotePh,
@@ -1289,9 +1293,25 @@
       ));
     }
 
+    let cookOpen = false;
     openPanel(({ close, draw }) => {
       const u = ui();
       const step = stepFor(draft, group);
+      const keys = cookKeys(id);
+      const CT = COOK_UI[state.lang];
+      const house = housePrefs(), mine = dishPrefs(id);
+      const cookBox = keys.length ? el("div", { class: "cook-box" },
+        el("p", { class: "cook-box-label" }, CT.follow),
+        el("div", { class: "cook-tags" }, COOK_PREFS.filter((d) => keys.includes(d.id)).map((d) => {
+          const v = optOf(d.id, mine[d.id] || house[d.id]);
+          const own = mine[d.id] && mine[d.id] !== house[d.id];
+          return el("span", { class: "cook-tag" + (own ? " own" : v ? "" : " unset") }, `${cookShort(d.id, state.lang)}: ${v ? tr(v) : CT.kitchen}`);
+        })),
+        cookOpen ? el("div", { class: "pset" }, COOK_PREFS.filter((d) => keys.includes(d.id)).map((d) =>
+          cookSeg(d.id, mine[d.id], CT.house, (v) => { setDishPref(id, d.id, v); draw(); refreshItem(id); })))
+          : el("div", { class: "cook-box-acts" },
+            el("button", { type: "button", class: "btn text", onclick: () => { cookOpen = true; draw(); } }, icon("edit"), CT.changeDish),
+            el("button", { type: "button", class: "btn text", onclick: () => openCookPrefs() }, CT.editHouse))) : null;
       const confirm = () => {
         const entry = { id, qty: draft.qty, note: (draft.note || "").trim() };
         if (packed) {
@@ -1329,6 +1349,7 @@
         item.desc ? el("p", { class: "sheet-desc" }, tr(item.desc)) : null,
         item.cal ? el("span", { class: "cal-tag" }, tr(item.cal)) : null,
         item.ref ? el("a", { class: "idea-link sheet-ref", href: item.ref, target: "_blank", rel: "noopener" }, u.seeOriginal + " ↗") : null,
+        cookBox,
 
         item.sizes && item.sizes.length ? [
           el("p", { class: "field-label" }, u.size),
@@ -1363,6 +1384,119 @@
           existing ? el("button", { type: "button", class: "btn text danger", onclick: () => { close(); removeItem(id); } }, u.removeFromOrder) : null),
       ];
     }, tr(item));
+  }
+
+  // ---------- Cooking preferences ----------
+  // How the kitchen cooks for this house: flour, cooking fat, how much fat, the mix and the
+  // marinade. They are set once for the house (from the order page) and can be changed for one
+  // dish in its sheet. A dish only offers the preferences in its `prefs` list in data/menu.js
+  // ("fat" also brings "how much fat"). The chef's message gets one block with the house choices
+  // that apply to the order, and a dish that differs says so on its own line. Nothing set means
+  // the kitchen cooks it its usual way.
+  const COOK_PREFS = [
+    { id: "flour", ar: "الدقيق", en: "Flour", opts: [{ id: "white", ar: "أبيض", en: "White" }, { id: "whole", ar: "حبة كاملة", en: "Whole wheat" }] },
+    { id: "fat", ar: "الدهون اللي بنطبخ بيها", en: "Cooking fat", short: { ar: "الدهون", en: "Fat" }, opts: [
+      { id: "corn", ar: "زيت درة", en: "Corn oil", hint: { ar: "نباتي وخفيف", en: "Plant-based, light" } },
+      { id: "olive", ar: "زيت زيتون", en: "Olive oil", hint: { ar: "صحي", en: "Healthy" } },
+      { id: "samna", ar: "سمنة بلدي", en: "Samna baladi", hint: { ar: "سمنة بقري فلاحي", en: "Country cow ghee" } },
+      { id: "butter", ar: "زبدة", en: "Butter", hint: { ar: "أخف من السمنة", en: "Lighter than ghee" } },
+      { id: "oilbutter", ar: "زيت على زبدة", en: "Oil & butter", hint: { ar: "أخف من زبدة صافي", en: "Lighter than pure butter" } },
+    ] },
+    { id: "amount", on: "fat", ar: "كمية الدهون", en: "How much fat", opts: [{ id: "low", ar: "قليلة خالص", en: "Very little" }, { id: "medium", ar: "متوسطة", en: "Medium" }] },
+    { id: "mix", ar: "الخلطة", en: "The mix", opts: [{ id: "normal", ar: "عادي", en: "Normal" }, { id: "spicy", ar: "سبايسي", en: "Spicy" }] },
+    { id: "mar", ar: "التتبيلة", en: "The marinade", opts: [{ id: "light", ar: "خفيفة", en: "Light" }, { id: "medium", ar: "متوسطة", en: "Medium" }, { id: "strong", ar: "قوية", en: "Strong" }] },
+  ];
+  const COOK_UI = {
+    ar: {
+      title: "تفضيلات مطبخك", sub: "كل صنف بيتعمل كده، إلا لو غيّرت صنف لوحده من صفحته.",
+      madeLike: "هيتعمل كده", follow: "هيتعمل حسب تفضيلات بيتك:", change: "غيّر", changeDish: "غيّر للصنف ده بس",
+      house: "زي البيت", kitchen: "زي المطبخ", editHouse: "عدّل تفضيلات البيت", done: "تمام",
+      dishes: (n) => (n === 1 ? "صنف واحد متغيّر لوحده" : n === 2 ? "صنفين متغيرين لوحدهم" : `${n} أصناف متغيرة لوحدها`),
+    },
+    en: {
+      title: "Your kitchen preferences", sub: "Every dish is made this way, unless you change one dish on its own page.",
+      madeLike: "It will be made like this", follow: "Made the way your house likes:", change: "Change", changeDish: "Change for this dish only",
+      house: "As the house", kitchen: "Kitchen's usual", editHouse: "Edit house preferences", done: "Done",
+      dishes: (n) => `${n} dish${n === 1 ? "" : "es"} changed on their own`,
+    },
+  };
+  const cookDef = (key) => COOK_PREFS.find((d) => d.id === key);
+  const cookKeys = (id) => { const hit = byId.get(id); const p = (hit && hit.item.prefs) || []; return COOK_PREFS.filter((d) => p.includes(d.on || d.id)).map((d) => d.id); };
+  const housePrefs = () => store.get("sabah-cook-prefs", {}) || {};
+  const dishPrefs = (id) => (store.get("sabah-dish-prefs", {}) || {})[id] || {};
+  function setHousePref(key, val) {
+    const all = housePrefs();
+    if (val) all[key] = val; else delete all[key];
+    store.set("sabah-cook-prefs", all);
+  }
+  function setDishPref(id, key, val) {
+    const all = store.get("sabah-dish-prefs", {}) || {};
+    const mine = all[id] || {};
+    if (val) mine[key] = val; else delete mine[key];
+    if (Object.keys(mine).length) all[id] = mine; else delete all[id];
+    store.set("sabah-dish-prefs", all);
+  }
+  const optOf = (key, val) => (cookDef(key).opts.find((o) => o.id === val) || null);
+  const cookShort = (key, lang) => { const d = cookDef(key); return (d.short || d)[lang] || d.ar; };
+  // A dish's own choices that differ from the house, as "الخلطة: سبايسي".
+  function dishPrefDiffs(id, lang) {
+    const mine = dishPrefs(id), house = housePrefs();
+    return cookKeys(id).filter((k) => mine[k] && mine[k] !== house[k] && optOf(k, mine[k]))
+      .map((k) => `${cookShort(k, lang)}: ${optOf(k, mine[k])[lang]}`);
+  }
+  // The house block for the chef: only the preferences set for the house that apply to this order.
+  function cookBlockLines(ids) {
+    const keys = new Set(ids.flatMap(cookKeys));
+    const house = housePrefs();
+    const lines = [];
+    COOK_PREFS.forEach((d) => {
+      if (d.on || !keys.has(d.id)) return;
+      const v = optOf(d.id, house[d.id]);
+      const extra = d.id === "fat" && keys.has("amount") ? optOf("amount", house.amount) : null;
+      if (v || extra) lines.push(`• ${(d.short || d).ar}: ${[v && v.ar, extra && extra.ar].filter(Boolean).join(" · ")}`);
+    });
+    return lines;
+  }
+  // One row of choices for a preference. `none` is the label of the "leave it" choice.
+  function cookSeg(key, cur, none, onPick) {
+    const d = cookDef(key);
+    return el("div", { class: "pq" },
+      el("p", { class: "field-label" }, tr(d)),
+      el("div", { class: "pseg" + (d.opts.length > 3 ? " wrap" : "") },
+        el("button", { type: "button", "aria-pressed": String(!cur), onclick: () => onPick(null) }, el("span", null, none)),
+        d.opts.map((o) => el("button", { type: "button", "aria-pressed": String(cur === o.id), onclick: () => onPick(o.id) },
+          el("span", null, tr(o)), o.hint ? el("small", null, tr(o.hint)) : null))));
+  }
+  // The house preferences, in a sheet. With `keys`, only those preferences are shown.
+  function openCookPrefs(keys) {
+    const shown = COOK_PREFS.filter((d) => !keys || keys.includes(d.id));
+    openPanel(({ close, draw }) => {
+      const T = COOK_UI[state.lang];
+      const house = housePrefs();
+      return [
+        el("h2", { class: "sheet-title" }, T.title),
+        el("p", { class: "sheet-desc" }, T.sub),
+        el("div", { class: "pset" }, shown.map((d) => cookSeg(d.id, house[d.id], T.kitchen, (v) => { setHousePref(d.id, v); draw(); }))),
+        el("div", { class: "sheet-actions" }, el("button", { type: "button", class: "btn solid wide", onclick: () => { close(); render(); } }, icon("check"), T.done)),
+      ];
+    }, COOK_UI[state.lang].title);
+  }
+  // A3: the "made like this" card on the order page.
+  function cookCard() {
+    const ids = state.cart.map((c) => c.id);
+    const keys = [...new Set(ids.flatMap(cookKeys))];
+    if (!keys.length) return null;
+    const T = COOK_UI[state.lang];
+    const house = housePrefs();
+    const changed = ids.filter((id) => dishPrefDiffs(id, state.lang).length).length;
+    return el("div", { class: "cook-card" },
+      el("span", { class: "cook-card-label" }, T.madeLike),
+      el("div", { class: "cook-tags" }, COOK_PREFS.filter((d) => keys.includes(d.id)).map((d) => {
+        const v = optOf(d.id, house[d.id]);
+        return el("span", { class: "cook-tag" + (v ? "" : " unset") }, `${cookShort(d.id, state.lang)}: ${v ? tr(v) : T.kitchen}`);
+      })),
+      changed ? el("span", { class: "cook-card-sub" }, T.dishes(changed)) : null,
+      el("button", { type: "button", class: "btn glass small", onclick: () => openCookPrefs(COOK_PREFS.filter((d) => keys.includes(d.id)).map((d) => d.id)) }, icon("edit"), T.change));
   }
 
   // ---------- Smart bundles ----------

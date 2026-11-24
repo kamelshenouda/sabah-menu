@@ -168,6 +168,25 @@ Extra fields that shape the menu:
 | `ready` | section or dish | `"cook"` or `"eat"`. Shows the "ready to cook" / "ready to eat" tag and feeds those filters. A dish's own value wins. Butcherista sections with raw or frozen products are marked `"cook"`. |
 | `healthy` | section or dish | `true` puts the dish under the Healthy filter. |
 
+### Cooking preferences
+
+How the kitchen cooks for the house: الدقيق (أبيض / حبة كاملة), الدهون اللي بنطبخ بيها (زيت درة,
+زيت زيتون, سمنة بلدي, زبدة, زيت على زبدة, each with a one-line hint), كمية الدهون (قليلة خالص /
+متوسطة), الخلطة (عادي / سبايسي) and التتبيلة (خفيفة / متوسطة / قوية). Nothing set means the kitchen
+cooks it its usual way ("زي المطبخ").
+
+- The order page shows a "هيتعمل كده" card with only the preferences that apply to the dishes in
+  the order; "غيّر" sets them for the house.
+- A dish's page shows what it will follow and "غيّر للصنف ده بس" to change just that dish
+  (remembered for next time); a changed choice shows in blue.
+- The chef's message starts with one "🧂 طريقة الطبخ للطلب كله" block listing the house choices that
+  apply to the order, and a dish that differs says so on its own line, e.g. "(الخلطة: سبايسي)".
+
+Which preferences a dish offers is its `prefs` list in `data/menu.js`: `flour`, `fat` (which also
+brings how much fat), `mix` and `mar`. They were tagged from the dish names (breaded, béchamel,
+pastries and desserts get flour; cooked dishes, pastries and syrupy desserts get fat; kofta and egg
+mixes get the mix; marinated dishes get the marinade); edit a dish's list to change it.
+
 ### Ready-made bundles
 
 `collections` at the end of `data/menu.js` lists the bundles shown on the landing page and above
