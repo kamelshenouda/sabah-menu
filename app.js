@@ -235,11 +235,16 @@
   const HOME_HEALTHY = ["k46", "k20", "k71"];
 
   // Units for home-kitchen dishes; Butcherista items are ordered in packs of the chosen size.
-  const KITCHEN_UNITS = [
-    { id: "kg", ar: "كيلو", en: "kg" },
-    { id: "plate", ar: "طبق/علبة", en: "plate/box" },
-    { id: "piece", ar: "حبة/كيس/قطع", en: "piece/bag" },
-  ];
+  // Each dish lists the units it is sold in (`units` in data/menu.js, the first is the default);
+  // "piece" takes the dish's own word and how many people one feeds from its `piece`.
+  const UNIT_DEFS = {
+    kg: { ar: "كيلو", en: "kg" },
+    box: { ar: "علبة", en: "box" },
+    tray: { ar: "صينية", en: "tray" },
+    bag: { ar: "كيس", en: "bag" },
+    loaf: { ar: "رغيف", en: "loaf" },
+    piece: { ar: "قطعة", en: "piece" },
+  };
   const PACK_UNIT = { ar: "عبوة", en: "pack" };
 
   // Approved food ideas (from ideas.js and the Vercel helper) become a third menu group, filled in
@@ -386,7 +391,7 @@
     flags: new Set(),
     search: "",
     searchOpen: false,
-    cart: savedCart.filter((c) => byId.has(c.id)),
+    cart: savedCart.filter((c) => byId.has(c.id)).map((c) => (c.unit ? { ...c, unit: normUnit(c.id, c.unit) } : c)),
     favs: new Set((store.get("sabah-favs", []) || []).filter((id) => typeof id === "string")),
     // A note for the whole order (for example the date and time of a feast), sent at the end.
     cartNote: String(store.get("sabah-cart-note", "") || ""),
@@ -448,9 +453,34 @@
   }
 
   // ---------- Order entries ----------
-  function defaultUnit(item, section, group) {
-    if (group === IDEAS_GROUP) return "plate";
-    return item.unit || section.unit || "kg";
+  function unitIds(item) { return Array.isArray(item.units) && item.units.length ? item.units.filter((u) => UNIT_DEFS[u]) : ["box"]; }
+  function defaultUnit(item) { return unitIds(item)[0]; }
+  // A unit with the words to show and how many people one feeds.
+  function unitInfo(id, u) {
+    const hit = byId.get(id);
+    const item = hit ? hit.item : {};
+    const base = UNIT_DEFS[u] || UNIT_DEFS.box;
+    if (u === "piece" && item.piece) return { id: u, ar: item.piece.ar, en: item.piece.en, feeds: item.piece.feeds || 1 };
+    return { id: u, ar: base.ar, en: base.en, feeds: (MENU.portions || {})[u] || { kg: 4, box: 3, tray: 6, bag: 4, loaf: 1 }[u] || 1 };
+  }
+  const unitsOf = (id) => unitIds(byId.get(id).item).map((u) => unitInfo(id, u));
+  // Older orders used "plate" and "piece" for everything; move them to a unit the dish has.
+  function normUnit(id, u) {
+    const hit = byId.get(id);
+    if (!hit || isPacked(hit.group)) return u;
+    const ok = unitIds(hit.item);
+    if (ok.includes(u)) return u;
+    if (u === "plate" && ok.includes("box")) return "box";
+    if (u === "plate" && ok.includes("tray")) return "tray";
+    return ok[0];
+  }
+  // "لكل كيلو حوالي 4 أفراد" or, for small pieces, "حوالي 3 قطعة لكل فرد".
+  function feedsHint(id, u, lang = state.lang) {
+    const info = unitInfo(id, u);
+    const f = info.feeds;
+    if (f === 1) return lang === "ar" ? `${info.ar} لكل فرد` : `1 ${info.en} per person`;
+    if (lang === "ar") return f > 1 ? `لكل ${info.ar} حوالي ${fmtQty(f)} ${f === 2 ? "فردين" : "أفراد"}` : `حوالي ${Math.round(1 / f)} ${info.ar} لكل فرد`;
+    return f > 1 ? `1 ${info.en} ≈ ${fmtQty(f)} people` : `≈ ${Math.round(1 / f)} ${info.en}s per person`;
   }
   const stepFor = (entry, group) => (isPacked(group) || entry.unit !== "kg" ? 1 : 0.5);
 
@@ -564,7 +594,7 @@
       const packs = lang === "en" && entry.qty !== 1 ? "packs" : t(PACK_UNIT);
       return `${entry.qty} ${packs}`;
     }
-    const unit = KITCHEN_UNITS.find((u) => u.id === entry.unit) || KITCHEN_UNITS[0];
+    const unit = unitInfo(entry.id, normUnit(entry.id, entry.unit));
     return `${entry.qty} ${t(unit)}`;
   }
 
@@ -621,7 +651,7 @@
   function lastOrder() {
     const last = store.get("sabah-last-order", null);
     if (!last || !Array.isArray(last.cart)) return null;
-    const cart = last.cart.filter((c) => c && byId.has(c.id) && !byId.get(c.id).item.removed);
+    const cart = last.cart.filter((c) => c && byId.has(c.id) && !byId.get(c.id).item.removed).map((c) => (c.unit ? { ...c, unit: normUnit(c.id, c.unit) } : c));
     return cart.length ? { at: last.at, cart } : null;
   }
   function addLastOrder() {
@@ -1360,13 +1390,20 @@
           el("p", { class: "field-label" }, tr(opt)),
           chipRow(opt.choices, draft.opts[oi] || 0, (i) => { draft.opts[oi] = i; }, draw),
         ]),
-        packed ? null : [
-          el("p", { class: "field-label" }, u.unit),
-          chipRow(KITCHEN_UNITS, KITCHEN_UNITS.findIndex((x) => x.id === draft.unit), (i) => {
-            draft.unit = KITCHEN_UNITS[i].id;
-            if (draft.unit !== "kg") draft.qty = Math.max(1, Math.round(draft.qty));
-          }, draw),
-        ],
+        packed ? null : (() => {
+          // Only the units this dish is sold in; one unit is shown as a line, not a choice.
+          const units = unitsOf(id);
+          draft.unit = normUnit(id, draft.unit);
+          const cur = units.find((x) => x.id === draft.unit) || units[0];
+          return [
+            el("p", { class: "field-label" }, u.unit),
+            units.length > 1 ? chipRow(units, units.indexOf(cur), (i) => {
+              draft.unit = units[i].id;
+              if (draft.unit !== "kg") draft.qty = Math.max(1, Math.round(draft.qty));
+            }, draw) : el("p", { class: "unit-one" }, (state.lang === "ar" ? "بيتباع بال" : "Sold by the ") + tr(cur)),
+            el("p", { class: "unit-hint" }, feedsHint(id, cur.id)),
+          ];
+        })(),
 
         el("p", { class: "field-label" }, u.quantity),
         el("div", { class: "big-stepper" },
@@ -1506,7 +1543,7 @@
   // (refresh), and offers better alternatives for one slot (switch). Picks avoid dishes from
   // recent orders, lean towards favourites and healthy dishes, and avoid dishes the person
   // switched away from before. Everything is stored on the device only.
-  const PORTIONS = Object.assign({ kg: 4, plate: 3, piece: 4, feast: 0.55 }, MENU.portions || {});
+  const PORTIONS = Object.assign({ kg: 4, box: 3, tray: 6, bag: 4, loaf: 1, feast: 0.55 }, MENU.portions || {});
   const DAY_NAMES = {
     ar: ["السبت", "الأحد", "الاتنين", "التلات", "الأربع", "الخميس", "الجمعة"],
     en: ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
@@ -1593,7 +1630,7 @@
   function autoQty(id, c, people) {
     const { item, section, group } = byId.get(id);
     const unit = defaultUnit(item, section, group);
-    const units = (people * (c.kind === "feast" ? PORTIONS.feast : 1)) / (PORTIONS[unit] || 3);
+    const units = (people * (c.kind === "feast" ? PORTIONS.feast : 1)) / (unitInfo(id, unit).feeds || 3);
     if (unit === "kg") return Math.max(0.5, Math.ceil(units * 2 - 0.2) / 2);
     return Math.max(1, Math.ceil(units - 0.15));
   }
@@ -1627,7 +1664,7 @@
       const n = b.on.filter(Boolean).length;
       const unitOf = (id) => { const { item, section, group } = byId.get(id); return defaultUnit(item, section, group); };
       const stepOf = (id) => (unitOf(id) === "kg" ? 0.5 : 1);
-      const unitLabel = (id) => tr(KITCHEN_UNITS.find((x) => x.id === unitOf(id)) || KITCHEN_UNITS[0]);
+      const unitLabel = (id) => tr(unitInfo(id, unitOf(id)));
 
       const refresh = () => {
         const taken = new Set(b.picks.filter((_, i) => b.locks[i] || !b.on[i]));
@@ -1769,7 +1806,7 @@
       lock: "ثبّت الصنف ده", switch: "بدّل الصنف", better: "بدايل أحسن",
       modes: { auto: "حسب عدد الأفراد", manual: "أنا هحدد الكميات" },
       people: "كام فرد؟", guests: "كام ضيف؟",
-      autoHint: (p) => `الكميات تقريبية: الكيلو لـ ${p.kg} أفراد، والطبق لـ ${p.plate}. تقدر تعدّل أي صنف.`,
+      autoHint: (p) => `الكميات تقريبية: الكيلو لـ ${p.kg} أفراد، والعلبة لـ ${p.box}. تقدر تعدّل أي صنف.`,
       manualHint: "كل صنف بيبدأ بكمية واحدة، وانت تزوّد أو تقلّل.",
       notesTitle: "ملاحظات للشيف على كل الأصناف", notePh: "ملاحظة تانية (اختياري)",
       dayHint: "كل صنف بيتكتب جنبه اليوم بتاعه في رسالة الشيف.",
@@ -1780,7 +1817,7 @@
       lock: "Keep this dish", switch: "Switch dish", better: "Better options",
       modes: { auto: "By number of people", manual: "I'll set amounts" },
       people: "How many people?", guests: "How many guests?",
-      autoHint: (p) => `Amounts are estimates: a kilo feeds ${p.kg}, a plate feeds ${p.plate}. You can change any dish.`,
+      autoHint: (p) => `Amounts are estimates: a kilo feeds ${p.kg}, a box feeds ${p.box}. You can change any dish.`,
       manualHint: "Each dish starts at one; adjust as you like.",
       notesTitle: "Notes for the chef on every dish", notePh: "Another note (optional)",
       dayHint: "Each dish gets its day written next to it in the chef's message.",
@@ -2134,7 +2171,7 @@
   const qtyText = (id, people) => {
     const { item, section, group } = byId.get(id);
     const unit = defaultUnit(item, section, group);
-    return fmtQty(autoQty(id, { kind: "week" }, people)) + " " + tr(KITCHEN_UNITS.find((x) => x.id === unit) || KITCHEN_UNITS[0]);
+    return fmtQty(autoQty(id, { kind: "week" }, people)) + " " + tr(unitInfo(id, unit));
   };
   const goPlan = (setup, replace) => {
     const hash = setup ? "#plan-setup" : "#plan";

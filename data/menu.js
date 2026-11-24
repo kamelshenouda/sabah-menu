@@ -22,6 +22,9 @@ window.SABAH_MENU = {
        "healthy": true,
        "prefs": [
         "mar"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -34,6 +37,9 @@ window.SABAH_MENU = {
        "healthy": true,
        "prefs": [
         "mar"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -46,6 +52,9 @@ window.SABAH_MENU = {
        "healthy": true,
        "prefs": [
         "mar"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -58,6 +67,9 @@ window.SABAH_MENU = {
        "healthy": true,
        "prefs": [
         "mar"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -70,6 +82,9 @@ window.SABAH_MENU = {
        "healthy": true,
        "prefs": [
         "mar"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -82,6 +97,9 @@ window.SABAH_MENU = {
        "healthy": true,
        "prefs": [
         "mar"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -94,6 +112,9 @@ window.SABAH_MENU = {
        "healthy": true,
        "prefs": [
         "mar"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -106,6 +127,9 @@ window.SABAH_MENU = {
        "healthy": true,
        "prefs": [
         "mar"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -117,6 +141,9 @@ window.SABAH_MENU = {
        "ready": "cook",
        "prefs": [
         "mar"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -129,6 +156,9 @@ window.SABAH_MENU = {
        "healthy": true,
        "prefs": [
         "mar"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -141,6 +171,10 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
+       ],
+       "units": [
+        "kg",
+        "box"
        ]
       },
       {
@@ -153,6 +187,10 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
+       ],
+       "units": [
+        "kg",
+        "box"
        ]
       },
       {
@@ -164,6 +202,9 @@ window.SABAH_MENU = {
        "ready": "cook",
        "prefs": [
         "mar"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -175,6 +216,10 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "kg",
+        "box"
        ]
       },
       {
@@ -186,7 +231,16 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
-       ]
+       ],
+       "units": [
+        "piece",
+        "kg"
+       ],
+       "piece": {
+        "ar": "فرخة",
+        "en": "whole chicken",
+        "feeds": 4
+       }
       },
       {
        "id": "k16",
@@ -197,6 +251,10 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "tray",
+        "box"
        ]
       },
       {
@@ -208,6 +266,10 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "kg",
+        "box"
        ]
       },
       {
@@ -219,6 +281,9 @@ window.SABAH_MENU = {
        "ready": "cook",
        "prefs": [
         "mix"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -230,6 +295,9 @@ window.SABAH_MENU = {
        "ready": "cook",
        "prefs": [
         "mar"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -241,6 +309,9 @@ window.SABAH_MENU = {
        "ready": "cook",
        "prefs": [
         "mar"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -250,10 +321,17 @@ window.SABAH_MENU = {
        "img": "assets/kitchen/thumbs/k82.webp",
        "full": "assets/kitchen/full/k82.webp",
        "ready": "eat",
-       "unit": "piece",
        "prefs": [
         "fat"
-       ]
+       ],
+       "units": [
+        "piece"
+       ],
+       "piece": {
+        "ar": "فرخة",
+        "en": "whole chicken",
+        "feeds": 4
+       }
       },
       {
        "id": "k83",
@@ -265,6 +343,10 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
+       ],
+       "units": [
+        "kg",
+        "box"
        ]
       },
       {
@@ -276,6 +358,10 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "kg",
+        "box"
        ]
       },
       {
@@ -288,6 +374,10 @@ window.SABAH_MENU = {
        "healthy": true,
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "kg",
+        "box"
        ]
       },
       {
@@ -300,6 +390,10 @@ window.SABAH_MENU = {
        "healthy": true,
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "kg",
+        "box"
        ]
       },
       {
@@ -312,6 +406,10 @@ window.SABAH_MENU = {
        "healthy": true,
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "kg",
+        "box"
        ]
       },
       {
@@ -324,6 +422,10 @@ window.SABAH_MENU = {
        "healthy": true,
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "kg",
+        "box"
        ]
       },
       {
@@ -335,6 +437,10 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "tray",
+        "box"
        ]
       },
       {
@@ -344,10 +450,17 @@ window.SABAH_MENU = {
        "img": "assets/kitchen/thumbs/k111.webp",
        "full": "assets/kitchen/full/k111.webp",
        "ready": "eat",
-       "unit": "piece",
        "prefs": [
         "fat"
-       ]
+       ],
+       "units": [
+        "piece"
+       ],
+       "piece": {
+        "ar": "بطة",
+        "en": "duck",
+        "feeds": 4
+       }
       },
       {
        "id": "k112",
@@ -356,13 +469,19 @@ window.SABAH_MENU = {
        "img": "assets/kitchen/thumbs/k112.webp",
        "full": "assets/kitchen/full/k112.webp",
        "ready": "eat",
-       "unit": "piece",
        "prefs": [
         "fat"
-       ]
+       ],
+       "units": [
+        "piece"
+       ],
+       "piece": {
+        "ar": "حمامة",
+        "en": "pigeon",
+        "feeds": 1
+       }
       }
-     ],
-     "unit": "kg"
+     ]
     },
     {
      "id": "beef",
@@ -380,6 +499,9 @@ window.SABAH_MENU = {
        "prefs": [
         "mix",
         "mar"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -391,6 +513,9 @@ window.SABAH_MENU = {
        "ready": "cook",
        "prefs": [
         "mar"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -402,6 +527,10 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "kg",
+        "box"
        ]
       },
       {
@@ -413,6 +542,10 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "kg",
+        "box"
        ]
       },
       {
@@ -424,6 +557,10 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "kg",
+        "box"
        ]
       },
       {
@@ -435,6 +572,10 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "kg",
+        "box"
        ]
       },
       {
@@ -446,6 +587,9 @@ window.SABAH_MENU = {
        "ready": "cook",
        "prefs": [
         "mix"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -458,6 +602,10 @@ window.SABAH_MENU = {
        "prefs": [
         "fat",
         "mix"
+       ],
+       "units": [
+        "kg",
+        "box"
        ]
       },
       {
@@ -470,6 +618,10 @@ window.SABAH_MENU = {
        "prefs": [
         "fat",
         "mix"
+       ],
+       "units": [
+        "kg",
+        "box"
        ]
       },
       {
@@ -481,10 +633,12 @@ window.SABAH_MENU = {
        "ready": "cook",
        "prefs": [
         "mar"
+       ],
+       "units": [
+        "kg"
        ]
       }
-     ],
-     "unit": "kg"
+     ]
     },
     {
      "id": "fish",
@@ -501,6 +655,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -512,6 +669,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -523,6 +683,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -534,6 +697,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -545,6 +711,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "kg"
        ]
       },
       {
@@ -556,10 +725,12 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "kg"
        ]
       }
      ],
-     "unit": "kg",
      "healthy": true
     },
     {
@@ -574,7 +745,16 @@ window.SABAH_MENU = {
        "en": "Boiled eggs",
        "img": "assets/kitchen/thumbs/k24.webp",
        "full": "assets/kitchen/full/k24.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "piece",
+        "box"
+       ],
+       "piece": {
+        "ar": "بيضة",
+        "en": "egg",
+        "feeds": 0.5
+       }
       },
       {
        "id": "k25",
@@ -585,6 +765,9 @@ window.SABAH_MENU = {
        "ready": "cook",
        "prefs": [
         "mix"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -593,7 +776,10 @@ window.SABAH_MENU = {
        "en": "Greek yoghurt",
        "img": "assets/kitchen/thumbs/k26.webp",
        "full": "assets/kitchen/full/k26.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k27",
@@ -601,7 +787,10 @@ window.SABAH_MENU = {
        "en": "Low-fat labneh",
        "img": "assets/kitchen/thumbs/k27.webp",
        "full": "assets/kitchen/full/k27.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k86",
@@ -609,7 +798,10 @@ window.SABAH_MENU = {
        "en": "Whipped cottage cheese (areesh)",
        "img": "assets/kitchen/thumbs/k86.webp",
        "full": "assets/kitchen/full/k86.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k109",
@@ -617,7 +809,10 @@ window.SABAH_MENU = {
        "en": "Spicy seasoned cottage cheese (areesh)",
        "img": "assets/kitchen/thumbs/k109.webp",
        "full": "assets/kitchen/full/k109.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k165",
@@ -628,6 +823,9 @@ window.SABAH_MENU = {
        "ready": "cook",
        "prefs": [
         "mix"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -636,7 +834,10 @@ window.SABAH_MENU = {
        "en": "Spicy egg mix with green pepper",
        "ready": "cook",
        "img": "assets/kitchen/thumbs/k170.webp",
-       "full": "assets/kitchen/full/k170.webp"
+       "full": "assets/kitchen/full/k170.webp",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k166",
@@ -644,10 +845,12 @@ window.SABAH_MENU = {
        "en": "Whipped cottage cheese with za'atar",
        "img": "assets/kitchen/thumbs/k166.webp",
        "full": "assets/kitchen/full/k166.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       }
      ],
-     "unit": "plate",
      "healthy": true
     },
     {
@@ -665,6 +868,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -676,6 +882,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -687,6 +896,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -698,6 +910,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -709,6 +924,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -720,6 +938,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -731,10 +952,12 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       }
      ],
-     "unit": "plate",
      "healthy": true
     },
     {
@@ -752,6 +975,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -763,6 +989,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -774,6 +1003,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -785,6 +1017,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -796,6 +1031,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -808,6 +1046,9 @@ window.SABAH_MENU = {
        "healthy": true,
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -819,6 +1060,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -830,6 +1074,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -841,6 +1088,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -853,6 +1103,10 @@ window.SABAH_MENU = {
        "healthy": true,
        "prefs": [
         "mar"
+       ],
+       "units": [
+        "kg",
+        "box"
        ]
       },
       {
@@ -864,6 +1118,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -876,6 +1133,9 @@ window.SABAH_MENU = {
        "healthy": true,
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -888,6 +1148,9 @@ window.SABAH_MENU = {
        "healthy": true,
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -900,6 +1163,10 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
+       ],
+       "units": [
+        "tray",
+        "box"
        ]
       },
       {
@@ -911,6 +1178,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -922,6 +1192,10 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "tray",
+        "box"
        ]
       },
       {
@@ -934,6 +1208,9 @@ window.SABAH_MENU = {
        "healthy": true,
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -945,6 +1222,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -956,6 +1236,10 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "tray",
+        "box"
        ]
       },
       {
@@ -967,10 +1251,12 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       }
-     ],
-     "unit": "plate"
+     ]
     },
     {
      "id": "salads",
@@ -984,7 +1270,10 @@ window.SABAH_MENU = {
        "en": "Beetroot salad – diet sugar",
        "img": "assets/kitchen/thumbs/k45.webp",
        "full": "assets/kitchen/full/k45.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k46",
@@ -992,7 +1281,10 @@ window.SABAH_MENU = {
        "en": "Rocket salad – healthy dressing",
        "img": "assets/kitchen/thumbs/k46.webp",
        "full": "assets/kitchen/full/k46.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k47",
@@ -1000,7 +1292,10 @@ window.SABAH_MENU = {
        "en": "Caesar salad",
        "img": "assets/kitchen/thumbs/k47.webp",
        "full": "assets/kitchen/full/k47.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k475",
@@ -1008,7 +1303,10 @@ window.SABAH_MENU = {
        "en": "Tuna salad",
        "img": "assets/kitchen/thumbs/k475.webp",
        "full": "assets/kitchen/full/k475.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k98",
@@ -1016,7 +1314,10 @@ window.SABAH_MENU = {
        "en": "Chicken Caesar salad",
        "img": "assets/kitchen/thumbs/k98.webp",
        "full": "assets/kitchen/full/k98.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k48",
@@ -1024,7 +1325,10 @@ window.SABAH_MENU = {
        "en": "Cucumber",
        "img": "assets/kitchen/thumbs/k48.webp",
        "full": "assets/kitchen/full/k48.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k49",
@@ -1032,7 +1336,10 @@ window.SABAH_MENU = {
        "en": "Lettuce",
        "img": "assets/kitchen/thumbs/k49.webp",
        "full": "assets/kitchen/full/k49.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k50",
@@ -1040,7 +1347,10 @@ window.SABAH_MENU = {
        "en": "Tomatoes",
        "img": "assets/kitchen/thumbs/k50.webp",
        "full": "assets/kitchen/full/k50.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k51",
@@ -1048,7 +1358,10 @@ window.SABAH_MENU = {
        "en": "Yellow peppers",
        "img": "assets/kitchen/thumbs/k51.webp",
        "full": "assets/kitchen/full/k51.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k52",
@@ -1056,7 +1369,10 @@ window.SABAH_MENU = {
        "en": "Red peppers",
        "img": "assets/kitchen/thumbs/k52.webp",
        "full": "assets/kitchen/full/k52.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k53",
@@ -1064,7 +1380,10 @@ window.SABAH_MENU = {
        "en": "Carrots",
        "img": "assets/kitchen/thumbs/k53.webp",
        "full": "assets/kitchen/full/k53.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k54",
@@ -1072,10 +1391,12 @@ window.SABAH_MENU = {
        "en": "Cauliflower",
        "img": "assets/kitchen/thumbs/k54.webp",
        "full": "assets/kitchen/full/k54.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       }
      ],
-     "unit": "plate",
      "healthy": true
     },
     {
@@ -1090,7 +1411,10 @@ window.SABAH_MENU = {
        "en": "Freekeh with mushrooms, liver & onion",
        "img": "assets/kitchen/thumbs/k55.webp",
        "full": "assets/kitchen/full/k55.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k56",
@@ -1098,7 +1422,10 @@ window.SABAH_MENU = {
        "en": "Freekeh with mushrooms & onion",
        "img": "assets/kitchen/thumbs/k56.webp",
        "full": "assets/kitchen/full/k56.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k57",
@@ -1106,7 +1433,10 @@ window.SABAH_MENU = {
        "en": "Quinoa",
        "img": "assets/kitchen/thumbs/k57.webp",
        "full": "assets/kitchen/full/k57.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k58",
@@ -1114,7 +1444,10 @@ window.SABAH_MENU = {
        "en": "Whole-wheat pasta",
        "img": "assets/kitchen/thumbs/k58.webp",
        "full": "assets/kitchen/full/k58.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k59",
@@ -1123,9 +1456,12 @@ window.SABAH_MENU = {
        "img": "assets/kitchen/thumbs/k59.webp",
        "full": "assets/kitchen/full/k59.webp",
        "ready": "eat",
-       "unit": "piece",
        "prefs": [
         "flour"
+       ],
+       "units": [
+        "loaf",
+        "bag"
        ]
       },
       {
@@ -1135,7 +1471,10 @@ window.SABAH_MENU = {
        "img": "assets/kitchen/thumbs/k60.webp",
        "full": "assets/kitchen/full/k60.webp",
        "ready": "eat",
-       "unit": "piece"
+       "units": [
+        "loaf",
+        "bag"
+       ]
       },
       {
        "id": "k87",
@@ -1144,9 +1483,11 @@ window.SABAH_MENU = {
        "img": "assets/kitchen/thumbs/k87.webp",
        "full": "assets/kitchen/full/k87.webp",
        "ready": "eat",
-       "unit": "piece",
        "prefs": [
         "flour"
+       ],
+       "units": [
+        "bag"
        ]
       },
       {
@@ -1156,9 +1497,11 @@ window.SABAH_MENU = {
        "img": "assets/kitchen/thumbs/k88.webp",
        "full": "assets/kitchen/full/k88.webp",
        "ready": "eat",
-       "unit": "piece",
        "prefs": [
         "flour"
+       ],
+       "units": [
+        "bag"
        ]
       },
       {
@@ -1168,9 +1511,11 @@ window.SABAH_MENU = {
        "img": "assets/kitchen/thumbs/k105.webp",
        "full": "assets/kitchen/full/k105.webp",
        "ready": "eat",
-       "unit": "piece",
        "prefs": [
         "flour"
+       ],
+       "units": [
+        "bag"
        ]
       },
       {
@@ -1180,9 +1525,11 @@ window.SABAH_MENU = {
        "img": "assets/kitchen/thumbs/k106.webp",
        "full": "assets/kitchen/full/k106.webp",
        "ready": "eat",
-       "unit": "piece",
        "prefs": [
         "flour"
+       ],
+       "units": [
+        "bag"
        ]
       },
       {
@@ -1192,10 +1539,11 @@ window.SABAH_MENU = {
        "img": "assets/kitchen/thumbs/k107.webp",
        "full": "assets/kitchen/full/k107.webp",
        "ready": "eat",
-       "unit": "piece"
+       "units": [
+        "bag"
+       ]
       }
      ],
-     "unit": "plate",
      "healthy": true
     },
     {
@@ -1210,7 +1558,10 @@ window.SABAH_MENU = {
        "en": "Bananas",
        "img": "assets/kitchen/thumbs/k61.webp",
        "full": "assets/kitchen/full/k61.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "kg"
+       ]
       },
       {
        "id": "k62",
@@ -1218,7 +1569,10 @@ window.SABAH_MENU = {
        "en": "Yellow apples",
        "img": "assets/kitchen/thumbs/k62.webp",
        "full": "assets/kitchen/full/k62.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "kg"
+       ]
       },
       {
        "id": "k63",
@@ -1226,7 +1580,10 @@ window.SABAH_MENU = {
        "en": "Guava",
        "img": "assets/kitchen/thumbs/k63.webp",
        "full": "assets/kitchen/full/k63.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "kg"
+       ]
       },
       {
        "id": "k64",
@@ -1234,7 +1591,10 @@ window.SABAH_MENU = {
        "en": "Strawberries",
        "img": "assets/kitchen/thumbs/k64.webp",
        "full": "assets/kitchen/full/k64.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "kg"
+       ]
       },
       {
        "id": "k65",
@@ -1242,7 +1602,16 @@ window.SABAH_MENU = {
        "en": "Cantaloupe",
        "img": "assets/kitchen/thumbs/k65.webp",
        "full": "assets/kitchen/full/k65.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "piece",
+        "kg"
+       ],
+       "piece": {
+        "ar": "كانتالوب",
+        "en": "melon",
+        "feeds": 4
+       }
       },
       {
        "id": "k66",
@@ -1250,7 +1619,10 @@ window.SABAH_MENU = {
        "en": "Oranges",
        "img": "assets/kitchen/thumbs/k66.webp",
        "full": "assets/kitchen/full/k66.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "kg"
+       ]
       },
       {
        "id": "k67",
@@ -1258,7 +1630,10 @@ window.SABAH_MENU = {
        "en": "Lemons",
        "img": "assets/kitchen/thumbs/k67.webp",
        "full": "assets/kitchen/full/k67.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "kg"
+       ]
       },
       {
        "id": "k68",
@@ -1266,7 +1641,10 @@ window.SABAH_MENU = {
        "en": "Kiwi",
        "img": "assets/kitchen/thumbs/k68.webp",
        "full": "assets/kitchen/full/k68.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "kg"
+       ]
       },
       {
        "id": "k92",
@@ -1274,7 +1652,10 @@ window.SABAH_MENU = {
        "en": "Peaches",
        "img": "assets/kitchen/thumbs/k92.webp",
        "full": "assets/kitchen/full/k92.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "kg"
+       ]
       },
       {
        "id": "k93",
@@ -1282,7 +1663,10 @@ window.SABAH_MENU = {
        "en": "Black grapes",
        "img": "assets/kitchen/thumbs/k93.webp",
        "full": "assets/kitchen/full/k93.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "kg"
+       ]
       },
       {
        "id": "k94",
@@ -1290,7 +1674,10 @@ window.SABAH_MENU = {
        "en": "White grapes",
        "img": "assets/kitchen/thumbs/k94.webp",
        "full": "assets/kitchen/full/k94.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "kg"
+       ]
       },
       {
        "id": "k95",
@@ -1298,7 +1685,16 @@ window.SABAH_MENU = {
        "en": "Honeydew melon",
        "img": "assets/kitchen/thumbs/k95.webp",
        "full": "assets/kitchen/full/k95.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "piece",
+        "kg"
+       ],
+       "piece": {
+        "ar": "شمامة",
+        "en": "melon",
+        "feeds": 4
+       }
       },
       {
        "id": "k96",
@@ -1306,7 +1702,16 @@ window.SABAH_MENU = {
        "en": "Watermelon",
        "img": "assets/kitchen/thumbs/k96.webp",
        "full": "assets/kitchen/full/k96.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "piece",
+        "kg"
+       ],
+       "piece": {
+        "ar": "بطيخة",
+        "en": "watermelon",
+        "feeds": 8
+       }
       },
       {
        "id": "k161",
@@ -1314,10 +1719,12 @@ window.SABAH_MENU = {
        "en": "Pomegranate",
        "img": "assets/kitchen/thumbs/k161.webp",
        "full": "assets/kitchen/full/k161.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "kg"
+       ]
       }
      ],
-     "unit": "kg",
      "healthy": true
     },
     {
@@ -1332,7 +1739,11 @@ window.SABAH_MENU = {
        "en": "Roasted sweet potato",
        "img": "assets/kitchen/thumbs/k69.webp",
        "full": "assets/kitchen/full/k69.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "kg",
+        "box"
+       ]
       },
       {
        "id": "k70",
@@ -1340,7 +1751,15 @@ window.SABAH_MENU = {
        "en": "Oat cake with mashed carrot & raw cacao",
        "img": "assets/kitchen/thumbs/k70.webp",
        "full": "assets/kitchen/full/k70.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "piece"
+       ],
+       "piece": {
+        "ar": "كيكة",
+        "en": "cake",
+        "feeds": 6
+       }
       },
       {
        "id": "k71",
@@ -1348,7 +1767,15 @@ window.SABAH_MENU = {
        "en": "Oat cake with mashed banana",
        "img": "assets/kitchen/thumbs/k71.webp",
        "full": "assets/kitchen/full/k71.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "piece"
+       ],
+       "piece": {
+        "ar": "كيكة",
+        "en": "cake",
+        "feeds": 6
+       }
       },
       {
        "id": "k72",
@@ -1356,7 +1783,15 @@ window.SABAH_MENU = {
        "en": "Oat cake with mashed apple",
        "img": "assets/kitchen/thumbs/k72.webp",
        "full": "assets/kitchen/full/k72.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "piece"
+       ],
+       "piece": {
+        "ar": "كيكة",
+        "en": "cake",
+        "feeds": 6
+       }
       },
       {
        "id": "k73",
@@ -1364,7 +1799,15 @@ window.SABAH_MENU = {
        "en": "Oat cake with mashed carrot",
        "img": "assets/kitchen/thumbs/k73.webp",
        "full": "assets/kitchen/full/k73.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "piece"
+       ],
+       "piece": {
+        "ar": "كيكة",
+        "en": "cake",
+        "feeds": 6
+       }
       },
       {
        "id": "k74",
@@ -1372,7 +1815,10 @@ window.SABAH_MENU = {
        "en": "Shaped oat cakes with mashed banana",
        "img": "assets/kitchen/thumbs/k74.webp",
        "full": "assets/kitchen/full/k74.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k75",
@@ -1380,7 +1826,10 @@ window.SABAH_MENU = {
        "en": "Shaped oat cakes with mashed apple",
        "img": "assets/kitchen/thumbs/k75.webp",
        "full": "assets/kitchen/full/k75.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k76",
@@ -1388,7 +1837,10 @@ window.SABAH_MENU = {
        "en": "Shaped oat cakes with mashed carrot",
        "img": "assets/kitchen/thumbs/k76.webp",
        "full": "assets/kitchen/full/k76.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k77",
@@ -1396,7 +1848,10 @@ window.SABAH_MENU = {
        "en": "Oat pancakes with mashed banana",
        "img": "assets/kitchen/thumbs/k77.webp",
        "full": "assets/kitchen/full/k77.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k78",
@@ -1404,7 +1859,10 @@ window.SABAH_MENU = {
        "en": "Oat pancakes with mashed apple",
        "img": "assets/kitchen/thumbs/k78.webp",
        "full": "assets/kitchen/full/k78.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k79",
@@ -1412,7 +1870,10 @@ window.SABAH_MENU = {
        "en": "Oat pancakes with mashed carrot",
        "img": "assets/kitchen/thumbs/k79.webp",
        "full": "assets/kitchen/full/k79.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k108",
@@ -1420,7 +1881,10 @@ window.SABAH_MENU = {
        "en": "Thin cinnamon & banana pancakes",
        "img": "assets/kitchen/thumbs/k108.webp",
        "full": "assets/kitchen/full/k108.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k168",
@@ -1428,10 +1892,17 @@ window.SABAH_MENU = {
        "en": "Whole-grain carrot cake",
        "img": "assets/kitchen/thumbs/k168.webp",
        "full": "assets/kitchen/full/k168.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "piece"
+       ],
+       "piece": {
+        "ar": "كيكة",
+        "en": "cake",
+        "feeds": 6
+       }
       }
      ],
-     "unit": "piece",
      "healthy": true
     },
     {
@@ -1450,7 +1921,16 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
-       ]
+       ],
+       "units": [
+        "tray",
+        "piece"
+       ],
+       "piece": {
+        "ar": "قطعة",
+        "en": "piece",
+        "feeds": 1
+       }
       },
       {
        "id": "k121",
@@ -1462,7 +1942,16 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
-       ]
+       ],
+       "units": [
+        "tray",
+        "piece"
+       ],
+       "piece": {
+        "ar": "قطعة",
+        "en": "piece",
+        "feeds": 1
+       }
       },
       {
        "id": "k122",
@@ -1474,7 +1963,16 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
-       ]
+       ],
+       "units": [
+        "tray",
+        "piece"
+       ],
+       "piece": {
+        "ar": "قطعة",
+        "en": "piece",
+        "feeds": 1
+       }
       },
       {
        "id": "k123",
@@ -1486,7 +1984,16 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
-       ]
+       ],
+       "units": [
+        "tray",
+        "piece"
+       ],
+       "piece": {
+        "ar": "قطعة",
+        "en": "piece",
+        "feeds": 1
+       }
       },
       {
        "id": "k124",
@@ -1498,7 +2005,16 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
-       ]
+       ],
+       "units": [
+        "piece",
+        "box"
+       ],
+       "piece": {
+        "ar": "قطعة",
+        "en": "piece",
+        "feeds": 0.34
+       }
       },
       {
        "id": "k125",
@@ -1510,7 +2026,16 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
-       ]
+       ],
+       "units": [
+        "piece",
+        "box"
+       ],
+       "piece": {
+        "ar": "قطعة",
+        "en": "piece",
+        "feeds": 0.34
+       }
       },
       {
        "id": "k126",
@@ -1522,7 +2047,16 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
-       ]
+       ],
+       "units": [
+        "piece",
+        "box"
+       ],
+       "piece": {
+        "ar": "قطعة",
+        "en": "piece",
+        "feeds": 0.34
+       }
       },
       {
        "id": "k127",
@@ -1534,7 +2068,16 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
-       ]
+       ],
+       "units": [
+        "piece",
+        "box"
+       ],
+       "piece": {
+        "ar": "قطعة",
+        "en": "piece",
+        "feeds": 0.34
+       }
       },
       {
        "id": "k128",
@@ -1546,7 +2089,16 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
-       ]
+       ],
+       "units": [
+        "piece",
+        "box"
+       ],
+       "piece": {
+        "ar": "قطعة",
+        "en": "piece",
+        "feeds": 0.34
+       }
       },
       {
        "id": "k129",
@@ -1558,10 +2110,17 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
-       ]
+       ],
+       "units": [
+        "piece"
+       ],
+       "piece": {
+        "ar": "رغيف",
+        "en": "loaf",
+        "feeds": 1
+       }
       }
-     ],
-     "unit": "piece"
+     ]
     },
     {
      "id": "rice-pasta",
@@ -1578,6 +2137,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -1589,6 +2151,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -1600,6 +2165,10 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "tray",
+        "box"
        ]
       },
       {
@@ -1612,6 +2181,10 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
+       ],
+       "units": [
+        "tray",
+        "box"
        ]
       },
       {
@@ -1624,6 +2197,10 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
+       ],
+       "units": [
+        "tray",
+        "box"
        ]
       },
       {
@@ -1635,6 +2212,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -1646,6 +2226,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -1657,10 +2240,12 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       }
-     ],
-     "unit": "plate"
+     ]
     },
     {
      "id": "egyptian",
@@ -1677,6 +2262,10 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "kg",
+        "box"
        ]
       },
       {
@@ -1688,6 +2277,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -1699,10 +2291,13 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "tray",
+        "box"
        ]
       }
-     ],
-     "unit": "plate"
+     ]
     },
     {
      "id": "soup",
@@ -1719,6 +2314,9 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       },
       {
@@ -1730,10 +2328,12 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "fat"
+       ],
+       "units": [
+        "box"
        ]
       }
      ],
-     "unit": "plate",
      "healthy": true
     },
     {
@@ -1752,6 +2352,10 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
+       ],
+       "units": [
+        "tray",
+        "box"
        ]
       },
       {
@@ -1764,6 +2368,10 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
+       ],
+       "units": [
+        "tray",
+        "box"
        ]
       },
       {
@@ -1772,7 +2380,16 @@ window.SABAH_MENU = {
        "en": "Rice pudding",
        "img": "assets/kitchen/thumbs/k151.webp",
        "full": "assets/kitchen/full/k151.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "piece",
+        "box"
+       ],
+       "piece": {
+        "ar": "كوباية",
+        "en": "cup",
+        "feeds": 1
+       }
       },
       {
        "id": "k152",
@@ -1784,6 +2401,10 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
+       ],
+       "units": [
+        "tray",
+        "box"
        ]
       },
       {
@@ -1792,7 +2413,16 @@ window.SABAH_MENU = {
        "en": "Crème caramel",
        "img": "assets/kitchen/thumbs/k153.webp",
        "full": "assets/kitchen/full/k153.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "piece",
+        "box"
+       ],
+       "piece": {
+        "ar": "كوباية",
+        "en": "cup",
+        "feeds": 1
+       }
       },
       {
        "id": "k154",
@@ -1800,7 +2430,11 @@ window.SABAH_MENU = {
        "en": "Sweet potato with cream & caramel",
        "img": "assets/kitchen/thumbs/k154.webp",
        "full": "assets/kitchen/full/k154.webp",
-       "ready": "eat"
+       "ready": "eat",
+       "units": [
+        "tray",
+        "box"
+       ]
       },
       {
        "id": "k155",
@@ -1811,6 +2445,10 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "flour"
+       ],
+       "units": [
+        "tray",
+        "box"
        ]
       },
       {
@@ -1823,6 +2461,10 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
+       ],
+       "units": [
+        "tray",
+        "box"
        ]
       },
       {
@@ -1835,6 +2477,10 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
+       ],
+       "units": [
+        "tray",
+        "box"
        ]
       },
       {
@@ -1846,7 +2492,15 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "flour"
-       ]
+       ],
+       "units": [
+        "piece"
+       ],
+       "piece": {
+        "ar": "كيكة",
+        "en": "cake",
+        "feeds": 6
+       }
       },
       {
        "id": "k159",
@@ -1858,6 +2512,10 @@ window.SABAH_MENU = {
        "prefs": [
         "flour",
         "fat"
+       ],
+       "units": [
+        "tray",
+        "box"
        ]
       },
       {
@@ -1869,10 +2527,12 @@ window.SABAH_MENU = {
        "ready": "eat",
        "prefs": [
         "flour"
+       ],
+       "units": [
+        "box"
        ]
       }
-     ],
-     "unit": "plate"
+     ]
     },
     {
      "id": "other",
@@ -1887,7 +2547,9 @@ window.SABAH_MENU = {
        "img": "assets/kitchen/thumbs/k89.webp",
        "full": "assets/kitchen/full/k89.webp",
        "ready": "eat",
-       "unit": "plate"
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k200",
@@ -1896,7 +2558,9 @@ window.SABAH_MENU = {
        "img": "assets/kitchen/thumbs/k200.webp",
        "full": "assets/kitchen/full/k200.webp",
        "ready": "eat",
-       "unit": "plate"
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k201",
@@ -1905,7 +2569,9 @@ window.SABAH_MENU = {
        "img": "assets/kitchen/thumbs/k201.webp",
        "full": "assets/kitchen/full/k201.webp",
        "ready": "eat",
-       "unit": "plate"
+       "units": [
+        "box"
+       ]
       },
       {
        "id": "k162",
@@ -1914,7 +2580,15 @@ window.SABAH_MENU = {
        "img": "assets/kitchen/thumbs/k162.webp",
        "full": "assets/kitchen/full/k162.webp",
        "ready": "eat",
-       "healthy": true
+       "healthy": true,
+       "units": [
+        "piece"
+       ],
+       "piece": {
+        "ar": "إزازة",
+        "en": "bottle",
+        "feeds": 3
+       }
       },
       {
        "id": "k163",
@@ -1923,7 +2597,15 @@ window.SABAH_MENU = {
        "img": "assets/kitchen/thumbs/k163.webp",
        "full": "assets/kitchen/full/k163.webp",
        "ready": "eat",
-       "healthy": true
+       "healthy": true,
+       "units": [
+        "piece"
+       ],
+       "piece": {
+        "ar": "إزازة",
+        "en": "bottle",
+        "feeds": 3
+       }
       },
       {
        "id": "k169",
@@ -1932,10 +2614,17 @@ window.SABAH_MENU = {
        "img": "assets/kitchen/thumbs/k169.webp",
        "full": "assets/kitchen/full/k169.webp",
        "ready": "eat",
-       "healthy": true
+       "healthy": true,
+       "units": [
+        "piece"
+       ],
+       "piece": {
+        "ar": "إزازة",
+        "en": "bottle",
+        "feeds": 3
+       }
       }
-     ],
-     "unit": "piece"
+     ]
     }
    ]
   },
@@ -4880,9 +5569,11 @@ window.SABAH_MENU = {
  ],
  "portions": {
   "kg": 4,
-  "plate": 3,
-  "piece": 4,
-  "feast": 0.55
+  "feast": 0.55,
+  "box": 3,
+  "tray": 6,
+  "bag": 4,
+  "loaf": 1
  },
  "categories": [
   {

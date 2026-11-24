@@ -1113,3 +1113,5 @@ html[lang="en"] .pday-dish { font-family: var(--f-head); font-weight: 600; font-
 html[lang="en"] .cook-card-label { font-weight: 600; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; }
 .cook-card .cook-tag { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.18); color: #fff; }
 .cook-card-sub { font-size: 13px; color: #9db3b4; }
+.unit-one { margin: 0; font-weight: 700; font-size: 15px; }
+.unit-hint { margin: 6px 0 0; font-family: var(--f-label); font-size: 13px; color: var(--fg-2); }
