@@ -484,7 +484,9 @@ window.SABAH_MENU = {
        "id": "k170",
        "ar": "خلطة بيض سبايسي بالفلفل الأخضر",
        "en": "Spicy egg mix with green pepper",
-       "ready": "cook"
+       "ready": "cook",
+       "img": "assets/kitchen/thumbs/k170.webp",
+       "full": "assets/kitchen/full/k170.webp"
       },
       {
        "id": "k166",
