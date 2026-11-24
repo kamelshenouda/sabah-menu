@@ -481,6 +481,12 @@ window.SABAH_MENU = {
        "ready": "cook"
       },
       {
+       "id": "k170",
+       "ar": "خلطة بيض سبايسي بالفلفل الأخضر",
+       "en": "Spicy egg mix with green pepper",
+       "ready": "cook"
+      },
+      {
        "id": "k166",
        "ar": "جبنة قريش مضروبة بالزعتر",
        "en": "Whipped cottage cheese with za'atar",
@@ -4518,60 +4524,89 @@ window.SABAH_MENU = {
  "categories": [
   {
    "id": "chicken",
-   "ar": "فراخ",
-   "en": "Chicken",
+   "ar": "فراخ وطيور",
+   "en": "Chicken & poultry",
    "cover": "k14",
    "sections": [
     "chicken"
    ]
   },
   {
-   "id": "meat-fish",
-   "ar": "لحمة وسمك",
-   "en": "Meat & fish",
+   "id": "meat",
+   "ar": "لحمة وأكلات مصرية",
+   "en": "Meat & Egyptian classics",
    "cover": "k91",
    "sections": [
     "beef",
+    "egyptian"
+   ]
+  },
+  {
+   "id": "fish",
+   "ar": "سمك وجمبري",
+   "en": "Fish & seafood",
+   "cover": "k20",
+   "sections": [
     "fish"
    ]
   },
   {
-   "id": "stews",
-   "ar": "طبيخ وأكلات مصرية",
-   "en": "Stews & Egyptian classics",
+   "id": "veg",
+   "ar": "خضار وطبيخ وشوربة",
+   "en": "Vegetables, stews & soup",
    "cover": "k143",
    "sections": [
     "vegetables",
-    "legumes",
-    "egyptian",
     "soup"
+   ],
+   "exclude": [
+    "k164"
+   ]
+  },
+  {
+   "id": "eggs-legumes",
+   "ar": "بيض وألبان وبقول",
+   "en": "Eggs, dairy & legumes",
+   "cover": "k31",
+   "sections": [
+    "eggs-dairy",
+    "legumes"
    ]
   },
   {
    "id": "carbs",
-   "ar": "رز ومكرونة ومعجنات",
-   "en": "Rice, pasta & pastries",
+   "ar": "رز ومكرونة وحبوب ومخبوزات",
+   "en": "Rice, pasta, grains & bakery",
    "cover": "k133",
    "sections": [
     "rice-pasta",
-    "pastries",
-    "whole-grains"
+    "whole-grains",
+    "pastries"
    ]
   },
   {
    "id": "salads",
-   "ar": "سلطات وفطار",
-   "en": "Salads & breakfast",
+   "ar": "سلطات ومخللات وصوصات",
+   "en": "Salads, pickles & sauces",
    "cover": "k46",
    "sections": [
-    "salads",
-    "eggs-dairy"
-   ]
+    "salads"
+   ],
+   "include": [
+    "k201",
+    "k164",
+    "k89",
+    "k200"
+   ],
+   "includeLabel": {
+    "ar": "مخللات وصوصات",
+    "en": "Pickles & sauces"
+   }
   },
   {
    "id": "sweets",
    "ar": "حلويات",
-   "en": "Desserts",
+   "en": "Desserts & sweets",
    "cover": "k150",
    "sections": [
     "desserts",
@@ -4580,13 +4615,21 @@ window.SABAH_MENU = {
   },
   {
    "id": "fruit",
-   "ar": "فاكهة ومشروبات وإضافات",
-   "en": "Fruit, drinks & extras",
+   "ar": "فاكهة ومشروبات",
+   "en": "Fruit & drinks",
    "cover": "k64",
    "sections": [
-    "fruit",
-    "other"
-   ]
+    "fruit"
+   ],
+   "include": [
+    "k162",
+    "k163",
+    "k169"
+   ],
+   "includeLabel": {
+    "ar": "مشروبات",
+    "en": "Drinks"
+   }
   },
   {
    "id": "butcherista",
@@ -4603,7 +4646,8 @@ window.SABAH_MENU = {
     "diet-plates",
     "appetizers",
     "add-ons"
-   ]
+   ],
+   "keepName": true
   }
  ],
  "families": [
@@ -4776,6 +4820,28 @@ window.SABAH_MENU = {
      "id": "k79",
      "ar": "جزر",
      "en": "Carrot"
+    }
+   ]
+  },
+  {
+   "id": "egg-mix",
+   "ar": "خلطة بيض",
+   "en": "Egg mix",
+   "members": [
+    {
+     "id": "k25",
+     "ar": "عادية",
+     "en": "Plain"
+    },
+    {
+     "id": "k165",
+     "ar": "بالبصل",
+     "en": "With onions"
+    },
+    {
+     "id": "k170",
+     "ar": "سبايسي بالفلفل الأخضر",
+     "en": "Spicy with green pepper"
     }
    ]
   }

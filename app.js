@@ -727,7 +727,7 @@
     { way: "week", words: ["اسبوع", "الاسبوع", "week", "weekly"] },
     { way: "cook", words: ["متبل", "متبله", "تتبيله", "ني", "marinated", "raw"] },
     { way: "eat", words: ["جاهز", "سريع", "مطبوخ", "ready", "quick", "cooked"] },
-    { cat: "salads", words: ["فطار", "فطور", "breakfast"] },
+    { cat: "eggs-legumes", words: ["فطار", "فطور", "بيض", "breakfast", "eggs"] },
     { cat: "sweets", words: ["حلو", "حلويات", "حلي", "dessert", "sweet"] },
   ].map((x) => ({ ...x, words: x.words.map(norm) }));
   function intentsFor(q) {
@@ -745,10 +745,21 @@
     store.set("sabah-searches", [q, ...recentSearches().filter((s) => s !== q)].slice(0, 5));
   }
 
-  const catItems = (c) => c.sections.flatMap((sid) => {
-    const hit = sectionById.get(sid);
-    return hit ? shownItems(hit.section).map((item) => ({ item, section: hit.section, group: hit.group })) : [];
-  });
+  // A category's dishes: its sections, minus `exclude`, plus `include` (dishes from other sections,
+  // shown under the category's `includeLabel` in its filters). `sub` is what the filters group by.
+  function catItems(c) {
+    const skip = new Set(c.exclude || []);
+    const out = c.sections.flatMap((sid) => {
+      const hit = sectionById.get(sid);
+      return hit ? shownItems(hit.section).filter((item) => !skip.has(item.id)).map((item) => ({ item, section: hit.section, group: hit.group, sub: hit.section })) : [];
+    });
+    const extra = { id: "more-" + c.id, ar: (c.includeLabel || {}).ar || "", en: (c.includeLabel || {}).en || "" };
+    (c.include || []).forEach((id) => {
+      const hit = byId.get(id);
+      if (hit && !hit.item.removed) out.push({ item: hit.item, section: hit.section, group: hit.group, sub: c.includeLabel ? extra : hit.section });
+    });
+    return out;
+  }
   function wayMatch(way, item, section) {
     if (way === "cook" || way === "eat") return readiness(item, section) === way;
     if (way === "healthy") return isHealthy(item, section);
@@ -894,10 +905,11 @@
   // A category: one row of filters (its sections, then ready / healthy / favourites), then the list.
   function renderCategory(c) {
     const u = ui();
-    let entries = c.ideas ? shownItems(IDEAS_SECTION).map((item) => ({ item, section: IDEAS_SECTION, group: IDEAS_GROUP })) : catItems(c);
-    const sections = [...new Set(entries.map((e) => e.section))];
+    let entries = c.ideas ? shownItems(IDEAS_SECTION).map((item) => ({ item, section: IDEAS_SECTION, group: IDEAS_GROUP, sub: IDEAS_SECTION })) : catItems(c);
+    const subs = [...new Map(entries.map((e) => [e.sub.id, e.sub])).values()];
+    const sections = subs;
     if (state.sub !== "all" && !sections.some((s) => s.id === state.sub)) state.sub = "all";
-    const pool = state.sub === "all" ? entries : entries.filter((e) => e.section.id === state.sub);
+    const pool = state.sub === "all" ? entries : entries.filter((e) => e.sub.id === state.sub);
     const has = (fn) => pool.some(({ item, section }) => fn(item, section));
     const toggles = [
       has((i, s) => readiness(i, s) === "cook") && has((i, s) => readiness(i, s) === "eat") ? ["cook", "flame"] : null,
@@ -915,7 +927,7 @@
     if (sections.length > 1) {
       chips.push(el("button", { type: "button", class: "fchip", "aria-pressed": String(state.sub === "all"), onclick: () => { state.sub = "all"; renderBrowse(); } }, u.all, el("b", null, entries.length)));
       sections.forEach((s) => chips.push(el("button", { type: "button", class: "fchip", "aria-pressed": String(state.sub === s.id), onclick: () => { state.sub = s.id; renderBrowse(); } },
-        tr(s), el("b", null, entries.filter((e) => e.section === s).length))));
+        tr(s), el("b", null, entries.filter((e) => e.sub.id === s.id).length))));
     }
     if (sections.length > 1 && toggles.length) chips.push(el("span", { class: "fsep", "aria-hidden": "true" }));
     toggles.forEach(([k, ic]) => chips.push(el("button", {
@@ -936,15 +948,23 @@
   function renderWay(way) {
     const u = ui();
     const blocks = CATEGORIES.map((c) => ({ c, entries: catItems(c).filter(({ item, section }) => wayMatch(way, item, section)) })).filter((b) => b.entries.length);
+    // Name each block by what it actually shows: the category name when all its parts are there,
+    // otherwise the names of the parts that are (so a block never promises dishes it doesn't list).
+    const blockName = (c, entries) => {
+      const allSubs = [...new Set(catItems(c).map((e) => e.sub.id))];
+      const present = [...new Map(entries.map((e) => [e.sub.id, e.sub])).values()];
+      if (c.keepName || present.length === allSubs.length) return tr(c);
+      return present.map(tr).join(" · ");
+    };
     const total = blocks.reduce((n, b) => n + b.entries.length, 0);
     return [
       wayNav(way),
       el("div", { class: "page-head" }, el("h1", { class: "page-title" }, wayLabel(way)), el("span", { class: "count" }, total)),
       el("p", { class: "page-sub" }, u.wayDesc[way]),
       el("nav", { class: "fbar cat-tabs" }, el("div", { class: "fbar-row" }, blocks.map(({ c, entries }) =>
-        el("button", { type: "button", class: "fchip", "data-for": c.id, onclick: () => jumpTo(c.id) }, tr(c), el("b", null, entries.length))))),
+        el("button", { type: "button", class: "fchip", "data-for": c.id, onclick: () => jumpTo(c.id) }, blockName(c, entries), el("b", null, entries.length))))),
       blocks.map(({ c, entries }) => el("section", { class: "way-block", id: "s-" + c.id, "data-section": c.id },
-        el("h2", { class: "way-block-title" }, tr(c)), dishList(entries))),
+        el("h2", { class: "way-block-title" }, blockName(c, entries)), dishList(entries))),
     ];
   }
 

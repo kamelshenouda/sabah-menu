@@ -21,8 +21,9 @@ landing page again from anywhere, and `#menu` links straight to the menu.
 The menu has three levels, so there is never much to choose from at once:
 
 - **Home:** the five ways to order (ready to cook, ready to eat, meals of the week, عزومات,
-  healthy) and eight photo categories (chicken, meat and fish, stews, rice and pastries, salads and
-  breakfast, desserts, fruit and drinks, Butcherista). Approved food ideas add a ninth tile.
+  healthy) and ten photo categories: chicken and poultry; meat and Egyptian classics; fish and
+  seafood; vegetables, stews and soup; eggs, dairy and legumes; rice, pasta, grains and bakery;
+  salads, pickles and sauces; desserts; fruit and drinks; Butcherista. Approved food ideas add a tile.
 - **A category or a way:** a compact list with one row of filters (the category's sections, then
   ready to cook / ready to eat / healthy / favourites where they apply). The ways list dishes
   from every category with a bar of categories that follows the scroll. Meals of the week and
@@ -35,7 +36,10 @@ heading, each still its own row, so nothing is hidden. After adding a dish, the 
 usually goes with it ("بيتطلب معاها"). Search understands words like صحي, للعزومة, أكل الأسبوع,
 فطار or حلويات and offers the matching list or bundles, as well as finding dishes by name.
 
-Categories and flavour families are set in `categories` and `families` in `data/menu.js`; the
+Categories and flavour families are set in `categories` and `families` in `data/menu.js`. A
+category lists whole sections, and can leave out dishes (`exclude`) or bring in dishes from other
+sections (`include`, shown under its `includeLabel` filter), so every dish sits in exactly one
+category with a name that fits it; the
 "goes well with" pairs and the search words are at the top of the Browse part of `app.js`.
 
 Then you review the order and send it as a WhatsApp message, or copy it.
