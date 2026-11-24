@@ -1675,8 +1675,8 @@ window.SABAH_MENU = {
        "id": "b3",
        "ar": "بيف سكالوب صحي",
        "en": "Healthy Beef Scallop",
-       "img": "assets/butcherista/thumbs/b4157d82-cd7e-4875-ae8e-5f2b9d92992b.webp",
-       "full": "assets/butcherista/full/b4157d82-cd7e-4875-ae8e-5f2b9d92992b.webp",
+       "img": "assets/kitchen/thumbs/b3.webp",
+       "full": "assets/kitchen/full/b3.webp",
        "sizes": [
         {
          "ar": "٤٠٠ جم",
