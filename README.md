@@ -53,7 +53,45 @@ The app works in Arabic and English and follows the phone's light or dark mode. 
 the Cool Teal mode of Kamel's design system (Cairo for Arabic; Sora, Outfit and Montserrat for English).
 The order, favourites and last order are saved on the device, so they are still there if the page is closed.
 
-Page addresses: `#welcome` (landing page), `#menu`, `#order`, `#ideas`, `#admin`.
+Page addresses: `#welcome` (landing page), `#menu`, `#order`, `#ideas`, `#admin`, `#plan`
+(the smart week) and `#plan-setup` (its questions).
+
+### Smart week (`#plan`)
+
+The smart week plans the coming week for one family. The first time, `#plan-setup` asks a few
+questions: how many days (5 = Sunday to Thursday, 6 = Saturday to Thursday, or 7), how many people
+(1 to 6, + for more), ready to cook, ready to eat or both, what goes in each day (a full meal of
+protein + rice, pasta or a tray + salad + dessert; protein only; or your own mix), the week's mood
+(tasty & varied, healthy or fasting), and, optionally, fasting days and a day with guests. People
+can then see the whole week or go day by day (one big card per day: yes, or something else). The
+answers are kept, so later weeks open straight on the result.
+
+`#plan` shows one row per day: the protein with its amount and why it was picked, the day's sides,
+a swap button (for the protein or any side, by tapping it) and a lock. "غيّر الأسبوع" refreshes
+every day that isn't locked, and one button adds the whole week to the order, each dish with its
+day in the note ("يوم الأحد"), and with the same dish on two days added once with both days.
+
+How it picks:
+
+- **Taste and rotation:** favourites come forward, nothing from the last sent order comes back the
+  next week, dishes not ordered for 3 weeks or more come back with a "رجعت بعد … أسابيع" tag,
+  dishes ordered very often step back, and a dish swapped away rests for 6 weeks.
+- **Balance:** one fish day (two in a healthy 6–7 day week), the rest split between chicken and
+  meat, never the same kind two days running. Sides rotate between rice with a different طبيخ,
+  a pasta and a tray (مكرونة بشاميل, كوسة بشاميل, مسقعة, رز معمر), never rice every day, and dishes
+  that already come with rice, freekeh or potatoes get no extra carb. Salads and desserts change
+  every day, and flavours of one dish (a family) appear once a week where possible.
+- **Calendar:** fasting days (and a fasting week) use only dishes in `fasting` in `data/menu.js`
+  (today fish, legumes, the صيامي desserts and the cut vegetables; add the kitchen's other fasting
+  dishes there). A guests day leans to dishes from the عزومات bundles. In Ramadan (read from the
+  phone's Islamic calendar) every day gets soup and a dessert for iftar. In summer healthy dishes
+  get a small lift.
+
+The menu home, the meals-of-the-week page and the landing page show a card for it: "خطط أسبوعك في
+دقيقة" before the first plan, then "أسبوعك الجاي جاهز" (with "النهارده يوم طلبك" on the usual order
+day, learned from when orders were sent). Once an order has been sent, "زي الأسبوع اللي فات"
+repeats it with up to three smart changes, each shown before and after so it can be kept as it
+was. A new plan is made after each sent order, or after a week. Everything stays on the phone.
 
 ## How to open it
 
@@ -119,16 +157,38 @@ A Butcherista item can also have a photo, sizes, options, a description and calo
 - To add a dish, copy one inside the right section, paste it below, and give it a new `id`
   that no other item uses.
 - Every item needs both `ar` and `en`.
-- Items in the Butcherista group are ordered in packs. Items in the Home Kitchen group are
-  ordered by kilo, plate/box, or piece/bag.
+- Items in the Butcherista group are ordered in packs. Each Home Kitchen dish is ordered only in
+  the units it is really sold in (see `units` below); its page shows how many people one unit
+  feeds, and a dish with one unit shows it as a line ("بيتباع بالكيلو") instead of a choice.
 
 Extra fields that shape the menu:
 
 | Field | Where | What it does |
 |---|---|---|
-| `unit` | section or dish | The unit a dish starts with when added: `"kg"`, `"plate"` or `"piece"`. A dish's own `unit` wins over its section's. Amounts go up by 0.5 for kilos and by 1 otherwise. |
+| `units` | dish | The units the dish is sold in, the first being the default: `"kg"` (كيلو), `"box"` (علبة), `"tray"` (صينية), `"bag"` (كيس), `"loaf"` (رغيف) or `"piece"`. Amounts go up by 0.5 for kilos and by 1 otherwise. Raw and marinated meat and chicken, fish and fruit are by the kilo; cooked meat and chicken by the kilo or box; stews, rice, salads and dips by the box; béchamel, mahshi, moussaka, kunafa and basbousa by the tray or box; bread by the loaf or bag. |
+| `piece` | dish | For a dish sold by the piece: its own word and how many people one feeds, e.g. `{ "ar": "فرخة", "en": "whole chicken", "feeds": 4 }`, `{ "ar": "بيضة", "en": "egg", "feeds": 0.5 }`. |
 | `ready` | section or dish | `"cook"` or `"eat"`. Shows the "ready to cook" / "ready to eat" tag and feeds those filters. A dish's own value wins. Butcherista sections with raw or frozen products are marked `"cook"`. |
 | `healthy` | section or dish | `true` puts the dish under the Healthy filter. |
+
+### Cooking preferences
+
+How the kitchen cooks for the house: الدقيق (أبيض / حبة كاملة), الدهون اللي بنطبخ بيها (زيت درة,
+زيت زيتون, سمنة بلدي, زبدة, زيت على زبدة, each with a one-line hint), كمية الدهون (قليلة خالص /
+متوسطة), الخلطة (عادي / سبايسي) and التتبيلة (خفيفة / متوسطة / قوية). Each starts on a default (أبيض, زيت درة,
+متوسطة, عادي, متوسطة) until the house picks another; on a dish's page, picking the house's choice
+again puts that dish back on the house preferences.
+
+- The order page shows a "هيتعمل كده" card with only the preferences that apply to the dishes in
+  the order; "غيّر" sets them for the house.
+- A dish's page shows what it will follow and "غيّر للصنف ده بس" to change just that dish
+  (remembered for next time); a changed choice shows in blue.
+- The chef's message starts with one "🧂 طريقة الطبخ للطلب كله" block listing the house choices that
+  apply to the order, and a dish that differs says so on its own line, e.g. "(الخلطة: سبايسي)".
+
+Which preferences a dish offers is its `prefs` list in `data/menu.js`: `flour`, `fat` (which also
+brings how much fat), `mix` and `mar`. They were tagged from the dish names (breaded, béchamel,
+pastries and desserts get flour; cooked dishes, pastries and syrupy desserts get fat; kofta and egg
+mixes get the mix; marinated dishes get the marinade); edit a dish's list to change it.
 
 ### Ready-made bundles
 
@@ -161,7 +221,8 @@ In the bundle sheet people can:
   up to three better options, each tagged with why: a favourite, healthier, not ordered lately,
   or something different.
 - Choose amounts **by number of people** or set them **by hand**. The estimates come from
-  `portions` in `data/menu.js`: how many people a kilo, a plate/box and a piece/bag feed, and
+  `portions` in `data/menu.js`: how many people a kilo, a box, a tray, a bag and a loaf feed (a piece uses the dish's own
+  `feeds`), and
   `feast`, the share of a normal portion each guest eats of every dish at a feast (several dishes,
   smaller helpings). Kilos round up to the nearest half.
 - Add notes for every dish (low salt, no onions, less oil, mildly spicy, or their own). In a week

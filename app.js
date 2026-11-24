@@ -235,11 +235,16 @@
   const HOME_HEALTHY = ["k46", "k20", "k71"];
 
   // Units for home-kitchen dishes; Butcherista items are ordered in packs of the chosen size.
-  const KITCHEN_UNITS = [
-    { id: "kg", ar: "كيلو", en: "kg" },
-    { id: "plate", ar: "طبق/علبة", en: "plate/box" },
-    { id: "piece", ar: "حبة/كيس/قطع", en: "piece/bag" },
-  ];
+  // Each dish lists the units it is sold in (`units` in data/menu.js, the first is the default);
+  // "piece" takes the dish's own word and how many people one feeds from its `piece`.
+  const UNIT_DEFS = {
+    kg: { ar: "كيلو", en: "kg" },
+    box: { ar: "علبة", en: "box" },
+    tray: { ar: "صينية", en: "tray" },
+    bag: { ar: "كيس", en: "bag" },
+    loaf: { ar: "رغيف", en: "loaf" },
+    piece: { ar: "قطعة", en: "piece" },
+  };
   const PACK_UNIT = { ar: "عبوة", en: "pack" };
 
   // Approved food ideas (from ideas.js and the Vercel helper) become a third menu group, filled in
@@ -359,7 +364,7 @@
   // The menu also has addresses for its inner pages: #menu-<category> and #way-<way>.
   function viewFromHash() {
     const h = location.hash.slice(1);
-    if (/^menu-[a-z0-9-]+$/.test(h) || /^way-[a-z]+$/.test(h)) return "browse";
+    if (/^menu-[a-z0-9-]+$/.test(h) || /^way-[a-z]+$/.test(h) || /^plan(-setup)?$/.test(h)) return "browse";
     const v = HASH_VIEWS[h];
     if ((v === "ideas" || v === "admin") && !window.SabahIdeas) return "browse";
     if (v) return v;
@@ -369,6 +374,7 @@
     const h = location.hash.slice(1);
     state.cat = h.startsWith("menu-") ? h.slice(5) : null;
     state.way = h.startsWith("way-") ? h.slice(4) : null;
+    state.plan = h === "plan" ? "week" : h === "plan-setup" ? "setup" : null;
   }
 
   // The last approved ideas list is kept on the device so the Ideas tab shows right away.
@@ -380,11 +386,12 @@
     view: "browse",
     cat: null,
     way: null,
+    plan: null,
     sub: "all",
     flags: new Set(),
     search: "",
     searchOpen: false,
-    cart: savedCart.filter((c) => byId.has(c.id)),
+    cart: savedCart.filter((c) => byId.has(c.id)).map((c) => (c.unit ? { ...c, unit: normUnit(c.id, c.unit) } : c)),
     favs: new Set((store.get("sabah-favs", []) || []).filter((id) => typeof id === "string")),
     // A note for the whole order (for example the date and time of a feast), sent at the end.
     cartNote: String(store.get("sabah-cart-note", "") || ""),
@@ -446,9 +453,34 @@
   }
 
   // ---------- Order entries ----------
-  function defaultUnit(item, section, group) {
-    if (group === IDEAS_GROUP) return "plate";
-    return item.unit || section.unit || "kg";
+  function unitIds(item) { return Array.isArray(item.units) && item.units.length ? item.units.filter((u) => UNIT_DEFS[u]) : ["box"]; }
+  function defaultUnit(item) { return unitIds(item)[0]; }
+  // A unit with the words to show and how many people one feeds.
+  function unitInfo(id, u) {
+    const hit = byId.get(id);
+    const item = hit ? hit.item : {};
+    const base = UNIT_DEFS[u] || UNIT_DEFS.box;
+    if (u === "piece" && item.piece) return { id: u, ar: item.piece.ar, en: item.piece.en, feeds: item.piece.feeds || 1 };
+    return { id: u, ar: base.ar, en: base.en, feeds: (MENU.portions || {})[u] || { kg: 4, box: 3, tray: 6, bag: 4, loaf: 1 }[u] || 1 };
+  }
+  const unitsOf = (id) => unitIds(byId.get(id).item).map((u) => unitInfo(id, u));
+  // Older orders used "plate" and "piece" for everything; move them to a unit the dish has.
+  function normUnit(id, u) {
+    const hit = byId.get(id);
+    if (!hit || isPacked(hit.group)) return u;
+    const ok = unitIds(hit.item);
+    if (ok.includes(u)) return u;
+    if (u === "plate" && ok.includes("box")) return "box";
+    if (u === "plate" && ok.includes("tray")) return "tray";
+    return ok[0];
+  }
+  // "لكل كيلو حوالي 4 أفراد" or, for small pieces, "حوالي 3 قطعة لكل فرد".
+  function feedsHint(id, u, lang = state.lang) {
+    const info = unitInfo(id, u);
+    const f = info.feeds;
+    if (f === 1) return lang === "ar" ? `${info.ar} لكل فرد` : `1 ${info.en} per person`;
+    if (lang === "ar") return f > 1 ? `لكل ${info.ar} حوالي ${fmtQty(f)} ${f === 2 ? "فردين" : "أفراد"}` : `حوالي ${Math.round(1 / f)} ${info.ar} لكل فرد`;
+    return f > 1 ? `1 ${info.en} ≈ ${fmtQty(f)} people` : `≈ ${Math.round(1 / f)} ${info.en}s per person`;
   }
   const stepFor = (entry, group) => (isPacked(group) || entry.unit !== "kg" ? 1 : 0.5);
 
@@ -562,7 +594,7 @@
       const packs = lang === "en" && entry.qty !== 1 ? "packs" : t(PACK_UNIT);
       return `${entry.qty} ${packs}`;
     }
-    const unit = KITCHEN_UNITS.find((u) => u.id === entry.unit) || KITCHEN_UNITS[0];
+    const unit = unitInfo(entry.id, normUnit(entry.id, entry.unit));
     return `${entry.qty} ${t(unit)}`;
   }
 
@@ -574,6 +606,7 @@
       const choice = opt.choices[(entry.opts || [])[i] || 0];
       if (choice) parts.push(t(choice));
     });
+    if (byId.has(entry.id)) parts.push(...dishPrefDiffs(entry.id, lang));
     return parts;
   }
 
@@ -582,6 +615,8 @@
   function buildMessage() {
     const u = UI.ar;
     const blocks = [];
+    const cook = cookBlockLines(state.cart.map((c) => c.id));
+    if (cook.length) blocks.push(`🧂 *طريقة الطبخ للطلب كله*\n${cook.join("\n")}`);
     allSections.forEach(({ group, section }) => {
       const lines = state.cart
         .filter((c) => byId.get(c.id).section === section)
@@ -611,12 +646,12 @@
     const prev = hist[hist.length - 1];
     if (prev && Date.now() - prev.at < 30 * 60 * 1000) hist.pop();
     hist.push({ at: Date.now(), ids });
-    store.set("sabah-history", hist.slice(-6));
+    store.set("sabah-history", hist.slice(-12));
   }
   function lastOrder() {
     const last = store.get("sabah-last-order", null);
     if (!last || !Array.isArray(last.cart)) return null;
-    const cart = last.cart.filter((c) => c && byId.has(c.id) && !byId.get(c.id).item.removed);
+    const cart = last.cart.filter((c) => c && byId.has(c.id) && !byId.get(c.id).item.removed).map((c) => (c.unit ? { ...c, unit: normUnit(c.id, c.unit) } : c));
     return cart.length ? { at: last.at, cart } : null;
   }
   function addLastOrder() {
@@ -894,6 +929,7 @@
     const tiles = CATEGORIES.slice();
     if (shownItems(IDEAS_SECTION).length) tiles.push({ id: "ideas", ar: IDEAS_GROUP.sections[0].ar, en: IDEAS_GROUP.sections[0].en, cover: shownItems(IDEAS_SECTION)[0].id, ideas: true });
     return [
+      planCard(),
       el("div", { class: "ways-row" }, WAYS.map((w) => el("button", { type: "button", class: "way-chip", onclick: () => goMenu({ way: w.id }) },
         el("span", { class: "way-chip-ico" }, icon(w.icon)),
         el("span", { class: "way-chip-label" }, wayLabel(w.id))))),
@@ -986,6 +1022,7 @@
       wayNav(way),
       el("div", { class: "page-head" }, el("h1", { class: "page-title" }, wayLabel(way)), el("span", { class: "count" }, COLLECTIONS.filter((c) => c.kind === way).length)),
       el("p", { class: "page-sub" }, u.wayDesc[way]),
+      way === "week" ? planCard() : null,
       el("div", { class: "bundle-grid" }, COLLECTIONS.filter((c) => c.kind === way).map(bundleCard)),
     ];
   }
@@ -1057,11 +1094,13 @@
     const cat = state.cat && (CATEGORIES.find((c) => c.id === state.cat) || (state.cat === "ideas" ? { id: "ideas", ar: IDEAS_SECTION.ar, en: IDEAS_SECTION.en, ideas: true } : null));
     let body;
     if (searching) body = renderSearch();
+    else if (state.plan === "setup") body = renderPlanSetup();
+    else if (state.plan) body = renderPlan();
     else if (cat) body = renderCategory(cat);
     else if (state.way && isBundleWay(state.way)) body = renderBundlesPage(state.way);
     else if (state.way) body = renderWay(state.way);
     else body = renderHome();
-    $("main").replaceChildren(el("div", { class: "wrap browse" + (cat || state.way || searching ? " inner" : " home-menu") }, body));
+    $("main").replaceChildren(el("div", { class: "wrap browse" + (cat || state.way || state.plan || searching ? " inner" : " home-menu") }, body));
     document.documentElement.style.setProperty("--topbar-h", $("topbar").getBoundingClientRect().height + "px");
 
     if (spyHandler) window.removeEventListener("scroll", spyHandler);
@@ -1137,7 +1176,8 @@
   function renderFab(bump) {
     const u = ui();
     const fab = $("fab");
-    if (state.view !== "browse") { fab.replaceChildren(); return; }
+    // The plan pages have their own add button at the bottom.
+    if (state.view !== "browse" || state.plan) { fab.replaceChildren(); return; }
     const n = state.cart.length;
     const pics = state.cart.slice(-3).reverse().map((c) => byId.get(c.id).item).filter((i) => i.img);
     fab.replaceChildren(...[
@@ -1197,6 +1237,7 @@
     const message = buildMessage();
     out.push(
       el("button", { type: "button", class: "btn text add-more", onclick: () => go("browse") }, icon("plus"), u.addMore),
+      cookCard(),
       el("p", { class: "field-label" }, u.orderNote),
       el("textarea", {
         class: "note order-note", rows: "2", placeholder: u.orderNotePh,
@@ -1282,9 +1323,26 @@
       ));
     }
 
+    let cookOpen = false;
     openPanel(({ close, draw }) => {
       const u = ui();
       const step = stepFor(draft, group);
+      const keys = cookKeys(id);
+      const CT = COOK_UI[state.lang];
+      const house = housePrefs(), mine = dishPrefs(id);
+      const cookBox = keys.length ? el("div", { class: "cook-box" },
+        el("p", { class: "cook-box-label" }, CT.follow),
+        el("div", { class: "cook-tags" }, COOK_PREFS.filter((d) => keys.includes(d.id)).map((d) => {
+          const v = optOf(d.id, mine[d.id] || house[d.id]);
+          const own = mine[d.id] && mine[d.id] !== house[d.id];
+          return el("span", { class: "cook-tag" + (own ? " own" : "") }, `${cookShort(d.id, state.lang)}: ${v ? tr(v) : ""}`);
+        })),
+        cookOpen ? el("div", { class: "pset" }, COOK_PREFS.filter((d) => keys.includes(d.id)).map((d) =>
+          // Picking the house choice again puts the dish back on the house preferences.
+          cookSeg(d.id, mine[d.id] || house[d.id], (v) => { setDishPref(id, d.id, v === house[d.id] ? null : v); draw(); refreshItem(id); })))
+          : el("div", { class: "cook-box-acts" },
+            el("button", { type: "button", class: "btn text", onclick: () => { cookOpen = true; draw(); } }, icon("edit"), CT.changeDish),
+            el("button", { type: "button", class: "btn text", onclick: () => openCookPrefs() }, CT.editHouse))) : null;
       const confirm = () => {
         const entry = { id, qty: draft.qty, note: (draft.note || "").trim() };
         if (packed) {
@@ -1322,6 +1380,7 @@
         item.desc ? el("p", { class: "sheet-desc" }, tr(item.desc)) : null,
         item.cal ? el("span", { class: "cal-tag" }, tr(item.cal)) : null,
         item.ref ? el("a", { class: "idea-link sheet-ref", href: item.ref, target: "_blank", rel: "noopener" }, u.seeOriginal + " ↗") : null,
+        cookBox,
 
         item.sizes && item.sizes.length ? [
           el("p", { class: "field-label" }, u.size),
@@ -1331,13 +1390,20 @@
           el("p", { class: "field-label" }, tr(opt)),
           chipRow(opt.choices, draft.opts[oi] || 0, (i) => { draft.opts[oi] = i; }, draw),
         ]),
-        packed ? null : [
-          el("p", { class: "field-label" }, u.unit),
-          chipRow(KITCHEN_UNITS, KITCHEN_UNITS.findIndex((x) => x.id === draft.unit), (i) => {
-            draft.unit = KITCHEN_UNITS[i].id;
-            if (draft.unit !== "kg") draft.qty = Math.max(1, Math.round(draft.qty));
-          }, draw),
-        ],
+        packed ? null : (() => {
+          // Only the units this dish is sold in; one unit is shown as a line, not a choice.
+          const units = unitsOf(id);
+          draft.unit = normUnit(id, draft.unit);
+          const cur = units.find((x) => x.id === draft.unit) || units[0];
+          return [
+            el("p", { class: "field-label" }, u.unit),
+            units.length > 1 ? chipRow(units, units.indexOf(cur), (i) => {
+              draft.unit = units[i].id;
+              if (draft.unit !== "kg") draft.qty = Math.max(1, Math.round(draft.qty));
+            }, draw) : el("p", { class: "unit-one" }, (state.lang === "ar" ? "بيتباع بال" : "Sold by the ") + tr(cur)),
+            el("p", { class: "unit-hint" }, feedsHint(id, cur.id)),
+          ];
+        })(),
 
         el("p", { class: "field-label" }, u.quantity),
         el("div", { class: "big-stepper" },
@@ -1358,13 +1424,126 @@
     }, tr(item));
   }
 
+  // ---------- Cooking preferences ----------
+  // How the kitchen cooks for this house: flour, cooking fat, how much fat, the mix and the
+  // marinade. They are set once for the house (from the order page) and can be changed for one
+  // dish in its sheet. A dish only offers the preferences in its `prefs` list in data/menu.js
+  // ("fat" also brings "how much fat"). The chef's message gets one block with the house choices
+  // that apply to the order, and a dish that differs says so on its own line. Every preference
+  // starts on a default choice (COOK_DEFAULTS) until the house picks another.
+  const COOK_PREFS = [
+    { id: "flour", ar: "الدقيق", en: "Flour", opts: [{ id: "white", ar: "أبيض", en: "White" }, { id: "whole", ar: "حبة كاملة", en: "Whole wheat" }] },
+    { id: "fat", ar: "الدهون اللي بنطبخ بيها", en: "Cooking fat", short: { ar: "الدهون", en: "Fat" }, opts: [
+      { id: "corn", ar: "زيت درة", en: "Corn oil", hint: { ar: "نباتي وخفيف", en: "Plant-based, light" } },
+      { id: "olive", ar: "زيت زيتون", en: "Olive oil", hint: { ar: "صحي", en: "Healthy" } },
+      { id: "samna", ar: "سمنة بلدي", en: "Samna baladi", hint: { ar: "سمنة بقري فلاحي", en: "Country cow ghee" } },
+      { id: "butter", ar: "زبدة", en: "Butter", hint: { ar: "أخف من السمنة", en: "Lighter than ghee" } },
+      { id: "oilbutter", ar: "زيت على زبدة", en: "Oil & butter", hint: { ar: "أخف من زبدة صافي", en: "Lighter than pure butter" } },
+    ] },
+    { id: "amount", on: "fat", ar: "كمية الدهون", en: "How much fat", opts: [{ id: "low", ar: "قليلة خالص", en: "Very little" }, { id: "medium", ar: "متوسطة", en: "Medium" }] },
+    { id: "mix", ar: "الخلطة", en: "The mix", opts: [{ id: "normal", ar: "عادي", en: "Normal" }, { id: "spicy", ar: "سبايسي", en: "Spicy" }] },
+    { id: "mar", ar: "التتبيلة", en: "The marinade", opts: [{ id: "light", ar: "خفيفة", en: "Light" }, { id: "medium", ar: "متوسطة", en: "Medium" }, { id: "strong", ar: "قوية", en: "Strong" }] },
+  ];
+  const COOK_UI = {
+    ar: {
+      title: "تفضيلات مطبخك", sub: "كل صنف بيتعمل كده، إلا لو غيّرت صنف لوحده من صفحته.",
+      madeLike: "هيتعمل كده", follow: "هيتعمل حسب تفضيلات بيتك:", change: "غيّر", changeDish: "غيّر للصنف ده بس",
+      editHouse: "عدّل تفضيلات البيت", done: "تمام",
+      dishes: (n) => (n === 1 ? "صنف واحد متغيّر لوحده" : n === 2 ? "صنفين متغيرين لوحدهم" : `${n} أصناف متغيرة لوحدها`),
+    },
+    en: {
+      title: "Your kitchen preferences", sub: "Every dish is made this way, unless you change one dish on its own page.",
+      madeLike: "It will be made like this", follow: "Made the way your house likes:", change: "Change", changeDish: "Change for this dish only",
+      editHouse: "Edit house preferences", done: "Done",
+      dishes: (n) => `${n} dish${n === 1 ? "" : "es"} changed on their own`,
+    },
+  };
+  const COOK_DEFAULTS = { flour: "white", fat: "corn", amount: "medium", mix: "normal", mar: "medium" };
+  const cookDef = (key) => COOK_PREFS.find((d) => d.id === key);
+  const cookKeys = (id) => { const hit = byId.get(id); const p = (hit && hit.item.prefs) || []; return COOK_PREFS.filter((d) => p.includes(d.on || d.id)).map((d) => d.id); };
+  const housePrefs = () => Object.assign({}, COOK_DEFAULTS, store.get("sabah-cook-prefs", {}) || {});
+  const dishPrefs = (id) => (store.get("sabah-dish-prefs", {}) || {})[id] || {};
+  function setHousePref(key, val) {
+    const all = store.get("sabah-cook-prefs", {}) || {};
+    all[key] = val;
+    store.set("sabah-cook-prefs", all);
+  }
+  function setDishPref(id, key, val) {
+    const all = store.get("sabah-dish-prefs", {}) || {};
+    const mine = all[id] || {};
+    if (val) mine[key] = val; else delete mine[key];
+    if (Object.keys(mine).length) all[id] = mine; else delete all[id];
+    store.set("sabah-dish-prefs", all);
+  }
+  const optOf = (key, val) => (cookDef(key).opts.find((o) => o.id === val) || null);
+  const cookShort = (key, lang) => { const d = cookDef(key); return (d.short || d)[lang] || d.ar; };
+  // A dish's own choices that differ from the house, as "الخلطة: سبايسي".
+  function dishPrefDiffs(id, lang) {
+    const mine = dishPrefs(id), house = housePrefs();
+    return cookKeys(id).filter((k) => mine[k] && mine[k] !== house[k] && optOf(k, mine[k]))
+      .map((k) => `${cookShort(k, lang)}: ${optOf(k, mine[k])[lang]}`);
+  }
+  // The house block for the chef: only the preferences set for the house that apply to this order.
+  function cookBlockLines(ids) {
+    const keys = new Set(ids.flatMap(cookKeys));
+    const house = housePrefs();
+    const lines = [];
+    COOK_PREFS.forEach((d) => {
+      if (d.on || !keys.has(d.id)) return;
+      const v = optOf(d.id, house[d.id]);
+      const extra = d.id === "fat" && keys.has("amount") ? optOf("amount", house.amount) : null;
+      if (v || extra) lines.push(`• ${(d.short || d).ar}: ${[v && v.ar, extra && extra.ar].filter(Boolean).join(" · ")}`);
+    });
+    return lines;
+  }
+  // One row of choices for a preference.
+  function cookSeg(key, cur, onPick) {
+    const d = cookDef(key);
+    return el("div", { class: "pq" },
+      el("p", { class: "field-label" }, tr(d)),
+      el("div", { class: "pseg" + (d.opts.length > 3 ? " two-col" : "") },
+        d.opts.map((o) => el("button", { type: "button", "aria-pressed": String(cur === o.id), onclick: () => onPick(o.id) },
+          el("span", null, tr(o)), o.hint ? el("small", null, tr(o.hint)) : null))));
+  }
+  // The house preferences, in a sheet. With `keys`, only those preferences are shown.
+  function openCookPrefs(keys) {
+    const shown = COOK_PREFS.filter((d) => !keys || keys.includes(d.id));
+    openPanel(({ close, draw }) => {
+      const T = COOK_UI[state.lang];
+      const house = housePrefs();
+      return [
+        el("h2", { class: "sheet-title" }, T.title),
+        el("p", { class: "sheet-desc" }, T.sub),
+        el("div", { class: "pset" }, shown.map((d) => cookSeg(d.id, house[d.id], (v) => { setHousePref(d.id, v); draw(); }))),
+        el("div", { class: "sheet-actions" }, el("button", { type: "button", class: "btn solid wide", onclick: () => { close(); render(); } }, icon("check"), T.done)),
+      ];
+    }, COOK_UI[state.lang].title);
+  }
+  // A3: the "made like this" card on the order page.
+  function cookCard() {
+    const ids = state.cart.map((c) => c.id);
+    const keys = [...new Set(ids.flatMap(cookKeys))];
+    if (!keys.length) return null;
+    const T = COOK_UI[state.lang];
+    const house = housePrefs();
+    const changed = ids.filter((id) => dishPrefDiffs(id, state.lang).length).length;
+    return el("div", { class: "cook-card" },
+      el("span", { class: "cook-card-label" }, T.madeLike),
+      el("div", { class: "cook-tags" }, COOK_PREFS.filter((d) => keys.includes(d.id)).map((d) => {
+        const v = optOf(d.id, house[d.id]);
+        return el("span", { class: "cook-tag" }, `${cookShort(d.id, state.lang)}: ${v ? tr(v) : ""}`);
+      })),
+      changed ? el("span", { class: "cook-card-sub" }, T.dishes(changed)) : null,
+      el("button", { type: "button", class: "btn glass small", onclick: () => openCookPrefs(COOK_PREFS.filter((d) => keys.includes(d.id)).map((d) => d.id)) }, icon("edit"), T.change));
+  }
+
   // ---------- Smart bundles ----------
   // A bundle is a list of slots (a day of the week, or a role such as "rice" or "dessert"), each
   // with a pool of dishes that fit it. The app picks one dish per slot, can re-pick them all
   // (refresh), and offers better alternatives for one slot (switch). Picks avoid dishes from
   // recent orders, lean towards favourites and healthy dishes, and avoid dishes the person
   // switched away from before. Everything is stored on the device only.
-  const PORTIONS = Object.assign({ kg: 4, plate: 3, piece: 4, feast: 0.55 }, MENU.portions || {});
+  const PORTIONS = Object.assign({ kg: 4, box: 3, tray: 6, bag: 4, loaf: 1, feast: 0.55 }, MENU.portions || {});
   const DAY_NAMES = {
     ar: ["السبت", "الأحد", "الاتنين", "التلات", "الأربع", "الخميس", "الجمعة"],
     en: ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
@@ -1451,7 +1630,7 @@
   function autoQty(id, c, people) {
     const { item, section, group } = byId.get(id);
     const unit = defaultUnit(item, section, group);
-    const units = (people * (c.kind === "feast" ? PORTIONS.feast : 1)) / (PORTIONS[unit] || 3);
+    const units = (people * (c.kind === "feast" ? PORTIONS.feast : 1)) / (unitInfo(id, unit).feeds || 3);
     if (unit === "kg") return Math.max(0.5, Math.ceil(units * 2 - 0.2) / 2);
     return Math.max(1, Math.ceil(units - 0.15));
   }
@@ -1485,7 +1664,7 @@
       const n = b.on.filter(Boolean).length;
       const unitOf = (id) => { const { item, section, group } = byId.get(id); return defaultUnit(item, section, group); };
       const stepOf = (id) => (unitOf(id) === "kg" ? 0.5 : 1);
-      const unitLabel = (id) => tr(KITCHEN_UNITS.find((x) => x.id === unitOf(id)) || KITCHEN_UNITS[0]);
+      const unitLabel = (id) => tr(unitInfo(id, unitOf(id)));
 
       const refresh = () => {
         const taken = new Set(b.picks.filter((_, i) => b.locks[i] || !b.on[i]));
@@ -1627,7 +1806,7 @@
       lock: "ثبّت الصنف ده", switch: "بدّل الصنف", better: "بدايل أحسن",
       modes: { auto: "حسب عدد الأفراد", manual: "أنا هحدد الكميات" },
       people: "كام فرد؟", guests: "كام ضيف؟",
-      autoHint: (p) => `الكميات تقريبية: الكيلو لـ ${p.kg} أفراد، والطبق لـ ${p.plate}. تقدر تعدّل أي صنف.`,
+      autoHint: (p) => `الكميات تقريبية: الكيلو لـ ${p.kg} أفراد، والعلبة لـ ${p.box}. تقدر تعدّل أي صنف.`,
       manualHint: "كل صنف بيبدأ بكمية واحدة، وانت تزوّد أو تقلّل.",
       notesTitle: "ملاحظات للشيف على كل الأصناف", notePh: "ملاحظة تانية (اختياري)",
       dayHint: "كل صنف بيتكتب جنبه اليوم بتاعه في رسالة الشيف.",
@@ -1638,13 +1817,586 @@
       lock: "Keep this dish", switch: "Switch dish", better: "Better options",
       modes: { auto: "By number of people", manual: "I'll set amounts" },
       people: "How many people?", guests: "How many guests?",
-      autoHint: (p) => `Amounts are estimates: a kilo feeds ${p.kg}, a plate feeds ${p.plate}. You can change any dish.`,
+      autoHint: (p) => `Amounts are estimates: a kilo feeds ${p.kg}, a box feeds ${p.box}. You can change any dish.`,
       manualHint: "Each dish starts at one; adjust as you like.",
       notesTitle: "Notes for the chef on every dish", notePh: "Another note (optional)",
       dayHint: "Each dish gets its day written next to it in the chef's message.",
       when: "Date and time of the feast", whenPh: "e.g. Friday at 2 pm",
     },
   };
+
+  // ---------- Smart week ----------
+  // A personal plan for the coming week: one protein a day, with the sides the family wants.
+  // It learns only from this phone (past orders, favourites, what was swapped away) and keeps the
+  // week balanced: proteins rotate, sides rotate between rice with a stew, pasta and a tray, and
+  // fasting days, a guests day and Ramadan change what is picked. #plan-setup asks the questions,
+  // #plan shows the week.
+  const PLAN_UI = {
+    ar: {
+      title: "أسبوعك الجاي", smart: "أسبوعك الذكي",
+      startTitle: "خطط أسبوعك في دقيقة", startSub: "قولنا عدد الأيام والأفراد ونوع الأكل، ونختارلك أسبوع متوازن تقدر تغيّر فيه أي يوم.",
+      readyTitle: (n) => `أسبوعك الجاي جاهز: ${n} أيام`, orderDay: "النهارده يوم طلبك", nextWeek: "أسبوعك الجاي",
+      planIt: "خطط أسبوعك", review: "راجع أسبوعك", edit: "عدّل اختياراتك",
+      setupTitle: "نجهز أسبوعك", setupSub: "اختياراتك بتتحفظ، وكل أسبوع بيبقى جاهز على طول.",
+      qDays: "أكل لكام يوم؟", daysN: (n) => `${n} أيام`, daysRange: { 5: "الأحد–الخميس", 6: "السبت–الخميس", 7: "الأسبوع كله" },
+      qPeople: "كام فرد؟", more: "أكتر",
+      qReady: "جاهز للطبخ ولا جاهز للأكل؟", ready: { cook: "جاهز للطبخ", eat: "جاهز للأكل", both: "الاتنين" },
+      qMeal: "في كل يوم إيه؟",
+      meal: { full: "وجبة كاملة", protein: "بروتين بس", custom: "أختار بنفسي" },
+      mealHint: { full: "بروتين + رز أو مكرونة أو صينية + سلطة + حلو", protein: "فراخ أو لحمة أو سمك، من غير رز ولا سلطة", custom: "أضيف رز أو سلطة أو حلو" },
+      parts: { protein: "بروتين", carb: "رز أو مكرونة أو صينية", salad: "سلطة", sweet: "حلو" },
+      qMood: "مزاج الأسبوع", mood: { varied: "لذيذ ومتنوع", healthy: "صحي", fasting: "صيامي" },
+      qFast: "أيام صيام في الأسبوع؟", qGuest: "يوم فيه ضيوف؟", optional: "اختياري", none: "مفيش",
+      showWeek: "اعرض أسبوعي", pickDays: "اختار يوم بيوم",
+      yes: "تمام", other: "حاجة تانية", dayOf: (i, n) => `يوم ${i} من ${n}`,
+      refresh: "غيّر الأسبوع", refreshHint: "بيغيّر كل الأيام اللي مش مقفولة.",
+      swap: "بدّل", lock: "ثبّت اليوم", swapSide: (name) => `بدّل ${name}`,
+      add: "ضيف الأسبوع للطلب", qtyHint: (p) => `الكميات لـ ${p} أفراد، وتقدر تعدّلها في الطلب.`,
+      fastDay: "يوم صيام", guestDay: "يوم الضيوف", ramadan: "رمضان كريم: كل يوم فيه شوربة وحلو للفطار.",
+      fastMissing: "مفيش رز أو مكرونة صيامي في المنيو لسه، فاليوم ده من غيرهم.",
+      lastWeek: "زي الأسبوع اللي فات", lastSub: (n) => (n ? `مع ${n === 1 ? "تغيير واحد" : n === 2 ? "تغييرين" : n + " تغييرات"} ذكية` : "زي ما هو بالظبط"),
+      lastKeep: "رجّع القديم", lastUse: "خلي الجديد", lastSame: "زي ما هو", lastOrder: "اطلب زي الأسبوع اللي فات",
+      why: {
+        fav: "من مفضلتك", fresh: "مطلبتهاش من فترة", back: (w) => `رجعت بعد ${w} أسابيع`, fish: "يوم السمك",
+        healthy: "صحي", guests: "يناسب الضيوف", fasting: "صيامي", ramadan: "فطار رمضان", tired: "اتطلب كتير", balance: "تنويع",
+      },
+    },
+    en: {
+      title: "Your next week", smart: "Your smart week",
+      startTitle: "Plan your week in a minute", startSub: "Tell us the days, people and kind of food, and we'll pick a balanced week you can change day by day.",
+      readyTitle: (n) => `Your next week is ready: ${n} days`, orderDay: "Today is your order day", nextWeek: "Your next week",
+      planIt: "Plan your week", review: "Review your week", edit: "Change your choices",
+      setupTitle: "Let's plan your week", setupSub: "Your choices are kept, so each week is ready straight away.",
+      qDays: "Meals for how many days?", daysN: (n) => `${n} days`, daysRange: { 5: "Sun–Thu", 6: "Sat–Thu", 7: "Every day" },
+      qPeople: "How many people?", more: "More",
+      qReady: "Ready to cook or ready to eat?", ready: { cook: "Ready to cook", eat: "Ready to eat", both: "Both" },
+      qMeal: "What goes in each day?",
+      meal: { full: "Full meal", protein: "Protein only", custom: "I'll choose" },
+      mealHint: { full: "Protein + rice, pasta or a tray + salad + dessert", protein: "Chicken, meat or fish, no rice or salad", custom: "Add rice, salad or dessert" },
+      parts: { protein: "Protein", carb: "Rice, pasta or a tray", salad: "Salad", sweet: "Dessert" },
+      qMood: "This week's mood", mood: { varied: "Tasty & varied", healthy: "Healthy", fasting: "Fasting" },
+      qFast: "Fasting days in the week?", qGuest: "A day with guests?", optional: "optional", none: "None",
+      showWeek: "Show my week", pickDays: "Pick day by day",
+      yes: "Yes", other: "Something else", dayOf: (i, n) => `Day ${i} of ${n}`,
+      refresh: "Refresh the week", refreshHint: "Changes every day that isn't locked.",
+      swap: "Swap", lock: "Lock this day", swapSide: (name) => `Swap ${name}`,
+      add: "Add the week to my order", qtyHint: (p) => `Amounts are for ${p} people; you can change them in your order.`,
+      fastDay: "Fasting day", guestDay: "Guests day", ramadan: "Ramadan: each day has soup and dessert for iftar.",
+      fastMissing: "No fasting rice or pasta on the menu yet, so this day comes without them.",
+      lastWeek: "Like last week", lastSub: (n) => (n ? `with ${n} smart change${n === 1 ? "" : "s"}` : "exactly the same"),
+      lastKeep: "Keep the old one", lastUse: "Use the new one", lastSame: "Unchanged", lastOrder: "Order like last week",
+      why: {
+        fav: "A favourite", fresh: "Not ordered lately", back: (w) => `Back after ${w} weeks`, fish: "Fish day",
+        healthy: "Healthy", guests: "Good for guests", fasting: "Fasting", ramadan: "Ramadan iftar", tired: "Ordered a lot", balance: "Something different",
+      },
+    },
+  };
+  const DAY_SETS = { 5: [1, 2, 3, 4, 5], 6: [0, 1, 2, 3, 4, 5], 7: [0, 1, 2, 3, 4, 5, 6] };
+  const WEEK_MS = 7 * 24 * 3600 * 1000;
+  const satIndex = (d) => (d.getDay() + 1) % 7; // DAY_NAMES start on Saturday
+
+  const sectionIds = (...ids) => ids.flatMap((sid) => { const hit = sectionById.get(sid); return hit ? shownItems(hit.section).map((i) => i.id) : []; });
+  const familyIds = (fid) => ((FAMILIES.find((f) => f.id === fid) || {}).members || []).map((m) => m.id).filter((id) => byId.has(id));
+  const live = (ids) => ids.filter((id) => byId.has(id) && !byId.get(id).item.removed);
+  const POOL = {
+    chicken: () => sectionIds("chicken"),
+    meat: () => sectionIds("beef", "egyptian"),
+    fish: () => sectionIds("fish"),
+    legume: () => sectionIds("legumes"),
+    rice: () => live(["k131", "k130"]),
+    stew: () => familyIds("stews"),
+    pasta: () => live(["k135", "k136", "k58"]),
+    tray: () => live(["k133", "k134", "k138", "k140", "k132"]),
+    salad: () => { const cut = new Set(((CATEGORIES.find((c) => c.id === "salads") || {}).subGroups || []).flatMap((g) => g.ids)); return sectionIds("salads").filter((id) => !cut.has(id)); },
+    cutveg: () => ((CATEGORIES.find((c) => c.id === "salads") || {}).subGroups || []).flatMap((g) => g.ids).filter((id) => byId.has(id)),
+    sweet: () => sectionIds("desserts"),
+    hsweet: () => sectionIds("healthy-sweets"),
+    soup: () => sectionIds("soup"),
+  };
+  // Dishes that already come with rice, freekeh or potatoes get no extra carb.
+  const HAS_CARB = new Set(["k15", "k82", "k111", "k112", "k116", "k144", "k146", "k16", "k110"]);
+  // Dishes the kitchen marks as fasting-friendly (صيامي), listed in data/menu.js.
+  const FASTING = new Set(MENU.fasting || []);
+  const GUEST_DISHES = new Set(COLLECTIONS.filter((c) => c.kind === "feast").flatMap((c) => c.slots.flatMap((s) => s.pool || [])));
+  const kindOf = (id) => { const s = byId.get(id).section.id; return s === "chicken" ? "chicken" : s === "fish" ? "fish" : s === "legumes" ? "legume" : s === "beef" || s === "egyptian" ? "meat" : null; };
+
+  const PLAN_DEFAULTS = { days: 5, people: 4, ready: "both", meal: "full", parts: ["carb", "salad", "sweet"], mood: "varied", fastDays: [], guestDay: -1, setup: false };
+  function planPrefs() {
+    const p = Object.assign({}, PLAN_DEFAULTS, { people: Number(store.get("sabah-people", 4)) || 4 }, store.get("sabah-plan-prefs", {}) || {});
+    if (![5, 6, 7].includes(p.days)) p.days = 5;
+    p.people = Math.min(30, Math.max(1, Number(p.people) || 4));
+    if (!["cook", "eat", "both"].includes(p.ready)) p.ready = "both";
+    if (!["full", "protein", "custom"].includes(p.meal)) p.meal = "full";
+    if (!["varied", "healthy", "fasting"].includes(p.mood)) p.mood = "varied";
+    p.parts = (Array.isArray(p.parts) ? p.parts : []).filter((k) => ["carb", "salad", "sweet"].includes(k));
+    p.fastDays = (Array.isArray(p.fastDays) ? p.fastDays : []).filter((d) => d >= 0 && d < 7);
+    if (!(p.guestDay >= -1 && p.guestDay < 7)) p.guestDay = -1;
+    return p;
+  }
+  function savePlanPrefs(p) {
+    store.set("sabah-plan-prefs", p);
+    store.set("sabah-people", p.people);
+  }
+  const prefParts = (p) => (p.meal === "full" ? ["carb", "salad", "sweet"] : p.meal === "protein" ? [] : p.parts);
+
+  // What this phone knows: when each dish was last ordered, how often, and what was swapped away.
+  const planSkips = () => store.get("sabah-plan-skips", {}) || {};
+  function planSkip(id) {
+    const all = planSkips();
+    all[id] = Date.now();
+    const keep = Object.entries(all).filter(([, at]) => Date.now() - at < 8 * WEEK_MS);
+    store.set("sabah-plan-skips", Object.fromEntries(keep));
+  }
+  function orderStats() {
+    const hist = orderHistory();
+    const last = new Map(); const times = new Map();
+    hist.forEach((h) => h.ids.forEach((id) => { last.set(id, h.at); times.set(id, (times.get(id) || 0) + 1); }));
+    return { hist, last, times, lastIds: new Set(hist.length ? hist[hist.length - 1].ids : []), recent: new Set(hist.slice(-4).flatMap((h) => h.ids)) };
+  }
+  function inRamadan(date) {
+    try { return new Intl.DateTimeFormat("en-u-ca-islamic", { month: "numeric" }).format(date) === "9"; } catch (e) { return false; }
+  }
+  const isSummer = (date) => [5, 6, 7].includes(date.getMonth());
+
+  function planScore(id, ctx) {
+    const { item, section } = byId.get(id);
+    const why = [];
+    let s = 0;
+    const fav = state.favs.has(id);
+    if (fav) { s += 2; why.push(["fav"]); }
+    const at = ctx.stats.last.get(id);
+    if (ctx.stats.hist.length) {
+      if (ctx.stats.lastIds.has(id)) s -= 3; // never two weeks running
+      if (at && Date.now() - at >= 2.5 * WEEK_MS) {
+        s += 1.4;
+        why.push(fav || (ctx.stats.times.get(id) || 0) > 1 ? ["back", Math.floor((Date.now() - at) / WEEK_MS)] : ["fresh"]);
+      } else if (!at) s += 0.5;
+      if ((ctx.stats.times.get(id) || 0) >= 3 && ctx.stats.recent.has(id)) s -= 1;
+    }
+    const skippedAt = planSkips()[id];
+    if (skippedAt && Date.now() - skippedAt < 6 * WEEK_MS) s -= 3;
+    if (ctx.mood === "healthy" && isHealthy(item, section)) { s += 2; why.push(["healthy"]); }
+    if (ctx.mood === "healthy" && section.id === "egyptian") s -= 2.5;
+    if (ctx.summer && isHealthy(item, section)) s += 0.4;
+    if (ctx.guest && GUEST_DISHES.has(id)) { s += 2.5; why.unshift(["guests"]); }
+    s += Math.random() * (ctx.rotate ? 1.6 : 0.4);
+    return { s, why };
+  }
+  // Flavours of one dish (a family) count as the same dish: one of them a week where possible.
+  const famId = (id) => (familyOf.get(id) ? familyOf.get(id).family.id : null);
+  function bestOf(ids, ctx, taken) {
+    let best = null;
+    ids.forEach((id) => {
+      if (taken.has(id)) return;
+      const r = planScore(id, ctx);
+      const f = famId(id);
+      if (f && ctx.fams && ctx.fams.has(f)) r.s -= 2.5;
+      if (!best || r.s > best.s) best = { id, ...r };
+    });
+    return best;
+  }
+  const readyOk = (id, ready) => ready === "both" || readiness(byId.get(id).item, byId.get(id).section) === ready;
+
+  // Protein kinds for the week: one fish day (two in a healthy 6–7 day week), the rest split
+  // between chicken and meat, never the same kind two days running.
+  function kindSequence(n, fixed, mood) {
+    let fish = mood === "healthy" && n >= 6 ? 2 : 1;
+    const left = { fish, chicken: Math.ceil((n - fish) / 2), meat: Math.floor((n - fish) / 2) };
+    fixed.forEach((k) => { if (k && left[k] > 0) left[k]--; });
+    const seq = [];
+    for (let i = 0; i < n; i++) {
+      if (fixed[i]) { seq.push(fixed[i]); continue; }
+      const prev = seq[i - 1], next = fixed[i + 1];
+      const opts = Object.keys(left).filter((k) => left[k] > 0).sort((a, b) => left[b] - left[a] + (Math.random() - 0.5) * 0.9);
+      const k = opts.find((o) => o !== prev && o !== next) || opts[0] || "chicken";
+      left[k] = Math.max(0, left[k] - 1);
+      seq.push(k);
+    }
+    return seq;
+  }
+  // Carb sides for the week: rice with a stew, pasta or a tray, never the same type two days running.
+  function carbSequence(n) {
+    const rice = Math.ceil(n * 0.4), pasta = Math.floor((n - rice) / 2);
+    const left = { rice, pasta, tray: n - rice - pasta };
+    const seq = [];
+    for (let i = 0; i < n; i++) {
+      const opts = Object.keys(left).filter((k) => left[k] > 0).sort((a, b) => left[b] - left[a] + (Math.random() - 0.5) * 0.9);
+      const k = opts.find((o) => o !== seq[i - 1]) || opts[0] || "rice";
+      left[k]--;
+      seq.push(k);
+    }
+    return seq;
+  }
+
+  // Build (or refresh) the plan. Locked days from `prev` are kept as they are.
+  function buildPlan(p, prev, rotate) {
+    const now = new Date();
+    const days = DAY_SETS[p.days];
+    const stats = orderStats();
+    const ramadan = inRamadan(now);
+    const base = { stats, mood: p.mood, rotate, summer: isSummer(now) };
+    const kept = new Map(((prev && prev.days) || []).filter((d) => d.lock && days.includes(d.d)).map((d) => [d.d, d]));
+    const fastOn = (d) => p.mood === "fasting" || p.fastDays.includes(d);
+    const parts = prefParts(p);
+    const taken = new Set([...kept.values()].flatMap((d) => [d.p, ...d.x]));
+    base.fams = new Set([...taken].map(famId).filter((f) => f && f !== "stews" && f !== "rice"));
+
+    const fixedKinds = days.map((d) => (kept.has(d) ? kindOf(kept.get(d).p) : fastOn(d) ? "fast" : null));
+    const seq = kindSequence(days.length, fixedKinds.map((k) => (k === "fast" ? "fish" : k)), p.mood);
+    const carbs = carbSequence(days.length);
+    let lastRice = null;
+    let prevX = [];
+    const out = days.map((d, i) => {
+      if (kept.has(d)) { prevX = kept.get(d).x; return kept.get(d); }
+      const ctx = { ...base, guest: p.guestDay === d };
+      const fast = fastOn(d);
+      const flags = { fast, guest: p.guestDay === d, ramadan };
+      // Protein
+      let pool;
+      if (fast) pool = POOL.fish().concat(POOL.legume()).filter((id) => FASTING.has(id));
+      else pool = POOL[seq[i]]().filter((id) => readyOk(id, p.ready));
+      if (!pool.length && !fast) pool = ["chicken", "meat", "fish"].flatMap((k) => POOL[k]()).filter((id) => readyOk(id, p.ready));
+      if (!pool.length) pool = POOL[fast ? "fish" : seq[i]]();
+      const pick = bestOf(pool, ctx, taken) || bestOf(pool, ctx, new Set());
+      if (!pick) return null;
+      taken.add(pick.id);
+      if (famId(pick.id)) base.fams.add(famId(pick.id));
+      const why = pick.why.slice();
+      if (fast) why.unshift(["fasting"]);
+      else if (kindOf(pick.id) === "fish" && !why.length) why.push(["fish"]);
+      // Sides
+      const x = [];
+      // A side is new for the week when possible; once a group runs out it may repeat, never two days running.
+      const yesterday = new Set(prevX);
+      const side = (ids) => {
+        const ok = fast ? ids.filter((id) => FASTING.has(id)) : ids;
+        const b = bestOf(ok, ctx, taken) || bestOf(ok, ctx, new Set([...yesterday, pick.id, ...x]));
+        if (b) { taken.add(b.id); x.push(b.id); const f = famId(b.id); if (f && f !== "stews" && f !== "rice") base.fams.add(f); }
+        return !!b;
+      };
+      // Plain rice may come back on another day; it just alternates with the other kind of rice.
+      const rice = () => { const ok = POOL.rice().filter((id) => !fast || FASTING.has(id)); const id = ok.find((r) => r !== lastRice) || ok[0]; if (id) { lastRice = id; x.push(id); } return !!id; };
+      if (ramadan) side(POOL.soup());
+      if (parts.includes("carb") && !HAS_CARB.has(pick.id)) {
+        const type = carbs[i];
+        if (type === "rice") { if (rice()) side(POOL.stew()); }
+        else if (!side(type === "pasta" ? (p.mood === "healthy" ? ["k58"].concat(POOL.pasta()) : POOL.pasta()) : POOL.tray())) rice();
+      }
+      if (parts.includes("salad")) { if (!side(POOL.salad()) && fast) side(POOL.cutveg()); }
+      if (parts.includes("sweet") || ramadan) side(p.mood === "healthy" ? POOL.hsweet() : POOL.sweet());
+      prevX = x;
+      return { d, p: pick.id, x, lock: false, why: why.slice(0, 2), flags };
+    }).filter(Boolean);
+    return { at: Date.now(), key: planKey(p), days: out };
+  }
+  const planKey = (p) => JSON.stringify([p.days, p.ready, p.meal, prefParts(p), p.mood, p.fastDays, p.guestDay]);
+  // The saved plan, rebuilt when the choices changed, after an order was sent, or after a week.
+  function currentPlan(p) {
+    const saved = store.get("sabah-plan", null);
+    const lastAt = (lastOrder() || {}).at || 0;
+    const ok = saved && Array.isArray(saved.days) && saved.key === planKey(p) && saved.at > lastAt && Date.now() - saved.at < WEEK_MS
+      && saved.days.every((d) => byId.has(d.p) && d.x.every((id) => byId.has(id)));
+    if (ok) return saved;
+    const plan = buildPlan(p, saved && saved.key === planKey(p) ? saved : null, false);
+    store.set("sabah-plan", plan);
+    return plan;
+  }
+  const savePlan = (plan) => store.set("sabah-plan", plan);
+
+  // Swap one dish in a day for the best other dish of the same kind (protein) or group (side).
+  function sideGroup(id) {
+    for (const g of ["rice", "stew", "pasta", "tray", "salad", "cutveg", "sweet", "hsweet", "soup"]) if (POOL[g]().includes(id)) return g;
+    return null;
+  }
+  function swapInPlan(plan, p, dayIdx, which) {
+    const day = plan.days[dayIdx];
+    const taken = new Set(plan.days.flatMap((d) => [d.p, ...d.x]));
+    const ctx = { stats: orderStats(), mood: p.mood, rotate: true, summer: isSummer(new Date()), guest: day.flags && day.flags.guest,
+      fams: new Set(plan.days.flatMap((d) => [d.p, ...d.x]).map(famId).filter((f) => f && f !== "stews" && f !== "rice")) };
+    const fast = day.flags && day.flags.fast;
+    if (which === "p") {
+      const k = kindOf(day.p);
+      let pool = (k === "legume" ? POOL.legume() : POOL[k]()).filter((id) => (fast ? FASTING.has(id) : readyOk(id, p.ready)));
+      if (fast) pool = POOL.fish().concat(POOL.legume()).filter((id) => FASTING.has(id));
+      const b = bestOf(pool, ctx, taken);
+      if (!b) return false;
+      planSkip(day.p);
+      day.p = b.id;
+      day.why = (fast ? [["fasting"]] : []).concat(b.why).slice(0, 2);
+      return true;
+    }
+    const old = day.x[which];
+    const g = sideGroup(old);
+    if (!g) return false;
+    const pool = POOL[g]().filter((id) => !fast || FASTING.has(id));
+    // Rice can repeat across days; only the day's own dishes are off limits.
+    const near = [plan.days[dayIdx - 1], plan.days[dayIdx + 1]].filter(Boolean).flatMap((d) => d.x);
+    const b = bestOf(pool, ctx, g === "rice" ? new Set([day.p, ...day.x]) : taken) || bestOf(pool, ctx, new Set([day.p, ...day.x, ...near]));
+    if (!b) return false;
+    planSkip(old);
+    day.x[which] = b.id;
+    return true;
+  }
+
+  function addPlanToCart(plan, p) {
+    const byDish = new Map();
+    plan.days.forEach((day) => [day.p, ...day.x].forEach((id) => { if (!byDish.has(id)) byDish.set(id, []); byDish.get(id).push(day.d); }));
+    byDish.forEach((ds, id) => {
+      const entry = makeEntry(id);
+      entry.qty = autoQty(id, { kind: "week" }, p.people) * ds.length;
+      // The chef reads Arabic, so the day note is always in Arabic.
+      entry.note = (ds.length === 1 ? "يوم " : "أيام ") + ds.map((d) => DAY_NAMES.ar[d]).join(" و");
+      const idx = state.cart.findIndex((c) => c.id === id);
+      if (idx >= 0) state.cart[idx] = entry;
+      else state.cart.push(entry);
+    });
+    saveCart();
+    buzz();
+    toast(ui().addedN(byDish.size), { label: ui().viewOrder, run: () => go("cart") });
+    render();
+    return byDish.size;
+  }
+
+  // The usual order day, learned from when orders were sent (Thursday until there are two).
+  function orderDay() {
+    const hist = orderHistory();
+    if (hist.length < 2) return 5;
+    const n = [0, 0, 0, 0, 0, 0, 0];
+    hist.forEach((h) => { n[satIndex(new Date(h.at))]++; });
+    return n.indexOf(Math.max(...n));
+  }
+  const isOrderSoon = () => { const t = satIndex(new Date()); const o = orderDay(); return t === o || (t + 1) % 7 === o; };
+
+  const whyText = (w) => { const T = PLAN_UI[state.lang].why[w[0]]; return typeof T === "function" ? T(w[1]) : T; };
+  const qtyText = (id, people) => {
+    const { item, section, group } = byId.get(id);
+    const unit = defaultUnit(item, section, group);
+    return fmtQty(autoQty(id, { kind: "week" }, people)) + " " + tr(unitInfo(id, unit));
+  };
+  const goPlan = (setup, replace) => {
+    const hash = setup ? "#plan-setup" : "#plan";
+    if (location.hash === hash) { applyHash(); show("browse"); return; }
+    if (replace) { history.replaceState(null, "", hash); applyHash(); show("browse"); return; }
+    location.hash = hash;
+  };
+
+  // T1: the card on the menu home and the weekly food page.
+  function planCard() {
+    const T = PLAN_UI[state.lang];
+    const p = planPrefs();
+    if (!p.setup) {
+      return el("div", { class: "plan-card" },
+        el("span", { class: "plan-card-label" }, T.smart),
+        el("span", { class: "plan-card-title" }, T.startTitle),
+        el("span", { class: "plan-card-sub" }, T.startSub),
+        el("div", { class: "plan-card-acts" }, el("button", { type: "button", class: "btn solid", onclick: () => goPlan(true) }, icon("calendar"), T.planIt)));
+    }
+    const plan = currentPlan(p);
+    const last = lastOrder();
+    return el("div", { class: "plan-card" },
+      el("span", { class: "plan-card-label" }, isOrderSoon() ? T.orderDay : T.nextWeek),
+      el("span", { class: "plan-card-title" }, T.readyTitle(plan.days.length)),
+      el("span", { class: "plan-card-pics" }, plan.days.map((d) => { const it = byId.get(d.p).item; return it.img ? el("img", { src: it.img, alt: "", loading: "lazy" }) : null; })),
+      el("div", { class: "plan-card-acts" },
+        el("button", { type: "button", class: "btn solid", onclick: () => goPlan(false) }, T.review, icon("chevron", "flip-rtl")),
+        last ? el("button", { type: "button", class: "btn glass", onclick: () => openLastWeek() }, icon("repeat"), T.lastWeek) : null));
+  }
+
+  // W3: the questions, then (optionally) one card per day.
+  let planSwipe = null;
+  function renderPlanSetup() {
+    const T = PLAN_UI[state.lang];
+    const p = planPrefs();
+    const set = (patch) => { Object.assign(p, patch); savePlanPrefs(p); renderBrowse(); };
+    const seg = (opts, cur, onPick, cls) => el("div", { class: "pseg" + (cls ? " " + cls : "") }, opts.map(([k, label, hint]) => el("button", {
+      type: "button", "aria-pressed": String(cur === k), onclick: () => onPick(k),
+    }, el("span", null, label), hint ? el("small", null, hint) : null)));
+    const dayChips = (cur, onPick, multi) => el("div", { class: "choice-row" },
+      multi ? null : el("button", { type: "button", class: "choice small", "aria-pressed": String(cur === -1), onclick: () => onPick(-1) }, T.none),
+      DAY_SETS[p.days].map((d) => el("button", {
+        type: "button", class: "choice small", "aria-pressed": String(multi ? cur.includes(d) : cur === d), onclick: () => onPick(d),
+      }, DAY_NAMES[state.lang][d])));
+
+    if (planSwipe) return renderPlanSwipe(p);
+    return [
+      wayNav("week"),
+      el("div", { class: "page-head" }, el("h1", { class: "page-title" }, T.setupTitle)),
+      el("p", { class: "page-sub" }, T.setupSub),
+      el("div", { class: "pset" },
+        el("div", { class: "pq" }, el("p", { class: "field-label" }, T.qDays),
+          seg([5, 6, 7].map((n) => [n, T.daysN(n), T.daysRange[n]]), p.days, (n) => set({ days: n, fastDays: p.fastDays.filter((d) => DAY_SETS[n].includes(d)), guestDay: DAY_SETS[n].includes(p.guestDay) ? p.guestDay : -1 }))),
+        el("div", { class: "pq" }, el("p", { class: "field-label" }, T.qPeople),
+          el("div", { class: "pseg nums" }, [1, 2, 3, 4, 5, 6].map((n) => el("button", { type: "button", "aria-pressed": String(p.people === n), onclick: () => set({ people: n }) }, el("span", null, String(n)))),
+            el("button", { type: "button", "aria-pressed": String(p.people > 6), "aria-label": T.more, onclick: () => set({ people: Math.max(p.people, 6) + 1 }) }, el("span", null, (p.people > 6 ? p.people : "") + "+")))),
+        el("div", { class: "pq" }, el("p", { class: "field-label" }, T.qReady),
+          seg(["cook", "eat", "both"].map((k) => [k, T.ready[k]]), p.ready, (k) => set({ ready: k }))),
+        el("div", { class: "pq" }, el("p", { class: "field-label" }, T.qMeal),
+          seg(["full", "protein", "custom"].map((k) => [k, T.meal[k], T.mealHint[k]]), p.meal, (k) => set({ meal: k, parts: k === "custom" && !p.parts.length ? ["salad"] : p.parts })),
+          p.meal === "custom" ? el("div", { class: "choice-row" },
+            el("span", { class: "choice small fixed", "aria-pressed": "true" }, T.parts.protein),
+            ["carb", "salad", "sweet"].map((k) => el("button", {
+              type: "button", class: "choice small", "aria-pressed": String(p.parts.includes(k)),
+              onclick: () => set({ parts: p.parts.includes(k) ? p.parts.filter((x) => x !== k) : p.parts.concat(k) }),
+            }, T.parts[k]))) : null),
+        el("div", { class: "pq" }, el("p", { class: "field-label" }, T.qMood),
+          seg(["varied", "healthy", "fasting"].map((k) => [k, T.mood[k]]), p.mood, (k) => set({ mood: k }))),
+        p.mood === "fasting" ? null : el("div", { class: "pq" }, el("p", { class: "field-label" }, T.qFast, " ", el("small", null, "(" + T.optional + ")")),
+          dayChips(p.fastDays, (d) => set({ fastDays: p.fastDays.includes(d) ? p.fastDays.filter((x) => x !== d) : p.fastDays.concat(d).sort() }), true)),
+        el("div", { class: "pq" }, el("p", { class: "field-label" }, T.qGuest, " ", el("small", null, "(" + T.optional + ")")),
+          dayChips(p.guestDay, (d) => set({ guestDay: d }), false)),
+      ),
+      el("div", { class: "pset-acts" },
+        el("button", { type: "button", class: "btn solid wide", onclick: () => { p.setup = true; savePlanPrefs(p); currentPlan(p); goPlan(false); } }, T.showWeek),
+        el("button", { type: "button", class: "btn tinted wide", onclick: () => { p.setup = true; savePlanPrefs(p); currentPlan(p); planSwipe = { i: 0 }; renderBrowse(); window.scrollTo({ top: 0 }); } }, T.pickDays)),
+    ];
+  }
+  function renderPlanSwipe(p) {
+    const T = PLAN_UI[state.lang];
+    const plan = currentPlan(p);
+    const i = planSwipe.i;
+    if (i >= plan.days.length) { planSwipe = null; setTimeout(() => goPlan(false, true), 0); return []; }
+    const day = plan.days[i];
+    const it = byId.get(day.p).item;
+    return [
+      el("div", { class: "page-head" }, el("h1", { class: "page-title" }, T.setupTitle), el("span", { class: "count" }, T.dayOf(i + 1, plan.days.length))),
+      el("div", { class: "pswipe-prog" }, plan.days.map((_, k) => el("i", { class: k < i ? "done" : k === i ? "now" : "" }))),
+      el("div", { class: "pswipe-card", key: day.p },
+        it.full || it.img ? el("img", { src: it.full || it.img, alt: "" }) : null,
+        el("span", { class: "pswipe-day" }, DAY_NAMES[state.lang][day.d]),
+        el("div", { class: "pswipe-text" },
+          el("b", null, tr(it)),
+          day.x.length ? el("small", { class: "pswipe-x" }, "+ " + day.x.map((id) => tr(byId.get(id).item)).join(" · ")) : null,
+          el("span", { class: "pswipe-tags" }, day.why.map((w) => el("span", { class: "why" }, whyText(w))), el("small", null, qtyText(day.p, p.people))))),
+      el("div", { class: "pswipe-acts" },
+        el("button", { type: "button", class: "btn outline big", onclick: () => { if (swapInPlan(plan, p, i, "p")) { savePlan(plan); buzz(); renderBrowse(); } } }, icon("swap"), T.other),
+        el("button", { type: "button", class: "btn solid big", onclick: () => { plan.days[i].lock = true; savePlan(plan); planSwipe.i++; buzz(); renderBrowse(); } }, icon("check"), T.yes)),
+    ];
+  }
+
+  // W1: the week, day by day.
+  function renderPlan() {
+    const T = PLAN_UI[state.lang];
+    const p = planPrefs();
+    if (!p.setup) { setTimeout(() => goPlan(true, true), 0); return []; }
+    const plan = currentPlan(p);
+    const redraw = () => { savePlan(plan); renderBrowse(); };
+    const n = new Set(plan.days.flatMap((d) => [d.p, ...d.x])).size;
+    const summary = [T.daysN(p.days), `${p.people} ${state.lang === "ar" ? "أفراد" : "people"}`, T.ready[p.ready], T.meal[p.meal], T.mood[p.mood]];
+    const last = lastOrder();
+    return [
+      wayNav("week"),
+      el("div", { class: "page-head" }, el("h1", { class: "page-title" }, T.title), el("span", { class: "count" }, plan.days.length)),
+      el("div", { class: "psum" }, summary.map((s) => el("span", { class: "psum-chip" }, s)),
+        el("button", { type: "button", class: "btn text", onclick: () => goPlan(true) }, icon("edit"), T.edit)),
+      plan.days.some((d) => d.flags && d.flags.ramadan) ? el("p", { class: "plan-note" }, T.ramadan) : null,
+      el("div", { class: "ptools" },
+        el("button", { type: "button", class: "btn tinted small", onclick: () => { const next = buildPlan(p, plan, true); savePlan(next); buzz(); renderBrowse(); } }, icon("repeat"), T.refresh),
+        last ? el("button", { type: "button", class: "btn outline small", onclick: () => openLastWeek() }, icon("repeat"), T.lastWeek) : null,
+        el("span", { class: "bctl-hint" }, T.refreshHint)),
+      el("div", { class: "pdays" }, plan.days.map((day, i) => {
+        const { item, section } = byId.get(day.p);
+        const fast = day.flags && day.flags.fast, guest = day.flags && day.flags.guest;
+        return el("div", { class: "pday" + (day.lock ? " locked" : "") },
+          el("div", { class: "pday-head" },
+            el("span", { class: "pday-name" }, DAY_NAMES[state.lang][day.d]),
+            fast ? el("span", { class: "why why-fast" }, T.fastDay) : null,
+            guest ? el("span", { class: "why why-guest" }, T.guestDay) : null),
+          el("div", { class: "pday-main" },
+            el("button", { type: "button", class: "pday-img", "aria-label": tr(item), onclick: () => openSheet(day.p) },
+              item.img ? el("img", { src: item.img, alt: "", loading: "lazy" }) : el("span", { class: "card-img-empty" }, section.emoji || "🍽️")),
+            el("div", { class: "pday-text" },
+              el("button", { type: "button", class: "pday-dish", onclick: () => openSheet(day.p) }, tr(item)),
+              el("span", { class: "pday-tags" }, readyTag(item, section), day.why.map((w) => el("span", { class: "why" }, whyText(w)))),
+              el("span", { class: "pday-qty" }, qtyText(day.p, p.people))),
+            el("div", { class: "brow-tools" },
+              el("button", { type: "button", class: "icon-btn small" + (day.lock ? " active" : ""), "aria-pressed": String(day.lock), "aria-label": T.lock, title: T.lock, onclick: () => { day.lock = !day.lock; redraw(); } }, icon(day.lock ? "lock" : "unlock")),
+              el("button", { type: "button", class: "icon-btn small", "aria-label": T.swap, title: T.swap, disabled: day.lock, onclick: () => { if (swapInPlan(plan, p, i, "p")) { buzz(); redraw(); } } }, icon("swap")))),
+          day.x.length ? el("div", { class: "pday-x" }, day.x.map((id, k) => {
+            const x = byId.get(id).item;
+            return el("button", { type: "button", class: "pside", disabled: day.lock, "aria-label": T.swapSide(tr(x)), title: T.swapSide(tr(x)), onclick: () => { if (swapInPlan(plan, p, i, k)) { buzz(); redraw(); } } },
+              x.img ? el("img", { src: x.img, alt: "", loading: "lazy" }) : null, el("span", null, tr(x)), icon("swap"));
+          })) : null,
+          fast && prefParts(p).includes("carb") && !day.x.some((id) => ["rice", "pasta", "tray"].includes(sideGroup(id))) ? el("p", { class: "bctl-hint" }, T.fastMissing) : null);
+      })),
+      el("p", { class: "bctl-hint" }, T.qtyHint(p.people)),
+      el("div", { class: "plan-add" }, el("button", { type: "button", class: "btn solid wide", onclick: () => addPlanToCart(plan, p) }, icon("plus"), T.add, el("b", { class: "plan-add-n" }, n))),
+    ];
+  }
+
+  // T2: last week again, with a few smart changes shown before and after.
+  function lastWeekChanges(cart) {
+    const stats = orderStats();
+    const ids = new Set(cart.map((c) => c.id));
+    const ctx = { stats, mood: planPrefs().mood, rotate: false, summer: isSummer(new Date()) };
+    const kinds = {};
+    cart.forEach((c) => { const s = byId.get(c.id).section.id; if (["chicken", "beef", "egyptian", "fish"].includes(s)) kinds[kindOf(c.id)] = (kinds[kindOf(c.id)] || 0) + 1; });
+    const scored = cart.filter((c) => byId.get(c.id).group.id === "kitchen").map((c) => {
+      const times = stats.times.get(c.id) || 0;
+      const skipped = planSkips()[c.id] && Date.now() - planSkips()[c.id] < 6 * WEEK_MS;
+      let need = 0, why = "balance";
+      if (skipped) { need = 3; why = "balance"; }
+      else if (times >= 3) { need = 2; why = "tired"; }
+      else if (["chicken", "meat"].includes(kindOf(c.id)) && kinds[kindOf(c.id)] >= 3 && !kinds.fish) { need = 1.5; why = "fish"; }
+      return { c, need, why };
+    }).sort((a, b) => b.need - a.need);
+    const picks = scored.filter((x) => x.need > 0).slice(0, 3);
+    if (!picks.length && scored.length) picks.push(scored[scored.length - 1]);
+    const taken = new Set(ids);
+    return picks.map(({ c, why }) => {
+      const { section } = byId.get(c.id);
+      const pool = why === "fish" ? POOL.fish() : shownItems(section).map((i) => i.id);
+      const b = bestOf(pool, ctx, taken);
+      if (!b) return null;
+      taken.add(b.id);
+      return { from: c.id, to: b.id, why: why === "balance" && b.why.length ? b.why[0] : [why], keep: false };
+    }).filter(Boolean);
+  }
+  function openLastWeek() {
+    const last = lastOrder();
+    if (!last) return;
+    const changes = lastWeekChanges(last.cart);
+    openPanel(({ close, draw }) => {
+      const T = PLAN_UI[state.lang];
+      const u = ui();
+      const active = changes.filter((ch) => !ch.keep).length;
+      const changedFrom = new Set(changes.map((ch) => ch.from));
+      return [
+        el("span", { class: "eyebrow" }, T.smart),
+        el("h2", { class: "sheet-title" }, T.lastWeek),
+        el("p", { class: "sheet-desc" }, T.lastSub(active)),
+        el("div", { class: "lw-list" }, changes.map((ch) => {
+          const a = byId.get(ch.from).item, b = byId.get(ch.to).item;
+          return el("div", { class: "lw-row" + (ch.keep ? " kept" : "") },
+            el("img", { src: (ch.keep ? a : b).img || "", alt: "" }),
+            el("div", { class: "lw-text" },
+              el("s", null, tr(ch.keep ? b : a)),
+              el("b", null, tr(ch.keep ? a : b)),
+              ch.keep ? null : el("span", { class: "why" }, whyText(ch.why))),
+            el("button", { type: "button", class: "btn text", onclick: () => { ch.keep = !ch.keep; draw(); } }, ch.keep ? T.lastUse : T.lastKeep));
+        })),
+        el("p", { class: "field-label" }, T.lastSame),
+        el("div", { class: "lw-same" }, last.cart.filter((c) => !changedFrom.has(c.id)).map((c) => { const it = byId.get(c.id).item; return it.img ? el("img", { src: it.img, alt: tr(it), title: tr(it) }) : el("span", { class: "lw-name" }, tr(it)); })),
+        el("div", { class: "sheet-actions" },
+          el("button", {
+            type: "button", class: "btn solid wide",
+            onclick: () => {
+              const swapTo = new Map(changes.filter((ch) => !ch.keep).map((ch) => [ch.from, ch.to]));
+              let n = 0;
+              last.cart.forEach((c) => {
+                const id = swapTo.get(c.id) || c.id;
+                const entry = swapTo.has(c.id) ? Object.assign(makeEntry(id), { qty: c.qty, note: c.note || "" }) : { ...c };
+                if (entry.unit && !swapTo.has(c.id)) entry.unit = c.unit;
+                const idx = state.cart.findIndex((x) => x.id === id);
+                if (idx >= 0) state.cart[idx] = entry; else state.cart.push(entry);
+                n++;
+              });
+              changes.filter((ch) => !ch.keep).forEach((ch) => planSkip(ch.from));
+              saveCart(); buzz(); close(); toast(u.addedN(n)); render();
+            },
+          }, icon("repeat"), T.lastOrder)),
+      ];
+    }, PLAN_UI[state.lang].lastWeek);
+  }
 
   // ---------- Lightbox ----------
   function openLightbox(item) {
@@ -1729,7 +2481,8 @@
       [el("p", { class: "label" }, h.eyebrow),
         el("h1", { class: "display" }, h.h1),
         el("p", { class: "lead" }, h.lead),
-        el("div", { class: "stop-ctas" }, btn(h.start, "solid big", () => startWith(null), "chevron")),
+        el("div", { class: "stop-ctas" }, btn(h.start, "solid big", () => startWith(null), "chevron"),
+          planPrefs().setup ? btn(PLAN_UI[state.lang].readyTitle(planPrefs().days), "glass big", () => goPlan(false), "calendar") : null),
         el("div", { class: "stats" },
           [[countItems("kitchen"), state.lang === "ar" ? "أكلة بيتي" : "home dishes"],
             [countItems("butcherista"), state.lang === "ar" ? "من بوتشريستا" : "Butcherista items"],
@@ -1756,6 +2509,7 @@
       [el("h2", { class: "h2" }, h.weekTitle), el("p", { class: "lead" }, h.weekText),
         el("div", { class: "stop-ctas" },
           week ? btn(h.weekBtn, "solid", () => openBundle(HOME_WEEK), "plus") : null,
+          btn(planPrefs().setup ? PLAN_UI[state.lang].review : PLAN_UI[state.lang].planIt, "glass", () => goPlan(!planPrefs().setup), "calendar"),
           btn(h.weekMore, "glass", () => startWith("week")))]);
 
     const feastStop = stop("feast",
@@ -1957,9 +2711,10 @@
   $("ideas-btn").addEventListener("click", () => go(state.view === "ideas" ? "browse" : "ideas"));
   window.addEventListener("hashchange", () => {
     const v = viewFromHash();
-    const before = state.cat + "|" + state.way;
+    const before = state.cat + "|" + state.way + "|" + state.plan;
     applyHash();
-    if (v === "browse" && (state.cat + "|" + state.way) !== before) {
+    if (state.plan !== "setup") planSwipe = null;
+    if (v === "browse" && (state.cat + "|" + state.way + "|" + state.plan) !== before) {
       state.search = ""; state.searchOpen = false; state.sub = "all"; state.flags = new Set();
     }
     show(v);
