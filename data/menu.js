@@ -5339,8 +5339,8 @@ window.SABAH_MENU = {
        "id": "b68",
        "ar": "صوص سموكي باربكيو",
        "en": "Smokey BBQ Sauce",
-       "img": "assets/butcherista/thumbs/ba960b97-107a-4831-804d-15c5d0adedf2.webp",
-       "full": "assets/butcherista/full/ba960b97-107a-4831-804d-15c5d0adedf2.webp",
+       "img": "assets/kitchen/thumbs/b68.webp",
+       "full": "assets/kitchen/full/b68.webp",
        "sizes": [
         {
          "ar": "صوص سموك باربيكيو",
