@@ -5288,8 +5288,8 @@ window.SABAH_MENU = {
        "id": "b65",
        "ar": "سيخ خضار",
        "en": "Vegetable Skewer",
-       "img": "assets/butcherista/thumbs/1432b4a5-18b8-4f92-a4a5-42702f741198.webp",
-       "full": "assets/butcherista/full/1432b4a5-18b8-4f92-a4a5-42702f741198.webp",
+       "img": "assets/kitchen/thumbs/b65.webp",
+       "full": "assets/kitchen/full/b65.webp",
        "cal": {
         "ar": "~٤٠ سعرة/١٠٠جم (تقديري)",
         "en": "~40 kcal/100g (estimated)"
