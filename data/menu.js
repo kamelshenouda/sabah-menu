@@ -5273,8 +5273,8 @@ window.SABAH_MENU = {
        "id": "b64",
        "ar": "بقدونس",
        "en": "Parsley",
-       "img": "assets/butcherista/thumbs/6815c720-4526-4fb4-901c-bb4ccc1ad96d.webp",
-       "full": "assets/butcherista/full/6815c720-4526-4fb4-901c-bb4ccc1ad96d.webp",
+       "img": "assets/kitchen/thumbs/b64.webp",
+       "full": "assets/kitchen/full/b64.webp",
        "cal": {
         "ar": "~٣٦ سعرة/١٠٠جم (تقديري)",
         "en": "~36 kcal/100g (estimated)"
