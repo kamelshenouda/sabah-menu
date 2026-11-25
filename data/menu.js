@@ -5381,8 +5381,8 @@ window.SABAH_MENU = {
        "id": "b70",
        "ar": "صوص التندوري دايت",
        "en": "Tandoori Diet Sauce",
-       "img": "assets/butcherista/thumbs/eed7dcdc-8ee3-4724-b01d-09a5f86c6d77.webp",
-       "full": "assets/butcherista/full/eed7dcdc-8ee3-4724-b01d-09a5f86c6d77.webp",
+       "img": "assets/kitchen/thumbs/b70.webp",
+       "full": "assets/kitchen/full/b70.webp",
        "cal": {
         "ar": "~٩٠ سعرة/١٠٠جم (تقديري)",
         "en": "~90 kcal/100g (estimated)"
