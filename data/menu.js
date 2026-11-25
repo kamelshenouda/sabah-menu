@@ -5303,8 +5303,8 @@ window.SABAH_MENU = {
        "id": "b66",
        "ar": "ناتشوز",
        "en": "Nachos",
-       "img": "assets/butcherista/thumbs/39193793-3197-4bec-8818-64dd6443e753.webp",
-       "full": "assets/butcherista/full/39193793-3197-4bec-8818-64dd6443e753.webp",
+       "img": "assets/kitchen/thumbs/b66.webp",
+       "full": "assets/kitchen/full/b66.webp",
        "cal": {
         "ar": "~٤٩٠ سعرة/١٠٠جم (تقديري)",
         "en": "~490 kcal/100g (estimated)"
