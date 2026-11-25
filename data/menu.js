@@ -5318,8 +5318,8 @@ window.SABAH_MENU = {
        "id": "b67",
        "ar": "شريحة جبن الشيدر",
        "en": "Cheddar Cheese Slices",
-       "img": "assets/butcherista/thumbs/878c36f0-f848-44ca-8d09-e4fbcb59aa44.webp",
-       "full": "assets/butcherista/full/878c36f0-f848-44ca-8d09-e4fbcb59aa44.webp",
+       "img": "assets/kitchen/thumbs/b67.webp",
+       "full": "assets/kitchen/full/b67.webp",
        "sizes": [
         {
          "ar": "شريحة جبن شيدر",
