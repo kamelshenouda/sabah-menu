@@ -1115,3 +1115,4 @@ html[lang="en"] .cook-card-label { font-weight: 600; font-size: 11px; letter-spa
 .cook-card-sub { font-size: 13px; color: #9db3b4; }
 .unit-one { margin: 0; font-weight: 700; font-size: 15px; }
 .unit-hint { margin: 6px 0 0; font-family: var(--f-label); font-size: 13px; color: var(--fg-2); }
+.step-count { text-align: center; margin-top: 8px; }

@@ -165,7 +165,9 @@ Extra fields that shape the menu:
 
 | Field | Where | What it does |
 |---|---|---|
-| `units` | dish | The units the dish is sold in, the first being the default: `"kg"` (كيلو), `"box"` (علبة), `"tray"` (صينية), `"bag"` (كيس), `"loaf"` (رغيف) or `"piece"`. Amounts go up by 0.5 for kilos and by 1 otherwise. Raw and marinated meat and chicken, fish and fruit are by the kilo; cooked meat and chicken by the kilo or box; stews, rice, salads and dips by the box; béchamel, mahshi, moussaka, kunafa and basbousa by the tray or box; bread by the loaf or bag. |
+| `units` | dish | The one unit the dish is sold in: `"kg"` (كيلو), `"box"` (علبة), `"tray"` (صينية), `"bag"` (كيس) or `"piece"`. A dish has one unit, so there is no choice to make (a box of a dish sold by weight is only its packaging). Amounts go up by 0.5 for kilos and by 1 otherwise. |
+| `count` | dish | Roughly what one unit holds, shown on the dish page and in the order as the amount changes: `{ "n": 4, "ar": "صدور", "en": "breasts" }` (a kilo ≈ 4 breasts) or `{ "n": 500, "ar": "جم", "en": "g" }` (a box ≈ 500 g). |
+| `feeds` | dish | How many people one unit feeds, when it differs from `portions` (e.g. a box of 12 samosa feeds 4). |
 | `piece` | dish | For a dish sold by the piece: its own word and how many people one feeds, e.g. `{ "ar": "فرخة", "en": "whole chicken", "feeds": 4 }`, `{ "ar": "بيضة", "en": "egg", "feeds": 0.5 }`. |
 | `ready` | section or dish | `"cook"` or `"eat"`. Shows the "ready to cook" / "ready to eat" tag and feeds those filters. A dish's own value wins. Butcherista sections with raw or frozen products are marked `"cook"`. |
 | `healthy` | section or dish | `true` puts the dish under the Healthy filter. |
