@@ -5360,8 +5360,8 @@ window.SABAH_MENU = {
        "id": "b69",
        "ar": "صوص الشيدر",
        "en": "Cheddar Cheese Sauce",
-       "img": "assets/butcherista/thumbs/1b37495c-4a58-4cc3-b061-b18bed6edef7.webp",
-       "full": "assets/butcherista/full/1b37495c-4a58-4cc3-b061-b18bed6edef7.webp",
+       "img": "assets/kitchen/thumbs/b69.webp",
+       "full": "assets/kitchen/full/b69.webp",
        "sizes": [
         {
          "ar": "صوص الشيدر",
